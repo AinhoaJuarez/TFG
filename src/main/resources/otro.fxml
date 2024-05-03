@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1250.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControllerTicket" style="-fx-background-color: #90b1db">
+    <VBox>
+        <HBox>
+            <Button fx:id="botonMenu" mnemonicParsing="false" maxHeight="43.0" maxWidth="52.0" text="Button" HBox.margin="$0, 0, 1000, 0"/>
+            <Label fx:id="lblUsr" maxHeight="43.0" maxWidth="129.0" text="Usuario Activo" HBox.margin="$0, 0, 150, 0">
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Label>
+            <Button fx:id="botonMenu" mnemonicParsing="false" maxHeight="43.0" maxWidth="52.0" text="Button" />
+        </HBox>
+        <HBox>
+            <TableView fx:id="tablaTickets" maxHeight="457.0" maxWidth="972.0">
+                <columns>
+                    <TableColumn maxWidth="75.0" text="C1" />
+                    <TableColumn maxWidth="75.0" text="C2" />
+                </columns>
+            </TableView>
+            <Separator orientation="VERTICAL" maxHeight="457.0" maxWidth="8.0" />
+            <VBox>
+                <HBox>
+                    <Button fx:id="botonAsociar" mnemonicParsing="false" maxHeight="115.0" maxWidth="135.0" text="Button" />
+                    <Button fx:id="botonDesasociar" mnemonicParsing="false" maxHeight="115.0" maxWidth="129.0" text="Button" />
+                </HBox>
+                <HBox>
+                    <Button fx:id="botonDelLinea" mnemonicParsing="false" maxHeight="115.0" maxWidth="135.0" text="Button" />
+                    <Button fx:id="botonDelTicket" mnemonicParsing="false" maxHeight="115.0" maxWidth="129.0" text="Button" />
+                </HBox>
+                <Label fx:id="lbl_precioTotal" maxHeight="27.0" maxWidth="129.0" text="Precio Total">
+                <TextField fx:id="txt_precioTotal" maxHeight="43.0" maxWidth="263.0" />
+                <Button fx:id="botonTotal" mnemonicParsing="false" maxHeight="43.0" maxWidth="263.0" text="Finalizar Ticket" />
+            </VBox>
+        </HBox>
+        <Separator maxHeight="20.0" maxWidth="1272.0" />
+        <HBox>
+            <Label fx:id="lbl_codBarras" maxHeight="17.0" maxWidth="149.0" text="Código de Barras" HBox.margin="$0, 0, 100, 0"/>
+            <Button fx:id="botonBuscar" layoutX="170.0" layoutY="557.0" mnemonicParsing="false" maxHeight="25.0" maxWidth="44.0" text="Button" HBox.margin="$0, 0, 360, 0"/>
+            <Label fx:id="lbl_desArticulo" maxHeight="17.0" maxWidth="149.0" text="Descripción del artículo" />
+        </HBox>
+        <HBox>
+            <Label fx:id="lbl_cantidad" maxHeight="17.0" maxWidth="149.0" text="Cantidad"  HBox.margin="$0, 0, 590, 0"/>
+            <Label fx:id="lbl_precio" maxHeight="17.0" maxWidth="149.0" text="Precio del Producto" HBox.margin="$0, 0, 160, 0"/>
+            <Label fx:id="lbl_descuento" maxHeight="17.0" maxWidth="149.0" text="Descuento"  HBox.margin="$0, 0, 100, 0"/>
+            <Label fx:id="lbl_precioDes" maxHeight="17.0" maxWidth="149.0" text="Precio tras Descuento" />
+        </HBox>
+        <HBox>
+            <TextField fx:id="txt_cantidad" maxHeight="25.0" maxWidth="86.0" HBox.margin="$0, 0, 590, 0"/>
+            <TextField fx:id="txt_precio" maxHeight="25.0" maxWidth="110.0" HBox.margin="$0, 0, 160, 0"/>
+            <TextField fx:id="txt_descuento" maxHeight="25.0" maxWidth="77.0" promptText="\%" HBox.margin="$0, 0, 100, 0"/>
+            <TextField fx:id="txt_precioDes" maxHeight="25.0" maxWidth="110.0" />
+        </HBox>
+        <HBox>
+            <Button fx:id="botonAgregar" mnemonicParsing="false" maxHeight="25.0" maxWidth="115.0" text="Agregar" />
+        </HBox>
+
+    </VBox>
+</StackPane>
