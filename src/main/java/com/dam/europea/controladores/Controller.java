@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.hibernate.SessionFactory;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -32,6 +34,11 @@ public class Controller implements Initializable {
 
 	@FXML
 	private Button botonCaja;
+	private SessionFactory sf;
+	public Controller(SessionFactory sf) {
+		this.sf=sf;
+	}
+
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		cargarImagenes();
@@ -60,12 +67,14 @@ public class Controller implements Initializable {
 
 	public void switchToInicioSesion(ActionEvent event) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/InicioSesion.fxml"));
+		ControladorInicioSesion ct = new ControladorInicioSesion(sf);
+		loader.setController(ct);
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
 		Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		stage.setScene(scene);
 		stage.show();
-
+		
 	}
 
 	private void cargarImagenes() {
@@ -99,12 +108,15 @@ public class Controller implements Initializable {
 	
 	public void switchToTickets(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/PantallaTickets.fxml"));
+	    ControllerTicket ct = new ControllerTicket(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
 	    double x = bounds.getMinX() + (bounds.getWidth() - scene.getWidth()) * 0.001;
 	    double y = bounds.getMinY() + (bounds.getHeight() - scene.getHeight()) * 0.015;
+	    
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
@@ -115,6 +127,8 @@ public class Controller implements Initializable {
 	
 	public void switchToFacturas(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Facturas.fxml"));
+	    ControllerFactura ct = new ControllerFactura(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -125,11 +139,14 @@ public class Controller implements Initializable {
 	    stage.setY(y);
 	    stage.setScene(scene);
 	    stage.setMaximized(true); 
+	    
 	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToGestion(ActionEvent event) throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionInventario_Tickets.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionInventario_Prods.fxml"));
+		ControllerGI_Prods ct = new ControllerGI_Prods(sf);
+		loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -140,6 +157,7 @@ public class Controller implements Initializable {
 	    stage.setY(y);
 	    stage.setScene(scene);
 	    stage.setMaximized(true); 
+	   
 	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}

@@ -19,5 +19,6 @@
   <mapping class="com.dam.europea.entidades.Producto"/>
   <mapping class="com.dam.europea.entidades.Ticket"/>
   <mapping class="com.dam.europea.entidades.Usuario"/>
+  <mapping class="com.dam.europea.entidades.TicketProductos"/>
  </session-factory>
 </hibernate-configuration>

@@ -3,8 +3,20 @@ package com.dam.europea.controladores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.ResourceBundle;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
+
+import com.dam.europea.entidades.Cliente;
+import com.dam.europea.entidades.Ticket;
+
+import javafx.beans.property.ObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +26,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
@@ -44,16 +59,30 @@ public class ControllerGI_Tickets implements Initializable{
 	private Button btnNew;
 	@FXML
 	private Button btnDel;
-	
-	//Botones sin fotos
+	@FXML
+    private TextField txtCod;
 	@FXML
 	private Button btnDescripcion;
 	@FXML
 	private Button btnCodPostal;
 	@FXML
 	private Button btnLocal;
+	@FXML
+    private TableView<Ticket> tableViewTickets;
+	private SessionFactory sf;
+	@FXML
+    private TableColumn<Ticket, Integer> codigoTicketColumn;
+    @FXML
+    private TableColumn<Ticket, String> fechaTicketColumn;
+    @FXML
+    private TableColumn<Ticket, Cliente> clienteAsociadoColumn;
+    @FXML
+    private TableColumn<Ticket, Double> totalTicketColumn;
 	
-	
+	public ControllerGI_Tickets(SessionFactory sf) {
+		this.sf=sf;
+	}
+
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarImagenes();
@@ -113,8 +142,20 @@ public class ControllerGI_Tickets implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		codigoTicketColumn.setCellValueFactory(cellData -> cellData.getValue().numTicketProperty().asObject());
+        fechaTicketColumn.setCellValueFactory(cellData -> cellData.getValue().fechaProperty());
+        clienteAsociadoColumn.setCellValueFactory(cellData -> cellData.getValue().clienteProperty());
+        totalTicketColumn.setCellValueFactory(cellData -> cellData.getValue().importeTotalProperty().asObject());
+
+        // Load data into TableView
+        loadTickets();
 	}
-	
+	private void loadTickets() {
+		Session session = sf.openSession();
+		Query<Ticket> query = session.createQuery("SELECT * FROM Ticket", Ticket.class);
+        ObservableList<Ticket> ticketList = FXCollections.observableArrayList(query.list());
+        tableViewTickets.setItems(ticketList);
+    }
 	public void cargarImagenes() {
 		InputStream archivoProd = getClass().getResourceAsStream("/inventario.png");
 		Image imagenProd= new Image(archivoProd, 75, 75, true, true);
@@ -153,13 +194,15 @@ public class ControllerGI_Tickets implements Initializable{
 	
 	public void switchToMenu(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/erae.fxml"));
+	    Controller ct = new Controller(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         double centerX = primaryScreenBounds.getMinX() + (primaryScreenBounds.getWidth() - scene.getWidth())* 0.17;
         double centerY = primaryScreenBounds.getMinY() + (primaryScreenBounds.getHeight() - scene.getHeight()) *0.12;
-
+       
         stage.setX(centerX);
         stage.setY(centerY);
 	    stage.setScene(scene);
@@ -167,13 +210,15 @@ public class ControllerGI_Tickets implements Initializable{
 	}
 	public void switchToInicioSesion(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/InicioSesion.fxml"));
+	    ControladorInicioSesion ct = new ControladorInicioSesion(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         double centerX = primaryScreenBounds.getMinX() + (primaryScreenBounds.getWidth() - scene.getWidth())* 0.17;
         double centerY = primaryScreenBounds.getMinY() + (primaryScreenBounds.getHeight() - scene.getHeight()) *0.12;
-
+        
         stage.setX(centerX);
         stage.setY(centerY);
 	    stage.setScene(scene);
@@ -181,92 +226,80 @@ public class ControllerGI_Tickets implements Initializable{
 	}
 	public void switchToClientes(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionInventario_Clientes.fxml"));
+	    ControllerGI_Clientes ct = new ControllerGI_Clientes(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-	    double x = bounds.getMinX() + (bounds.getWidth() - scene.getWidth()) * 0.001;
-	    double y = bounds.getMinY() + (bounds.getHeight() - scene.getHeight()) * 0.015;
-	    stage.setX(x);
-	    stage.setY(y);
 	    stage.setScene(scene);
 	    stage.setMaximized(true); 
 	    stage.initStyle(StageStyle.UNDECORATED);
+	    
 	    stage.show();
 	}
 	public void switchToProv(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionInventario_Prov.fxml"));
+	    ControllerGI_Prov ct = new ControllerGI_Prov(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-	    double x = bounds.getMinX() + (bounds.getWidth() - scene.getWidth()) * 0.001;
-	    double y = bounds.getMinY() + (bounds.getHeight() - scene.getHeight()) * 0.015;
-	    stage.setX(x);
-	    stage.setY(y);
 	    stage.setScene(scene);
 	    stage.setMaximized(true); 
 	    stage.initStyle(StageStyle.UNDECORATED);
+	    
 	    stage.show();
 	}
 	public void switchToFacturas(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionInventario_Facturas.fxml"));
+	    ControllerGI_Facturas s = new ControllerGI_Facturas(sf);
+	    loader.setController(s);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-	    double x = bounds.getMinX() + (bounds.getWidth() - scene.getWidth()) * 0.001;
-	    double y = bounds.getMinY() + (bounds.getHeight() - scene.getHeight()) * 0.015;
-	    stage.setX(x);
-	    stage.setY(y);
 	    stage.setScene(scene);
 	    stage.setMaximized(true); 
 	    stage.initStyle(StageStyle.UNDECORATED);
+	    
 	    stage.show();
 	}
 	public void switchToFamilia(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionInventario_Fam.fxml"));
+	    ControllerGI_Fam ct = new ControllerGI_Fam(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-	    double x = bounds.getMinX() + (bounds.getWidth() - scene.getWidth()) * 0.001;
-	    double y = bounds.getMinY() + (bounds.getHeight() - scene.getHeight()) * 0.015;
-	    stage.setX(x);
-	    stage.setY(y);
 	    stage.setScene(scene);
 	    stage.setMaximized(true); 
 	    stage.initStyle(StageStyle.UNDECORATED);
+	    
 	    stage.show();
 	}
 	public void switchToProductos(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionInventario_Prods.fxml"));
+	    ControllerGI_Prods ct = new ControllerGI_Prods(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-	    double x = bounds.getMinX() + (bounds.getWidth() - scene.getWidth()) * 0.001;
-	    double y = bounds.getMinY() + (bounds.getHeight() - scene.getHeight()) * 0.015;
-	    stage.setX(x);
-	    stage.setY(y);
 	    stage.setScene(scene);
 	    stage.setMaximized(true); 
 	    stage.initStyle(StageStyle.UNDECORATED);
+	    
 	    stage.show();
 	}
 	public void switchToUsers(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionInventario_Users.fxml"));
+	    ControllerGI_Users ct = new ControllerGI_Users(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-	    double x = bounds.getMinX() + (bounds.getWidth() - scene.getWidth()) * 0.001;
-	    double y = bounds.getMinY() + (bounds.getHeight() - scene.getHeight()) * 0.015;
-	    stage.setX(x);
-	    stage.setY(y);
 	    stage.setScene(scene);
 	    stage.setMaximized(true); 
 	    stage.initStyle(StageStyle.UNDECORATED);
+	    
 	    stage.show();
 	}
 }

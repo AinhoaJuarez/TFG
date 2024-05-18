@@ -1,17 +1,13 @@
 package com.dam.europea.entidades;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Factura {
@@ -29,19 +25,13 @@ public class Factura {
 	private String direccion;
 	private int telefono;
 	private String nombreApellidos;
-	@JoinTable(name = "rel_prod_fact", joinColumns = @JoinColumn(name = "Numero de factura", nullable = false),
-	        inverseJoinColumns = @JoinColumn(name="Codigo de producto", nullable = false)
-	    )
-	@ManyToMany	
-	private ArrayList<Producto> productos;
-	@Convert(converter = MapToJsonConverter.class)
-    @Column(name = "listado_productos", columnDefinition = "CLOB")
-	private Map<Producto, Integer> listadoProductos;
+	@OneToOne(mappedBy = "numerofactura", cascade = CascadeType.ALL, orphanRemoval = true)
+	private TicketProductos ticketProductos;
 	private int IVA;
 	private double totalSinIVA;
 	private double totalConIVA;
 	public Factura(int numeroFactura, Cliente cliente, String fechaExpedicion, String fechaOperacion, String nIF,
-			String direccion, int telefono, String nombreApellidos, Map<Producto, Integer> listadoProductos, int iVA,
+			String direccion, int telefono, String nombreApellidos, TicketProductos ticketProductos, int iVA,
 			double totalSinIVA, double totalConIVA, double descuento) {
 		super();
 		this.numeroFactura = numeroFactura;
@@ -52,14 +42,13 @@ public class Factura {
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.nombreApellidos = nombreApellidos;
-		this.listadoProductos = listadoProductos;
+		this.ticketProductos = ticketProductos;
 		IVA = iVA;
 		this.totalSinIVA = totalSinIVA;
 		this.totalConIVA = totalConIVA;
 		this.descuento = descuento;
 	}
 	public Factura() {
-		this.listadoProductos = new HashMap<Producto, Integer>();
 	}
 	private double descuento;
 	public int getNumeroFactura() {
@@ -110,11 +99,11 @@ public class Factura {
 	public void setNombreApellidos(String nombreApellidos) {
 		this.nombreApellidos = nombreApellidos;
 	}
-	public Map<Producto, Integer> getListadoProductos() {
-		return listadoProductos;
+	public TicketProductos getListadoProductos() {
+		return ticketProductos;
 	}
-	public void setListadoProductos(Map<Producto, Integer> listadoProductos) {
-		this.listadoProductos = listadoProductos;
+	public void setListadoProductos(TicketProductos ticketProductos) {
+		this.ticketProductos = ticketProductos;
 	}
 	public int getIVA() {
 		return IVA;
@@ -139,9 +128,6 @@ public class Factura {
 	}
 	public void setDescuento(double descuento) {
 		this.descuento = descuento;
-	}
-	public void setProductos() {
-		productos.addAll(listadoProductos.keySet());
 	}
 
 }

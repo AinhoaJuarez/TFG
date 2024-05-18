@@ -21,6 +21,9 @@ public class Producto {
     private double margen;
     private int cantidad;
     private int stock;
+    @ManyToOne
+	@JoinColumn(name = "proveedor_fk", referencedColumnName = "Proveedor Producto")
+    private Proveedor proveedor;
     
     
 	public String getCodigoBarras() {

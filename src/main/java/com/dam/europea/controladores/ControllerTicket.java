@@ -6,6 +6,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.hibernate.SessionFactory;
+
 import com.dam.europea.entidades.Cliente;
 import com.dam.europea.entidades.Producto;
 
@@ -56,8 +58,12 @@ public class ControllerTicket implements Initializable{
 	private TableColumn<Producto, Double> precioFinal;
 	private ObservableList <Producto> productos;
 	private EntityManager emf;
+	private SessionFactory sf;
 	
-	
+	public ControllerTicket(SessionFactory sf) {
+		this.sf=sf;
+	}
+
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
 		
@@ -110,14 +116,15 @@ public class ControllerTicket implements Initializable{
 	}
 	public void switchToMenu(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/erae.fxml"));
+	    Controller ct = new Controller(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         double centerX = primaryScreenBounds.getMinX() + (primaryScreenBounds.getWidth() - scene.getWidth())* 0.17;
         double centerY = primaryScreenBounds.getMinY() + (primaryScreenBounds.getHeight() - scene.getHeight()) *0.12;
-
-        // Establecer las coordenadas X e Y para centrar la ventana secundaria
+        
         stage.setX(centerX);
         stage.setY(centerY);
 	    stage.setScene(scene);
@@ -125,14 +132,14 @@ public class ControllerTicket implements Initializable{
 	}
 	public void switchToInicioSesion(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/InicioSesion.fxml"));
+	    ControladorInicioSesion ct = new ControladorInicioSesion(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         double centerX = primaryScreenBounds.getMinX() + (primaryScreenBounds.getWidth() - scene.getWidth())* 0.17;
         double centerY = primaryScreenBounds.getMinY() + (primaryScreenBounds.getHeight() - scene.getHeight()) *0.12;
-
-        // Establecer las coordenadas X e Y para centrar la ventana secundaria
         stage.setX(centerX);
         stage.setY(centerY);
 	    stage.setScene(scene);
@@ -140,11 +147,8 @@ public class ControllerTicket implements Initializable{
 	}
 	
 	private void abrirDialogoSeleccionCliente(ActionEvent event) throws IOException {
-        // Cargar el FXML del cuadro de diálogo de selección de cliente
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoSelCliente.fxml"));
         Parent root = loader.load();
-
-        // Crear la escena y el escenario para el cuadro de diálogo
         Scene scene = new Scene(root);
         Stage stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);

@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1250.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dam.europea.controladores.ControllerTicket" style="-fx-background-color: #90b1db">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1250.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"  style="-fx-background-color: #90b1db">
     <VBox>
         <HBox>
             <Button fx:id="botonMenu" mnemonicParsing="false" maxHeight="43.0" maxWidth="52.0" text="Button" HBox.margin="$0, 0, 1000, 0"/>

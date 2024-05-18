@@ -1,16 +1,23 @@
 package com.dam.europea;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import com.dam.europea.controladores.ControladorInicioSesion;
 import com.dam.europea.entidades.Cliente;
 import com.dam.europea.entidades.Factura;
 import com.dam.europea.entidades.FamiliaProducto;
 import com.dam.europea.entidades.Producto;
 import com.dam.europea.entidades.Ticket;
+import com.dam.europea.entidades.TicketProductos;
 import com.dam.europea.entidades.Usuario;
 
 import javafx.application.Application;
@@ -36,29 +43,29 @@ public class App extends Application {
         try (Session session = sf.openSession()) {
             session.beginTransaction();
 
-            FamiliaProducto f1 = new FamiliaProducto("123", "Si");
+            FamiliaProducto f1 = new FamiliaProducto();
             Producto p = new Producto();
             Cliente c = new Cliente();
             Ticket t = new Ticket();
             Factura f = new Factura();
             Usuario u = new Usuario();
-            session.persist(f1);
-            session.persist(p);
-            session.persist(c);
-            session.persist(f);
-            session.persist(t);
-            session.persist(u);
+            TicketProductos t1 = new TicketProductos();
 
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Parent root = FXMLLoader.load(getClass().getResource("/InicioSesion.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/InicioSesion.fxml"));
+        ControladorInicioSesion controller = new ControladorInicioSesion(sf);
+        loader.setController(controller);
+        Parent root = loader.load();
         Scene scene = new Scene(root);
         Image icon = new Image("iconoApp.jpeg");
         primaryStage.getIcons().add(icon);
         primaryStage.setScene(scene);
         primaryStage.setTitle("PapeLeo");
         primaryStage.show();
+        
+       
     }
 }
