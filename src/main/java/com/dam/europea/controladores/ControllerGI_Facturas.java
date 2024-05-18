@@ -1,5 +1,4 @@
 package com.dam.europea.controladores;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -18,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class ControllerGI_Facturas implements Initializable{
 	//Botones fotos
@@ -189,6 +189,8 @@ public class ControllerGI_Facturas implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToTickets(ActionEvent event) throws IOException {
@@ -202,6 +204,8 @@ public class ControllerGI_Facturas implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToFamilia(ActionEvent event) throws IOException {
@@ -215,6 +219,8 @@ public class ControllerGI_Facturas implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToProds(ActionEvent event) throws IOException {
@@ -228,6 +234,8 @@ public class ControllerGI_Facturas implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToProv(ActionEvent event) throws IOException {
@@ -241,6 +249,8 @@ public class ControllerGI_Facturas implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToUsers(ActionEvent event) throws IOException {
@@ -254,6 +264,8 @@ public class ControllerGI_Facturas implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 }

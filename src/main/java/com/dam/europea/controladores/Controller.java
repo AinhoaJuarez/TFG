@@ -2,7 +2,6 @@ package com.dam.europea.controladores;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -19,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Controller implements Initializable {
 
@@ -34,7 +34,6 @@ public class Controller implements Initializable {
 	private Button botonCaja;
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		botonTicket.requestFocus();
 		cargarImagenes();
 		botonCerrar.setOnAction(arg0 -> {
 			try {
@@ -46,6 +45,13 @@ public class Controller implements Initializable {
 		botonTicket.setOnAction(arg0 -> {
 			try {
 				switchToTickets(arg0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		botonCaja.setOnAction(arg0 -> {
+			try {
+				switchToGestion(arg0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -102,6 +108,8 @@ public class Controller implements Initializable {
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	
@@ -116,6 +124,23 @@ public class Controller implements Initializable {
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
+	    stage.show();
+	}
+	public void switchToGestion(ActionEvent event) throws IOException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionInventario_Tickets.fxml"));
+	    Parent root = loader.load();
+	    Scene scene = new Scene(root);
+	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+	    Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+	    double x = bounds.getMinX() + (bounds.getWidth() - scene.getWidth()) * 0.001;
+	    double y = bounds.getMinY() + (bounds.getHeight() - scene.getHeight()) * 0.015;
+	    stage.setX(x);
+	    stage.setY(y);
+	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 }

@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TableView?>
 
 
-<DialogPane prefHeight="435.0" prefWidth="536.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControladorSelCliente" >
+<DialogPane prefHeight="435.0" prefWidth="536.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dam.europea.controladores.ControladorSelCliente" >
    <header>
       <Label text="Seleccion Cliente" />
    </header>

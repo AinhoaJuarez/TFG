@@ -83,8 +83,6 @@ public class ControllerTicket implements Initializable{
                 e.printStackTrace();
             }
         });
-		emf= com.dam.europea.App.sf.createEntityManager();
-		List <Cliente> lstClientes = emf.createQuery("SELECT c FROM CLIENTES c").getResultList();
 	}
 	
 	public void cargarImagenes() {

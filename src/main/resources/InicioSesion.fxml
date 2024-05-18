@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Region?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1250.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.ControladorInicioSesion" style="-fx-background-color: #90b1db">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="850.0" prefWidth="1250.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dam.europea.controladores.ControladorInicioSesion" style="-fx-background-color: #90b1db">
     <VBox alignment="CENTER">
         <children>
             <ImageView fx:id="imgView" fitHeight="217.0" fitWidth="225.0" pickOnBounds="true" preserveRatio="true" />

@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #90b1db" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" fx:controller="com.dam.europea.controladores.ControllerGI_Users" style="-fx-background-color: #90b1db" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button fx:id="botonMenu" layoutX="44.0" layoutY="39.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="52.0" />
       <Label layoutX="1686.0" layoutY="43.0" prefHeight="43.0" prefWidth="129.0" text="Usuario Activo">

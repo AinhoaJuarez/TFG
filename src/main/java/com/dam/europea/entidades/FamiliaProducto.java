@@ -20,8 +20,9 @@ public class FamiliaProducto {
 	@OneToMany(mappedBy="familiaProducto", cascade= CascadeType.PERSIST)
 	private ArrayList<Producto> productosAsociados;
 
-	public FamiliaProducto(String familiaProducto) {
+	public FamiliaProducto(String codFamilia, String familiaProducto) {
 		super();
+		this.codFamilia = codFamilia;
 		this.familiaProducto = familiaProducto;
 	}
 

@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class ControllerGI_Users implements Initializable{
 	//Botones fotos
@@ -189,6 +190,8 @@ public class ControllerGI_Users implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToProv(ActionEvent event) throws IOException {
@@ -202,6 +205,8 @@ public class ControllerGI_Users implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToFacturas(ActionEvent event) throws IOException {
@@ -215,6 +220,8 @@ public class ControllerGI_Users implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToFamilia(ActionEvent event) throws IOException {
@@ -228,6 +235,8 @@ public class ControllerGI_Users implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToProductos(ActionEvent event) throws IOException {
@@ -241,6 +250,8 @@ public class ControllerGI_Users implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 	public void switchToTickets(ActionEvent event) throws IOException {
@@ -254,6 +265,8 @@ public class ControllerGI_Users implements Initializable{
 	    stage.setX(x);
 	    stage.setY(y);
 	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
 	    stage.show();
 	}
 }
