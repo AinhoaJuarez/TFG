@@ -36,8 +36,8 @@
 1. **Clonar el Repositorio**:
 
     ```bash
-    git clone https://github.com/yourusername/bookstore-management.git
-    cd bookstore-management
+    git clone https://https://github.com/AinhoaJuarez/TFG.git
+    cd TFG
     ```
 
 2. **Construir el Proyecto**:
