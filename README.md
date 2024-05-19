@@ -61,13 +61,12 @@ Después de ejecutar la aplicación, aparecerá la ventana principal, que ofrece
 ### Emisión de Tickets
 
 - **Emitir Ticket**: Ve a la sección de emisión de tickets, selecciona los productos que se van a vender y emite un ticket.
-- 
+  
 ### Emisión de Facturas
 
 - **Emitir Factura**: Ve a la sección de emisión de factura, selecciona los productos que se van a vender y emite una factura.
 
-
-- **Gestión de Inventarios**:
+### Gestión de Inventarios
   - **Tabla de Productos**: Añadir, modificar y eliminar registros de productos.
   - **Tabla de Familia de Productos**: Clasificación y gestión de categorías de productos.
   - **Tabla de Proveedores**: Gestión de información y contacto de proveedores.
