@@ -2,10 +2,16 @@ package com.dam.europea.controladores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import com.dam.europea.entidades.Cliente;
+import com.dam.europea.entidades.Factura;
+
+import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +21,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
@@ -53,7 +62,22 @@ public class ControllerGI_Facturas implements Initializable{
 	private Button btnCodPostal;
 	@FXML
 	private Button btnLocal;
+	
 	private SessionFactory sf;
+	
+	@FXML
+	private TableView<Factura> tableViewFacturas;
+	@FXML
+	private TableColumn<Factura, Integer> codFacturaColumn;
+
+	@FXML
+	private TableColumn<Factura, String> fechaFacturaColumn;
+
+	@FXML
+	private TableColumn<Factura, String> clienteAsocColumn;
+
+	@FXML
+	private TableColumn<Factura, Double> totalColumn;
 	
 	public ControllerGI_Facturas(SessionFactory sf) {
 		this.sf=sf;
@@ -118,6 +142,28 @@ public class ControllerGI_Facturas implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		cargarTabla();
+	}
+	
+	public void cargarTabla() {
+		codFacturaColumn.setCellValueFactory(new PropertyValueFactory<>("numeroFactura"));
+		fechaFacturaColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+		clienteAsocColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+		clienteAsocColumn.setCellValueFactory(cellData -> {
+            if (cellData.getValue().getCliente() != null) {
+                return new javafx.beans.property.SimpleStringProperty(cellData.getValue().getCliente().getNombre());
+            } else {
+                return new javafx.beans.property.SimpleStringProperty("");
+            }
+        });
+		totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalConIVA"));
+
+	    Session session = sf.openSession();
+	    TypedQuery<Factura> query = session.createQuery("SELECT e FROM Factura e", Factura.class);
+	    ArrayList<Factura> entityData = (ArrayList<Factura>) query.getResultList();
+	    if(entityData!=null) {
+	    	tableViewFacturas.getItems().addAll(entityData);
+	    }
 	}
 	
 	public void cargarImagenes() {

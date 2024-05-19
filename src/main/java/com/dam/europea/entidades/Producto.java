@@ -22,10 +22,17 @@ public class Producto {
     private int cantidad;
     private int stock;
     @ManyToOne
-	@JoinColumn(name = "proveedor_fk", referencedColumnName = "Proveedor Producto")
-    private Proveedor proveedor;
+	@JoinColumn(name = "proveedor_fk", referencedColumnName = "codigo")
+    private Proveedor proveedorProducto;
     
     
+	
+	public Proveedor getProveedorProducto() {
+		return proveedorProducto;
+	}
+	public void setProveedorProducto(Proveedor proveedorProducto) {
+		this.proveedorProducto = proveedorProducto;
+	}
 	public String getCodigoBarras() {
 		return codigoBarras;
 	}

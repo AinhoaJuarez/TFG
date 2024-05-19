@@ -3,12 +3,16 @@ package com.dam.europea.controladores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.mapping.List;
 
 import com.dam.europea.entidades.Producto;
 
+import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +23,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
@@ -26,7 +32,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class ControllerGI_Prods implements Initializable{
-	//Botones fotos
 	@FXML
 	private Button btnProductos;
 	@FXML
@@ -50,7 +55,6 @@ public class ControllerGI_Prods implements Initializable{
 	@FXML
 	private Button btnDel;
 	
-	//Botones sin fotos
 	@FXML
 	private Button btnDescripcion;
 	@FXML
@@ -58,7 +62,8 @@ public class ControllerGI_Prods implements Initializable{
 	@FXML
 	private Button btnLocal;
 	private SessionFactory sf;
-	
+	@FXML
+	private TableView<Producto> tableView;
 	@FXML
 	private TableColumn<Producto, String> codigoBarrasColumn;
 
@@ -141,6 +146,31 @@ public class ControllerGI_Prods implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		codigoBarrasColumn.setCellValueFactory(new PropertyValueFactory<>("codigoBarras"));
+	    descripcionColumn.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+	    familiaColumn.setCellValueFactory(cellData -> {
+            if (cellData.getValue().getProveedorProducto() != null) {
+                return new javafx.beans.property.SimpleStringProperty(cellData.getValue().getFamiliaArticulo().getFamiliaProducto());
+            } else {
+                return new javafx.beans.property.SimpleStringProperty("");
+            }
+        });
+	    stockColumn.setCellValueFactory(new PropertyValueFactory<>("stock"));
+	    proveedorColumn.setCellValueFactory(cellData -> {
+            if (cellData.getValue().getProveedorProducto() != null) {
+                return new javafx.beans.property.SimpleStringProperty(cellData.getValue().getProveedorProducto().getNombre());
+            } else {
+                return new javafx.beans.property.SimpleStringProperty("");
+            }
+        });
+	    pvpColumn.setCellValueFactory(new PropertyValueFactory<>("precioVenta"));
+	    Session session = sf.openSession();
+	    TypedQuery<Producto> query = session.createQuery("SELECT e FROM Producto e", Producto.class);
+	    ArrayList<Producto> entityData = (ArrayList<Producto>) query.getResultList();
+	    if(entityData!=null) {
+	    	tableView.getItems().addAll(entityData);
+	    }
+	    
 	}
 	
 	public void cargarImagenes() {
@@ -181,13 +211,14 @@ public class ControllerGI_Prods implements Initializable{
 	
 	public void switchToMenu(ActionEvent event) throws IOException {
 	    FXMLLoader loader = new FXMLLoader(getClass().getResource("/erae.fxml"));
+	    Controller ct = new Controller(sf);
+	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 	    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
         double centerX = primaryScreenBounds.getMinX() + (primaryScreenBounds.getWidth() - scene.getWidth())* 0.17;
         double centerY = primaryScreenBounds.getMinY() + (primaryScreenBounds.getHeight() - scene.getHeight()) *0.12;
-        Controller ct = new Controller(sf);
         stage.setX(centerX);
         stage.setY(centerY);
 	    stage.setScene(scene);

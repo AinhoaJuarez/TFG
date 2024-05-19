@@ -3,22 +3,30 @@ package com.dam.europea.controladores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import com.dam.europea.entidades.Factura;
+import com.dam.europea.entidades.FamiliaProducto;
+import com.dam.europea.entidades.Producto;
+
+import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -56,6 +64,18 @@ public class ControllerGI_Fam implements Initializable{
 	private Button btnLocal;
 	
 	private SessionFactory sf;
+	
+	@FXML
+	private TableView<FamiliaProducto> tableViewFam;
+	@FXML
+	private TableColumn<FamiliaProducto, String> codFamiliaColumn;
+
+	@FXML
+	private TableColumn<FamiliaProducto, String> descripcionFamiliaColumn;
+//
+//	@FXML
+//	private TableColumn<FamiliaProducto, Double> ivaColumn;
+	
 	public ControllerGI_Fam(SessionFactory sf) {
 		this.sf=sf;
 	}
@@ -63,6 +83,7 @@ public class ControllerGI_Fam implements Initializable{
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarImagenes();
+		cargarTabla();
 		botonSalir.setOnAction(arg0 -> {
 			try {
 				switchToInicioSesion(arg0);
@@ -119,6 +140,19 @@ public class ControllerGI_Fam implements Initializable{
 				e.printStackTrace();
 			}
 		});
+	}
+	
+	public void cargarTabla() {
+		codFamiliaColumn.setCellValueFactory(new PropertyValueFactory<>("numeroFactura"));
+		descripcionFamiliaColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+		//ivaColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+
+	    Session session = sf.openSession();
+	    TypedQuery<FamiliaProducto> query = session.createQuery("SELECT e FROM FamiliaProducto e", FamiliaProducto.class);
+	    ArrayList<FamiliaProducto> entityData = (ArrayList<FamiliaProducto>) query.getResultList();
+	    if(entityData!=null) {
+	    	tableViewFam.getItems().addAll(entityData);
+	    }
 	}
 	
 	public void cargarImagenes() {

@@ -1,6 +1,7 @@
 package com.dam.europea.entidades;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,7 +18,16 @@ public class Proveedor {
 	@Column
 	private String nombre;
 	@OneToMany(mappedBy="proveedorProducto", cascade= CascadeType.PERSIST)
-	private ArrayList<Producto> productosAsociados;
+	private List<Producto> productosAsociados= new ArrayList<>();
+	
+	public List<Producto> getProductosAsociados() {
+		return productosAsociados;
+	}
+
+	public void setProductosAsociados(List<Producto> productosAsociados) {
+		this.productosAsociados = productosAsociados;
+	}
+
 	public Proveedor() {
 		
 	}

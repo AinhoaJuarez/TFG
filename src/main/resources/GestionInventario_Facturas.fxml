@@ -52,12 +52,12 @@
       <Separator layoutX="1434.0" layoutY="104.0" orientation="VERTICAL" prefHeight="126.0" prefWidth="11.0" />
       <Button fx:id="btnNew" layoutX="1761.0" layoutY="242.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
       <Button fx:id="btnDel" layoutX="1850.0" layoutY="242.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
-      <TableView layoutX="213.0" layoutY="300.0" prefHeight="689.0" prefWidth="1698.0">
+      <TableView fx:id="tableViewFacturas" layoutX="213.0" layoutY="300.0" prefHeight="689.0" prefWidth="1698.0">
          <columns>
-            <TableColumn prefWidth="294.0" text="Código de Factura" />
-            <TableColumn minWidth="0.0" prefWidth="596.0" text="Fecha de Factura" />
-            <TableColumn minWidth="0.0" prefWidth="467.0" text="Cliente Asociado" />
-            <TableColumn minWidth="0.0" prefWidth="340.0" text="Total Factura" />
+            <TableColumn fx:id="codFacturaColumn" prefWidth="294.0" text="Código de Factura" />
+            <TableColumn fx:id="fechaFacturaColumn" minWidth="0.0" prefWidth="596.0" text="Fecha de Factura" />
+            <TableColumn fx:id="clienteAsocColumn" minWidth="0.0" prefWidth="467.0" text="Cliente Asociado" />
+            <TableColumn fx:id="totalColumn" minWidth="0.0" prefWidth="340.0" text="Total Factura" />
          </columns>
       </TableView>
       <ComboBox fx:id="comboCliente" layoutX="1087.0" layoutY="142.0" prefWidth="150.0" />

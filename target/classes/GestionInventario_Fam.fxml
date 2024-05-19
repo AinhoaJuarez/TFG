@@ -12,11 +12,11 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #90b1db" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TableView layoutX="192.0" layoutY="288.0" prefHeight="718.0" prefWidth="1698.0">
+      <TableView fx:id="tableViewFam" layoutX="192.0" layoutY="288.0" prefHeight="718.0" prefWidth="1698.0">
          <columns>
-            <TableColumn prefWidth="294.0" text="Código Familia del Producto" />
-            <TableColumn minWidth="0.0" prefWidth="971.0" text="Descripción de Familia de Producto" />
-            <TableColumn minWidth="0.0" prefWidth="432.0" text="Tipo de IVA" />
+            <TableColumn fx:id="codFamiliaColumn" prefWidth="294.0" text="Código Familia del Producto" />
+            <TableColumn fx:id="descripcionFamiliaColumn" minWidth="0.0" prefWidth="971.0" text="Descripción de Familia de Producto" />
+            <TableColumn fx:id="ivaColumn" minWidth="0.0" prefWidth="432.0" text="Tipo de IVA" />
          </columns>
       </TableView>
       <Button fx:id="botonMenu" layoutX="34.0" layoutY="29.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="52.0" />

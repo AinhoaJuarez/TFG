@@ -3,20 +3,16 @@ package com.dam.europea.controladores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 
 import com.dam.europea.entidades.Cliente;
 import com.dam.europea.entidades.Ticket;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +25,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
@@ -85,6 +82,7 @@ public class ControllerGI_Tickets implements Initializable{
 
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
+		cargarTabla();
 		cargarImagenes();
 		botonSalir.setOnAction(arg0 -> {
 			try {
@@ -142,20 +140,20 @@ public class ControllerGI_Tickets implements Initializable{
 				e.printStackTrace();
 			}
 		});
-		codigoTicketColumn.setCellValueFactory(cellData -> cellData.getValue().numTicketProperty().asObject());
-        fechaTicketColumn.setCellValueFactory(cellData -> cellData.getValue().fechaProperty());
-        clienteAsociadoColumn.setCellValueFactory(cellData -> cellData.getValue().clienteProperty());
-        totalTicketColumn.setCellValueFactory(cellData -> cellData.getValue().importeTotalProperty().asObject());
-
-        // Load data into TableView
-        loadTickets();
 	}
-	private void loadTickets() {
-		Session session = sf.openSession();
-		Query<Ticket> query = session.createQuery("SELECT * FROM Ticket", Ticket.class);
-        ObservableList<Ticket> ticketList = FXCollections.observableArrayList(query.list());
-        tableViewTickets.setItems(ticketList);
-    }
+	public void cargarTabla() {
+		codigoTicketColumn.setCellValueFactory(new PropertyValueFactory<>("numTicket"));
+		fechaTicketColumn.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+		clienteAsociadoColumn.setCellValueFactory(new PropertyValueFactory<>("cliente"));
+		totalTicketColumn.setCellValueFactory(new PropertyValueFactory<>("importeTotal"));
+
+	    Session session = sf.openSession();
+	    TypedQuery<Ticket> query = session.createQuery("SELECT e FROM Ticket e", Ticket.class);
+	    ArrayList<Ticket> entityData = (ArrayList<Ticket>) query.getResultList();
+	    if(entityData!=null) {
+	    	tableViewTickets.getItems().addAll(entityData);
+	    }
+	}
 	public void cargarImagenes() {
 		InputStream archivoProd = getClass().getResourceAsStream("/inventario.png");
 		Image imagenProd= new Image(archivoProd, 75, 75, true, true);

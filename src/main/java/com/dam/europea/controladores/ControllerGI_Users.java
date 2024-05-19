@@ -3,10 +3,16 @@ package com.dam.europea.controladores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import com.dam.europea.entidades.Proveedor;
+import com.dam.europea.entidades.Usuario;
+
+import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +22,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
@@ -54,15 +63,40 @@ public class ControllerGI_Users implements Initializable{
 	private Button btnCodPostal;
 	@FXML
 	private Button btnLocal;
+	
 	private SessionFactory sf;
+	
+	@FXML
+	private TableView<Usuario> tableView;
+	@FXML
+	private TableColumn<Usuario, String> idColumn;
+
+	@FXML
+	private TableColumn<Usuario, String> rolColumn;
+	@FXML
+	private TableColumn<Usuario, String> pwdColumn;
 	
 	public ControllerGI_Users(SessionFactory sf) {
 		this.sf=sf;
 	}
 
+	public void cargarTabla() {
+		idColumn.setCellValueFactory(new PropertyValueFactory<>("idUsuario"));
+		rolColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+		pwdColumn.setCellValueFactory(new PropertyValueFactory<>("pass"));
+	    Session session = sf.openSession();
+	    TypedQuery<Usuario> query = session.createQuery("SELECT e FROM Usuario e", Usuario.class);
+	    ArrayList<Usuario> entityData = (ArrayList<Usuario>) query.getResultList();
+	    if(entityData!=null) {
+	    	tableView.getItems().addAll(entityData);
+	    }
+	}
+	
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarImagenes();
+		cargarTabla();
+		
 		botonSalir.setOnAction(arg0 -> {
 			try {
 				switchToInicioSesion(arg0);

@@ -1,11 +1,6 @@
 package com.dam.europea;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -16,6 +11,7 @@ import com.dam.europea.entidades.Cliente;
 import com.dam.europea.entidades.Factura;
 import com.dam.europea.entidades.FamiliaProducto;
 import com.dam.europea.entidades.Producto;
+import com.dam.europea.entidades.Proveedor;
 import com.dam.europea.entidades.Ticket;
 import com.dam.europea.entidades.TicketProductos;
 import com.dam.europea.entidades.Usuario;
@@ -42,16 +38,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws IOException {
         try (Session session = sf.openSession()) {
             session.beginTransaction();
-
-            FamiliaProducto f1 = new FamiliaProducto();
-            Producto p = new Producto();
-            Cliente c = new Cliente();
-            Ticket t = new Ticket();
-            Factura f = new Factura();
-            Usuario u = new Usuario();
-            TicketProductos t1 = new TicketProductos();
-
-            session.getTransaction().commit();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

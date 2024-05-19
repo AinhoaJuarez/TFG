@@ -1,6 +1,7 @@
 package com.dam.europea.entidades;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,7 +19,20 @@ public class FamiliaProducto {
 	@Column(name = "Familia Producto", unique = true, nullable = false)
 	private String familiaProducto;
 	@OneToMany(mappedBy="familiaProducto", cascade= CascadeType.PERSIST)
-	private ArrayList<Producto> productosAsociados;
+	private List<Producto> productosAsociados= new ArrayList<>();
+//	private int IVA;
+//
+//	public int getIVA() {
+//		return IVA;
+//	}
+//
+//
+//
+//	public void setIVA(int iVA) {
+//		IVA = iVA;
+//	}
+
+
 
 	public FamiliaProducto(String codFamilia, String familiaProducto) {
 		super();
@@ -37,6 +51,30 @@ public class FamiliaProducto {
 
 	public void setFamiliaProducto(String familiaProducto) {
 		this.familiaProducto = familiaProducto;
+	}
+
+
+
+	public String getCodFamilia() {
+		return codFamilia;
+	}
+
+
+
+	public void setCodFamilia(String codFamilia) {
+		this.codFamilia = codFamilia;
+	}
+
+
+
+	public List<Producto>getProductosAsociados() {
+		return productosAsociados;
+	}
+
+
+
+	public void setProductosAsociados(List<Producto> productosAsociados) {
+		this.productosAsociados = productosAsociados;
 	}
 
 	

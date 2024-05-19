@@ -21,6 +21,7 @@ public class Factura {
 	@Column
 	private String fechaExpedicion;
 	private String fechaOperacion;
+	
 	private String NIF;
 	private String direccion;
 	private int telefono;

@@ -3,10 +3,16 @@ package com.dam.europea.controladores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import com.dam.europea.entidades.FamiliaProducto;
+import com.dam.europea.entidades.Proveedor;
+
+import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +22,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
@@ -54,12 +63,32 @@ public class ControllerGI_Prov implements Initializable{
 	private Button btnCodPostal;
 	@FXML
 	private Button btnLocal;
+	
 	private SessionFactory sf;
+	
+	@FXML
+	private TableView<Proveedor> tableView;
+	@FXML
+	private TableColumn<Proveedor, String> codProveedorColumn;
+
+	@FXML
+	private TableColumn<Proveedor, String> nombreProveedorColumn;
+
 	
 	public ControllerGI_Prov(SessionFactory sf) {
 		this.sf=sf;
 	}
+	public void cargarTabla() {
+		codProveedorColumn.setCellValueFactory(new PropertyValueFactory<>("codigo"));
+		nombreProveedorColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
+	    Session session = sf.openSession();
+	    TypedQuery<Proveedor> query = session.createQuery("SELECT e FROM Proveedor e", Proveedor.class);
+	    ArrayList<Proveedor> entityData = (ArrayList<Proveedor>) query.getResultList();
+	    if(entityData!=null) {
+	    	tableView.getItems().addAll(entityData);
+	    }
+	}
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarImagenes();

@@ -45,11 +45,11 @@
       <Separator layoutX="955.0" layoutY="95.0" orientation="VERTICAL" prefHeight="126.0" prefWidth="11.0" />
       <Button fx:id="btnNew" layoutX="1751.0" layoutY="232.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
       <Button fx:id="btnDel" layoutX="1840.0" layoutY="232.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
-      <TableView layoutX="203.0" layoutY="290.0" prefHeight="689.0" prefWidth="1698.0">
+      <TableView fx:id="tableView" layoutX="203.0" layoutY="290.0" prefHeight="689.0" prefWidth="1698.0">
          <columns>
-            <TableColumn prefWidth="454.0" text="ID Usuario" />
-            <TableColumn minWidth="0.0" prefWidth="501.0" text="Rol" />
-            <TableColumn minWidth="0.0" prefWidth="742.0" text="Contraseña encriptada" />
+            <TableColumn fx:id="idColumn" prefWidth="454.0" text="ID Usuario" />
+            <TableColumn fx:id="rolColumn" minWidth="0.0" prefWidth="501.0" text="Rol" />
+            <TableColumn fx:id="pwdColumn" minWidth="0.0" prefWidth="742.0" text="Contraseña encriptada" />
          </columns>
       </TableView>
       <Label layoutX="1007.0" layoutY="39.0" text="Usuarios">

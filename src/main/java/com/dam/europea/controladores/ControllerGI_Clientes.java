@@ -3,10 +3,15 @@ package com.dam.europea.controladores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import com.dam.europea.entidades.Cliente;
+
+import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,8 +21,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -56,13 +65,32 @@ public class ControllerGI_Clientes implements Initializable{
 	private Button btnLocal;
 	private SessionFactory sf;
 	
+	@FXML
+	private TableView<Cliente> tableView;
+	@FXML
+	private TableColumn<Cliente, String> columnDNI;
+
+	@FXML
+	private TableColumn<Cliente, String> columnNombre;
+
+	@FXML
+	private TableColumn<Cliente, String> columnDireccion;
+
+	@FXML
+	private TableColumn<Cliente, Integer> columnLocalidad;
+
+	@FXML
+	private TableColumn<Cliente, String> columnCodPostal;
+	
 	public ControllerGI_Clientes(SessionFactory sf) {
 		this.sf=sf;
 	}
-
+	
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
+		cargarTabla();
 		cargarImagenes();
+		
 		botonSalir.setOnAction(arg0 -> {
 			try {
 				switchToInicioSesion(arg0);
@@ -119,6 +147,22 @@ public class ControllerGI_Clientes implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		
+	}
+	
+	public void cargarTabla() {
+		columnDNI.setCellValueFactory(new PropertyValueFactory<>("DNI"));
+		columnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+		columnDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+		columnLocalidad.setCellValueFactory(new PropertyValueFactory<>("localidad"));
+		columnCodPostal.setCellValueFactory(new PropertyValueFactory<>("codPos"));
+
+	    Session session = sf.openSession();
+	    TypedQuery<Cliente> query = session.createQuery("SELECT e FROM Cliente e", Cliente.class);
+	    ArrayList<Cliente> entityData = (ArrayList<Cliente>) query.getResultList();
+	    if(entityData!=null) {
+	    	tableView.getItems().addAll(entityData);
+	    }
 	}
 	
 	public void cargarImagenes() {
@@ -261,4 +305,15 @@ public class ControllerGI_Clientes implements Initializable{
 	    
 	    stage.show();
 	}
+	
+	private void abrirDialogoCrearCliente(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoCliente.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+        stage.setScene(scene);
+        stage.show();
+    }
 }

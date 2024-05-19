@@ -49,13 +49,13 @@
       <Separator layoutX="2.0" layoutY="80.0" prefHeight="8.0" prefWidth="1920.0" />
       <Separator layoutX="516.0" layoutY="80.0" orientation="VERTICAL" prefHeight="126.0" prefWidth="11.0" />
       <Separator layoutX="1209.0" layoutY="80.0" orientation="VERTICAL" prefHeight="126.0" prefWidth="11.0" />
-      <TableView layoutX="193.0" layoutY="268.0" prefHeight="689.0" prefWidth="1698.0">
+      <TableView fx:id="tableView" layoutX="193.0" layoutY="268.0" prefHeight="689.0" prefWidth="1698.0">
          <columns>
-            <TableColumn prefWidth="230.0" text="DNI" />
-            <TableColumn minWidth="0.0" prefWidth="523.0" text="Nombre" />
-            <TableColumn prefWidth="518.0" text="Dirección" />
-            <TableColumn prefWidth="235.0" text="Localidad" />
-            <TableColumn prefWidth="189.0" text="Código Postal" />
+            <TableColumn fx:id="columnDNI" prefWidth="230.0" text="DNI" />
+            <TableColumn fx:id="columnNombre" minWidth="0.0" prefWidth="523.0" text="Nombre" />
+            <TableColumn fx:id="columnDireccion" prefWidth="518.0" text="Dirección" />
+            <TableColumn fx:id="columnLocalidad" prefWidth="235.0" text="Localidad" />
+            <TableColumn fx:id="columnCodPostal" prefWidth="189.0" text="Código Postal" />
          </columns>
       </TableView>
       <TextField fx:id="txtDescripcion1" layoutX="708.0" layoutY="121.0" prefHeight="25.0" prefWidth="239.0" />
