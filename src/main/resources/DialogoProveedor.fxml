@@ -19,13 +19,13 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtNombre" layoutX="177.0" layoutY="121.0" prefHeight="25.0" prefWidth="391.0" />
+      <TextField fx:id="txtCodigoProveedor" layoutX="177.0" layoutY="121.0" prefHeight="25.0" prefWidth="391.0" />
       <Label layoutX="31.0" layoutY="173.0" prefHeight="27.0" prefWidth="216.0" text="Nombre Proveedor:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtDireccion" layoutX="179.0" layoutY="174.0" prefHeight="25.0" prefWidth="391.0" />
+      <TextField fx:id="txtNombreProveedor" layoutX="179.0" layoutY="174.0" prefHeight="25.0" prefWidth="391.0" />
       <Label layoutX="31.0" layoutY="222.0" prefHeight="27.0" prefWidth="162.0" text="Productos Asociados:">
          <font>
             <Font size="16.0" />
@@ -41,6 +41,6 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <ComboBox layoutX="193.0" layoutY="223.0" prefHeight="25.0" prefWidth="375.0" />
+      <ComboBox layoutX="193.0" layoutY="223.0" prefHeight="25.0" prefWidth="375.0" items="${proveedor}" />
    </children>
 </Pane>

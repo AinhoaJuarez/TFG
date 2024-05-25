@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Proveedores")
 public class Proveedor {
+	
 	@Id
 	private String codigo;
 	@Column
@@ -23,6 +24,8 @@ public class Proveedor {
 	public List<Producto> getProductosAsociados() {
 		return productosAsociados;
 	}
+	
+	
 
 	public void setProductosAsociados(List<Producto> productosAsociados) {
 		this.productosAsociados = productosAsociados;
@@ -30,6 +33,12 @@ public class Proveedor {
 
 	public Proveedor() {
 		
+	}
+	
+	public Proveedor(String codigo, String nombre) {
+		super();
+		this.codigo = codigo;
+		this.nombre = nombre;
 	}
 	
 	public String getCodigo() {
