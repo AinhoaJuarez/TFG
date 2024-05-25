@@ -7,6 +7,8 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
+
+
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label fx:id="lblCorM" layoutX="191.0" layoutY="35.0" prefHeight="27.0" prefWidth="248.0" text="Nueva Familia de Productos">
@@ -19,13 +21,13 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtNombre" layoutX="152.0" layoutY="121.0" prefHeight="25.0" prefWidth="416.0" />
+      <TextField fx:id="txtCodigoFamilia" layoutX="152.0" layoutY="121.0" prefHeight="25.0" prefWidth="416.0" />
       <Label layoutX="31.0" layoutY="173.0" prefHeight="27.0" prefWidth="216.0" text="Nombre Familia de Productos:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtDireccion" layoutX="255.0" layoutY="174.0" prefHeight="25.0" prefWidth="315.0" />
+      <TextField fx:id="txtNombreFamiliaProductos" layoutX="255.0" layoutY="174.0" prefHeight="25.0" prefWidth="315.0" />
       <Label layoutX="31.0" layoutY="222.0" prefHeight="27.0" prefWidth="162.0" text="Productos Asociados:">
          <font>
             <Font size="16.0" />
@@ -41,6 +43,6 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <ComboBox layoutX="193.0" layoutY="223.0" prefHeight="25.0" prefWidth="375.0" />
+      <ComboBox fx:id="comboBoxProductos" layoutX="193.0" layoutY="223.0" prefHeight="25.0" prefWidth="375.0" items="${familiasProducto}" />
    </children>
 </Pane>
