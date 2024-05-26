@@ -34,18 +34,24 @@ public class ControllerDialogoCliente implements Initializable {
     private Button btnAceptar;
     @FXML
     private Button btnCancelar;
+    
+    //Atributo para usar como relleno
+    private Cliente c;
+    private ControllerGI_Clientes ct2;
 
-    public ControllerDialogoCliente(SessionFactory sf, String dni) {
+    public ControllerDialogoCliente(SessionFactory sf, String dni, ControllerGI_Clientes ct2) {
         this.sf = sf;
+        this.ct2 = ct2;
         this.dni = dni;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         session = sf.openSession();
+        session.beginTransaction();
         if (dni != null) {
-            session.beginTransaction();
-            Cliente c = session.find(Cliente.class, dni);
+            
+            c = session.find(Cliente.class, dni);
             if (c != null) {
                 txtCodPost.setText(c.getCodPos());
                 txtDireccion.setText(c.getDireccion());
@@ -60,7 +66,7 @@ public class ControllerDialogoCliente implements Initializable {
                 if (dni == null) {
                     crearCliente();
                 } else {
-                    modCliente();
+                    modCliente(c);
                 }
                 closeWindow();
             } else {
@@ -92,28 +98,28 @@ public class ControllerDialogoCliente implements Initializable {
         c.setDni(txtDNI.getText());
         c.setLocalidad(txtLocalidad.getText());
         c.setNombre(txtNombre.getText());
-        session.beginTransaction();
         session.persist(c);
         session.getTransaction().commit();
+        
     }
 
-    public void modCliente() {
-        Cliente c = new Cliente();
+    public void modCliente(Cliente c) {
         c.setCodPos(txtCodPost.getText());
         c.setDireccion(txtDireccion.getText());
-        c.setDni(txtDNI.getText());
         c.setLocalidad(txtLocalidad.getText());
         c.setNombre(txtNombre.getText());
-        session.beginTransaction();
         session.merge(c);
         session.getTransaction().commit();
+        
     }
 
     private void closeWindow() {
+    	ct2.cargarTabla();
         if (session != null && session.isOpen()) {
             session.close();
         }
         Stage stage = (Stage) btnAceptar.getScene().getWindow();
         stage.close();
+        
     }
 }

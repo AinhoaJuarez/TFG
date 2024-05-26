@@ -146,6 +146,12 @@ public class ControllerGI_Prods implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		cargarTabla();
+	    
+	}
+	
+	public void cargarTabla() {
+		tableView.getItems().clear();
 		codigoBarrasColumn.setCellValueFactory(new PropertyValueFactory<>("codigoBarras"));
 	    descripcionColumn.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
 	    familiaColumn.setCellValueFactory(cellData -> {
@@ -170,9 +176,7 @@ public class ControllerGI_Prods implements Initializable{
 	    if(entityData!=null) {
 	    	tableView.getItems().addAll(entityData);
 	    }
-	    
 	}
-	
 	public void cargarImagenes() {
 		InputStream archivoProd = getClass().getResourceAsStream("/inventario.png");
 		Image imagenProd= new Image(archivoProd, 75, 75, true, true);
@@ -247,9 +251,10 @@ public class ControllerGI_Prods implements Initializable{
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);
 	    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-	    stage.setScene(scene);
+	    
 	    stage.setMaximized(true); 
 	    stage.initStyle(StageStyle.UNDECORATED);
+	    stage.setScene(scene);
 	    
 	    stage.show();
 	}

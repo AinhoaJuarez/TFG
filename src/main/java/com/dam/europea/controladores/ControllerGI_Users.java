@@ -81,6 +81,7 @@ public class ControllerGI_Users implements Initializable{
 	}
 
 	public void cargarTabla() {
+		tableView.getItems().clear();
 		idColumn.setCellValueFactory(new PropertyValueFactory<>("idUsuario"));
 		rolColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 		pwdColumn.setCellValueFactory(new PropertyValueFactory<>("pass"));

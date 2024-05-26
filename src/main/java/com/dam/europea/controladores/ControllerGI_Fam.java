@@ -143,6 +143,7 @@ public class ControllerGI_Fam implements Initializable{
 	}
 	
 	public void cargarTabla() {
+		tableViewFam.getItems().clear();
 		codFamiliaColumn.setCellValueFactory(new PropertyValueFactory<>("numeroFactura"));
 		descripcionFamiliaColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 		//ivaColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));

@@ -79,6 +79,7 @@ public class ControllerGI_Prov implements Initializable{
 		this.sf=sf;
 	}
 	public void cargarTabla() {
+		tableView.getItems().clear();
 		codProveedorColumn.setCellValueFactory(new PropertyValueFactory<>("codigo"));
 		nombreProveedorColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 

@@ -142,6 +142,7 @@ public class ControllerGI_Tickets implements Initializable{
 		});
 	}
 	public void cargarTabla() {
+		tableViewTickets.getItems().clear();
 		codigoTicketColumn.setCellValueFactory(new PropertyValueFactory<>("numTicket"));
 		fechaTicketColumn.setCellValueFactory(new PropertyValueFactory<>("fecha"));
 		clienteAsociadoColumn.setCellValueFactory(new PropertyValueFactory<>("cliente"));

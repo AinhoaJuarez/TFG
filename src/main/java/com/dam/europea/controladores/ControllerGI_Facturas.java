@@ -146,6 +146,7 @@ public class ControllerGI_Facturas implements Initializable{
 	}
 	
 	public void cargarTabla() {
+		tableViewFacturas.getItems().clear();
 		codFacturaColumn.setCellValueFactory(new PropertyValueFactory<>("numeroFactura"));
 		fechaFacturaColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 		clienteAsocColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));

@@ -13,6 +13,7 @@ import com.dam.europea.entidades.Cliente;
 
 import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,10 +23,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -77,10 +80,10 @@ public class ControllerGI_Clientes implements Initializable{
 	private TableColumn<Cliente, String> columnDireccion;
 
 	@FXML
-	private TableColumn<Cliente, Integer> columnLocalidad;
+	private TableColumn<Cliente, String> columnLocalidad;
 
 	@FXML
-	private TableColumn<Cliente, String> columnCodPostal;
+	private TableColumn<Cliente, Integer> columnCodPostal;
 	
 	public ControllerGI_Clientes(SessionFactory sf) {
 		this.sf=sf;
@@ -91,6 +94,20 @@ public class ControllerGI_Clientes implements Initializable{
 		cargarTabla();
 		cargarImagenes();
 		
+		tableView.setRowFactory(tv -> {
+	        TableRow<Cliente> row = new TableRow<>();
+	        row.setOnMouseClicked(event -> {
+	            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && (!row.isEmpty())) {
+	                Cliente rowData = row.getItem();
+	                try {
+	                    abrirDialogoCrearCliente(event, rowData.getDni());
+	                } catch (IOException e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	        });
+	        return row;
+	    });
 		botonSalir.setOnAction(arg0 -> {
 			try {
 				switchToInicioSesion(arg0);
@@ -158,7 +175,8 @@ public class ControllerGI_Clientes implements Initializable{
 	}
 	
 	public void cargarTabla() {
-		columnDNI.setCellValueFactory(new PropertyValueFactory<>("DNI"));
+		tableView.getItems().clear();
+		columnDNI.setCellValueFactory(new PropertyValueFactory<>("dni"));
 		columnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 		columnDireccion.setCellValueFactory(new PropertyValueFactory<>("direccion"));
 		columnLocalidad.setCellValueFactory(new PropertyValueFactory<>("localidad"));
@@ -313,9 +331,9 @@ public class ControllerGI_Clientes implements Initializable{
 	    stage.show();
 	}
 	
-	private void abrirDialogoCrearCliente(ActionEvent event, String dni) throws IOException {
+	private void abrirDialogoCrearCliente(Event event, String dni) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoCliente.fxml"));
-        ControllerDialogoCliente ct = new ControllerDialogoCliente(sf, dni);
+        ControllerDialogoCliente ct = new ControllerDialogoCliente(sf, dni, this);
         loader.setController(ct);
         Parent root = loader.load();
         Scene scene = new Scene(root);
