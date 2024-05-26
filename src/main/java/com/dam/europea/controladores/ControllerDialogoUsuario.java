@@ -53,8 +53,8 @@ public class ControllerDialogoUsuario implements Initializable {
 			if (u != null) {
 				txtIDUsuario.setText(String.valueOf(u.getIdUsr()));
 				txtNombreUsuario.setText(u.getUserName());
-				txtContrasena.setValue(u.getPass());
-				;
+				txtContrasena.setText(u.getPass());
+				
 			}
 		}
 

@@ -147,6 +147,13 @@ public class ControllerGI_Clientes implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		btnNew.setOnAction(arg0 -> {
+			try {
+				abrirDialogoCrearCliente(arg0, null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 		
 	}
 	
@@ -306,8 +313,10 @@ public class ControllerGI_Clientes implements Initializable{
 	    stage.show();
 	}
 	
-	private void abrirDialogoCrearCliente(ActionEvent event) throws IOException {
+	private void abrirDialogoCrearCliente(ActionEvent event, String dni) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoCliente.fxml"));
+        ControllerDialogoCliente ct = new ControllerDialogoCliente(sf, dni);
+        loader.setController(ct);
         Parent root = loader.load();
         Scene scene = new Scene(root);
         Stage stage = new Stage();
