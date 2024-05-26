@@ -67,6 +67,8 @@ public class ControllerTicket implements Initializable {
 	@FXML
 	private TextField txt_precioDes;
 	@FXML
+	private TextField txt_totalTicket;
+	@FXML
 	private TableView<TicketProductos> tableView;
 	@FXML
 	private TableColumn<TicketProductos, String> colCodBarras;
@@ -90,9 +92,10 @@ public class ControllerTicket implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
-		nuevoTicketProducto();
 		session = sf.openSession();
 		session.beginTransaction();
+		nuevoTicketProducto();
+
 		cargarImagenes();
 		botonSalir.setOnAction(arg0 -> {
 			try {
@@ -123,7 +126,7 @@ public class ControllerTicket implements Initializable {
 					txt_precio.setText(String.valueOf(producto.getPrecioVenta()));
 				} else {
 					showProductoNotFoundError();
-					
+
 				}
 			} else {
 				txt_desArticulo.clear();
@@ -132,55 +135,73 @@ public class ControllerTicket implements Initializable {
 		botonAgregar.setOnAction(arg0 -> {
 			try {
 				addToticket(arg0);
+				updateTotalTicketPrice(); 
+				session.beginTransaction();
+				cargarTabla();
+				ticketProducto = new TicketProductos();
+				
+				Long lastId = (Long) session.createQuery("select max(tp.id) from TicketProductos tp").uniqueResult();
+
+				// Increment the last ID by one and set it for the new TicketProducto
+				if (lastId != null) {
+					ticketProducto.setId(lastId + 1);
+					
+				} else {
+					// If there are no existing TicketProductos, start with ID 1
+					ticketProducto.setId(1L);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
-	
+
+	}
+
+	private void updateTotalTicketPrice() {
+		TypedQuery<Double> query = session.createQuery(
+				"SELECT SUM(tp.precioTotal) FROM TicketProductos tp WHERE tp.numTicket = :ticket", Double.class);
+		query.setParameter("ticket", ticket);
+		Double total = query.getSingleResult();
+		if (total != null) {
+			txt_totalTicket.setText(String.format("%.2f", total));
+		} else {
+			txt_totalTicket.setText("0.00");
+		}
 	}
 
 	private void showProductoNotFoundError() {
-        Alert alert = new Alert(AlertType.WARNING);
-        alert.setTitle("Producto no encontrado");
-        alert.setHeaderText(null);
-        alert.setContentText("No se encontró ningún producto con el código ingresado.");
-        alert.showAndWait();
-    }
-	
+		Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Producto no encontrado");
+		alert.setHeaderText(null);
+		alert.setContentText("No se encontró ningún producto con el código ingresado.");
+		alert.showAndWait();
+	}
+
 	public void cargarTabla() {
 		tableView.getItems().clear();
 		colCodBarras.setCellValueFactory(cellData -> {
-            if (cellData.getValue().getProducto() != null) {
-                return new javafx.beans.property.SimpleStringProperty(cellData.getValue().getProducto().getCodigoBarras());
-            } else {
-                return new javafx.beans.property.SimpleStringProperty("");
-            }
-        });
-		colDescripcion.setCellValueFactory(cellData -> {
-            if (cellData.getValue().getProducto() != null) {
-                return new javafx.beans.property.SimpleStringProperty(cellData.getValue().getProducto().getDescripcion());
-            } else {
-                return new javafx.beans.property.SimpleStringProperty("");
-            }
-        });
-		colPrecio.setCellValueFactory(cellData -> {
 			if (cellData.getValue().getProducto() != null) {
-		        double precio = cellData.getValue().getProducto().getPrecioVenta();
-		        return new javafx.beans.property.SimpleDoubleProperty(precio).asObject();
-		    } else {
-		        return new javafx.beans.property.SimpleDoubleProperty(0.0).asObject(); 
-		    }
+				return new javafx.beans.property.SimpleStringProperty(
+						cellData.getValue().getProducto().getCodigoBarras());
+			} else {
+				return new javafx.beans.property.SimpleStringProperty("");
+			}
 		});
+		colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+		colPrecio.setCellValueFactory(new PropertyValueFactory<>("precioTotal"));
 		colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
 		colDescuento.setCellValueFactory(new PropertyValueFactory<>("descuento"));
 
-		TypedQuery<TicketProductos> query = session.createQuery("SELECT e FROM TicketProductos e WHERE e.ticket = :ticket", TicketProductos.class);
+		TypedQuery<TicketProductos> query = session
+				.createQuery("SELECT e FROM TicketProductos e WHERE e.numTicket = :ticket", TicketProductos.class);
 		query.setParameter("ticket", ticket);
+
 		ArrayList<TicketProductos> entityData = (ArrayList<TicketProductos>) query.getResultList();
-	    if(entityData!=null) {
-	    	tableView.getItems().addAll(entityData);
-	    }
+		if (entityData != null) {
+			tableView.getItems().addAll(entityData);
+		}
 	}
+
 	public Producto getProductByCodigoProducto(String codigoProducto) {
 
 		Query<Producto> query = session.createQuery("FROM Producto p WHERE p.codigoBarras = :codigoBarras",
@@ -193,6 +214,17 @@ public class ControllerTicket implements Initializable {
 	public void nuevoTicketProducto() {
 		ticket = new Ticket();
 		ticketProducto = new TicketProductos();
+		Long lastId = (Long) session.createQuery("select max(tp.id) from TicketProductos tp").uniqueResult();
+
+		// Increment the last ID by one and set it for the new TicketProducto
+		if (lastId != null) {
+			ticketProducto.setId(lastId + 1);
+		} else {
+			// If there are no existing TicketProductos, start with ID 1
+			ticketProducto.setId(1L);
+		}
+
+		session.persist(ticket);
 	}
 
 	public void cargarImagenes() {
@@ -262,48 +294,49 @@ public class ControllerTicket implements Initializable {
 		stage.setScene(scene);
 		stage.show();
 	}
-	
+
 	public void addToticket(ActionEvent event) {
-		if(txt_codBarras !=null) {
+		if (!txt_codBarras.getText().isEmpty()) {
+			producto = getProductByCodigoProducto(txt_codBarras.getText());
 			ticketProducto.setProducto(producto);
+			ticketProducto.setDescripcion(producto.getDescripcion());
+			ticketProducto.setPrecioTotal(producto.getPrecioVenta());
 			ticketProducto.setCantidad(Integer.valueOf(txt_cantidad.getText()));
-			if(txt_descuento.getText().isEmpty()) {
+			if (txt_descuento.getText().isEmpty()) {
 				ticketProducto.setDescuento(0);
 			} else {
-				ticketProducto.setDescuento(Integer.valueOf(txt_descuento.getText()));
+				ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
 			}
-			if(txt_precioDes.getText().isEmpty()) {
+			if (txt_precioDes.getText().isEmpty()) {
+				ticketProducto.setPrecioDescuento(0);
+			} else {
+				ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText()));
+			}
+			ticketProducto.setTicket(ticket);
+			session.persist(ticketProducto);
+			session.getTransaction().commit();
+		
+		} else {
+			System.out.println("Numero de ticketproducto: " + ticketProducto.getId());
+			ticketProducto.setDescripcion(txt_desArticulo.getText());
+			ticketProducto.setPrecioTotal(Double.valueOf(txt_precio.getText()));
+			ticketProducto.setCantidad(Integer.valueOf(txt_cantidad.getText()));
+			if (txt_descuento.getText().isEmpty()) {
+				ticketProducto.setDescuento(0);
+			} else {
+				ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
+			}
+			if (txt_precioDes.getText().isEmpty()) {
 				ticketProducto.setPrecioDescuento(0);
 			} else {
 				ticketProducto.setPrecioDescuento(Integer.valueOf(txt_precioDes.getText()));
 			}
 			ticketProducto.setTicket(ticket);
+			System.out.println(ticketProducto.toString());
 			session.persist(ticketProducto);
-			cargarTabla();
-			ticketProducto = new TicketProductos();
-		}
-		if(txt_codBarras !=null) {
-			producto = new Producto();
-			producto.setCodigoBarras(txt_codBarras.getText());
-			producto.setDescripcion(txt_desArticulo.getText());
-			producto.setPrecioVenta(Integer.valueOf(txt_precio.getText()));
-			ticketProducto.setProducto(producto);
-			ticketProducto.setCantidad(Integer.valueOf(txt_cantidad.getText()));
-			if(txt_descuento.getText().isEmpty()) {
-				ticketProducto.setDescuento(0);
-			} else {
-				ticketProducto.setDescuento(Integer.valueOf(txt_descuento.getText()));
-			}
-			if(txt_precioDes.getText().isEmpty()) {
-				ticketProducto.setPrecioDescuento(0);
-			} else {
-				ticketProducto.setPrecioDescuento(Integer.valueOf(txt_precioDes.getText()));
-			}
-			System.out.println(ticket.getNumTicket());
-			ticketProducto.setTicket(ticket);
-			session.persist(ticketProducto);
-			cargarTabla();
-			ticketProducto = new TicketProductos();
+			session.getTransaction().commit();
+			
+
 		}
 	}
 

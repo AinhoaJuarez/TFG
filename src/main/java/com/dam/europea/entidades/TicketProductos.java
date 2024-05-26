@@ -17,24 +17,50 @@ import jakarta.persistence.Table;
 @Table(name = "TicketProductos")
 public class TicketProductos {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToOne
+	
+	@Column
+	private int cantidad;
+	private double descuento;
+	private double precioDescuento;
+	private double precioTotal;
+	public double getPrecioTotal() {
+		return precioTotal;
+	}
+
+	public void setPrecioTotal(double precioTotal) {
+		this.precioTotal = precioTotal;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	@ManyToOne
 	@JoinColumn(name = "numTicket")
 	private Ticket numTicket;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "numeroFactura")
 	private Factura numerofactura;
 
 	@ManyToOne
 	@JoinColumn(name = "codigoBarras")
 	private Producto producto;
-	@Column
-	private int cantidad;
-	private double descuento;
-	private double precioDescuento;
+	@Override
+	public String toString() {
+		return "TicketProductos [id=" + id + ", cantidad=" + cantidad + ", descuento=" + descuento
+				+ ", precioDescuento=" + precioDescuento + ", precioTotal=" + precioTotal + ", numTicket=" + numTicket
+				+ ", numerofactura=" + numerofactura + ", producto=" + producto + ", descripcion=" + descripcion + "]";
+	}
+
+	private String descripcion;
+	
 
 	public TicketProductos() {
 

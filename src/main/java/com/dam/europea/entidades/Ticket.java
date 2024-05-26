@@ -1,6 +1,8 @@
 package com.dam.europea.entidades;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,7 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -29,11 +31,11 @@ public class Ticket {
 	@JoinColumn(name = "ClienteAsociado_fk", referencedColumnName = "DNI")
 	private Cliente cliente;
 
-	@OneToOne(mappedBy = "numTicket", cascade = CascadeType.ALL, orphanRemoval = true)
-	private TicketProductos ticketProductos;
+	@OneToMany(mappedBy = "numTicket", cascade = CascadeType.ALL)
+    private List<TicketProductos> ticketProductos = new ArrayList<>();
 
 
-	public Ticket(int numTicket, Date fecha, double importeTotal, Cliente cliente, TicketProductos ticketProductos, double descuentoTicket,double importeTicket ) {
+	public Ticket(int numTicket, Date fecha, double importeTotal, Cliente cliente, ArrayList<TicketProductos>  ticketProductos, double descuentoTicket,double importeTicket ) {
 		super();
 		this.numTicket = numTicket;
 		this.fecha = fecha;
