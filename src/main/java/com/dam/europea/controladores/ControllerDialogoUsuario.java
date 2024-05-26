@@ -53,7 +53,7 @@ public class ControllerDialogoUsuario implements Initializable {
 			if (u != null) {
 				txtIDUsuario.setText(String.valueOf(u.getIdUsr()));
 				txtNombreUsuario.setText(u.getUserName());
-				txtContrasena.setValue(u.getPass());
+				txtContrasena.setText(u.getPass());
 				;
 			}
 		}
@@ -97,27 +97,15 @@ public class ControllerDialogoUsuario implements Initializable {
 		session.getTransaction().commit();
 	}
 
-	public void modFamiliaProducto() {
-		ObservableList<Proveedor> proveedor = FXCollections.observableArrayList(); // Esto es lo que
-		// contiene los objetos
-		// que se muestran en el
-		// ComboBox
+	public void modUsuario() {
+		
 
-		proveedor.add(new Proveedor("12312312", "CuadernosFinos S.L")); // Objetos de Ejemplo de las posibles familia de
-// Productos
-		proveedor.add(new Proveedor("63122312", "CuadernosGordos S.L"));
-		List<Producto> proveedorSelecionado = comboBoxProductos.getValue(); // Aquí sin embargo lo recojo como
-// List Producto para poder luego
-// hacer setProductosAsociados
-// SEGURAMENTE ESTAS LINEAS DE CÓDIGOS SE PUEDEN DECLARAR ARRIBA PARA ACCEDER
-// GLOBALMENTE Y NO CREARLO EN CADA MÉTODO, INVESTIGAR
-
-		Proveedor pv = new Proveedor();
-		pv.setCodigo(txtCodigoProveedor.getText());
-		pv.setNombre(txtNombreProveedor.getText());
-		pv.setProductosAsociados(proveedorSelecionado);
+		Usuario u = new Usuario();
+		u.setIdUsr(Integer.valueOf(txtIDUsuario.getText()));
+		u.setUserName(txtNombreUsuario.getText());
+		u.setPass(txtContrasena.getText());
 		session.beginTransaction();
-		session.merge(pv);
+		session.merge(u);
 		session.getTransaction().commit();
 	}
 
