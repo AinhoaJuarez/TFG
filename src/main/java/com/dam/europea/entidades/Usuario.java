@@ -6,12 +6,22 @@ import jakarta.persistence.Id;
 
 @Entity
 public class Usuario {
-    @Id
+    
+
+	@Id
     private int idUsuario;
     @Column
     private String userName;
     private String pass;
     
+    public Usuario(String userName, String pass) {
+		this.userName = userName;
+		this.pass = pass;
+	}
+    
+	public Usuario() {
+
+	}
     
 	public int getIdUsr() {
 		return idUsuario;
