@@ -1,6 +1,7 @@
 package com.dam.europea.controladores;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -11,6 +12,7 @@ import com.dam.europea.entidades.FamiliaProducto;
 import com.dam.europea.entidades.Producto;
 import com.dam.europea.entidades.Proveedor;
 
+import jakarta.persistence.TypedQuery;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -29,7 +31,7 @@ public class ControllerDialogoProducto implements Initializable {
 	@FXML
 	private TextField txtCodigoBarras;
 	@FXML
-	private ComboBox<List<FamiliaProducto>> comboBoxFamiliaProducto;
+	private ComboBox<String> comboBoxFamiliaProducto;
 	@FXML
 	private TextField txtDescripcion;
 	@FXML
@@ -43,7 +45,7 @@ public class ControllerDialogoProducto implements Initializable {
 	@FXML
 	private TextField txtStock;
 	@FXML
-	private ComboBox<List<Proveedor>> comboBoxProveedor;
+	private ComboBox<String> comboBoxProveedor;
 	private Session session;
 	@FXML
 	private Button btnAceptar;
@@ -58,19 +60,27 @@ public class ControllerDialogoProducto implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		session = sf.openSession();
+		TypedQuery<String> query = session.createQuery("SELECT fp.codFamilia FROM FamiliaProducto fp", String.class);
+		List<String> codFamilias = query.getResultList();
+		comboBoxFamiliaProducto.getItems().addAll(codFamilias);
+
+		TypedQuery<String> query2 = session.createQuery("SELECT p.codigo FROM Proveedor p", String.class);
+		List<String> codProveedor = query2.getResultList();
+		comboBoxProveedor.getItems().addAll(codProveedor);
+
 		if (codigoBarras != null) {
 			session.beginTransaction();
 			Producto p = session.find(Producto.class, codigoBarras);
 			if (p != null) {
 				txtCodigoBarras.setText(p.getCodigoBarras());
-				comboBoxFamiliaProducto.setValue(p.getFamiliaArticulo());
+				comboBoxFamiliaProducto.setValue(p.getFamiliaArticulo().getCodFamilia());
 				txtDescripcion.setText(p.getDescripcion());
 				txtPrecioCompra.setText(String.valueOf(p.getPrecioCompra()));
 				txtPrecioVenta.setText(String.valueOf(p.getPrecioVenta()));
 				txtMargen.setText(String.valueOf(p.getMargen()));
 				txtCantidad.setText(String.valueOf(p.getCantidad()));
 				txtStock.setText(String.valueOf(p.getStock()));
-				comboBoxProveedor.setValue(p.getProveedorProducto());
+				comboBoxProveedor.setValue(p.getProveedorProducto().getCodigo());
 				;
 			}
 		}
@@ -106,49 +116,47 @@ public class ControllerDialogoProducto implements Initializable {
 	}
 
 	public void crearProducto() {
-		ObservableList<FamiliaProducto> familiasProducto = FXCollections.observableArrayList(); // Esto es lo que
-																								// contiene los objetos
-																								// que se muestran en el
-																								// ComboBox
-
-		familiasProducto.add(new FamiliaProducto("1213121", "Libros")); // Objetos de Ejemplo de las posibles familia de
-																		// Productos
-		familiasProducto.add(new FamiliaProducto("4124211", "Material Escolar"));
-		FamiliaProducto familiaProductoSeleccionada = comboBoxFamiliaProducto.getValue();
-		
-		// SEGURAMENTE ESTAS LINEAS DE CÓDIGOS SE PUEDEN DECLARAR ARRIBA PARA ACCEDER
-		// GLOBALMENTE Y NO CREARLO EN CADA MÉTODO, INVESTIGAR
 
 		Producto p = new Producto();
 		p.setCodigoBarras(txtCodigoBarras.getText());
-		p.setFamiliaProducto(txtNombreFamiliaProductos.getText());
-		p.setFamiliaArticulo(familiaProductoSeleccionada);
+		String codFamilia = comboBoxFamiliaProducto.getValue();
+		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
+		p.setFamiliaArticulo(fp);
+		p.setDescripcion(txtDescripcion.getText());
+		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText())); // MODIFICAR FXML PARA QUE EL TEXTFIELD SOLO
+																		// ADMITA NUMEROS
+		p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
+		p.setMargen(Integer.valueOf(txtMargen.getText()));
+		p.setCantidad(Integer.valueOf(txtCantidad.getText()));
+		p.setStock(Integer.valueOf(txtStock.getText()));
+		String codProveedor = comboBoxProveedor.getValue();
+		Proveedor pv = session.find(Proveedor.class, codProveedor);
+		p.setProveedorProducto(pv);
+
 		session.beginTransaction();
 		session.persist(p);
 		session.getTransaction().commit();
 	}
 
 	public void modFamiliaProducto() {
-		ObservableList<FamiliaProducto> familiasProducto = FXCollections.observableArrayList(); // Esto es lo que
-																								// contiene los objetos
-																								// que se muestran en el
-																								// ComboBox
+		Producto p = new Producto();
+		p.setCodigoBarras(txtCodigoBarras.getText());
+		String codFamilia = comboBoxFamiliaProducto.getValue();
+		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
+		p.setFamiliaArticulo(fp);
+		p.setDescripcion(txtDescripcion.getText());
+		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText())); // MODIFICAR FXML PARA QUE EL TEXTFIELD SOLO
+																		// ADMITA NUMEROS
+		p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
+		p.setMargen(Integer.valueOf(txtMargen.getText()));
+		p.setCantidad(Integer.valueOf(txtCantidad.getText()));
+		p.setStock(Integer.valueOf(txtStock.getText()));
+		String codProveedor = comboBoxProveedor.getValue();
+		Proveedor pv = session.find(Proveedor.class, codProveedor);
+		p.setProveedorProducto(pv);
 
-		familiasProducto.add(new FamiliaProducto("1213121", "Libros")); // Objetos de Ejemplo de las posibles familia de
-																		// Productos
-		familiasProducto.add(new FamiliaProducto("4124211", "Material Escolar"));
-		List<Producto> familiaProductoSeleccionada = comboBoxProductos.getValue(); // Aquí sin embargo lo recojo como
-																					// List Producto para poder luego
-																					// hacer setProductosAsociados
-		// SEGURAMENTE ESTAS LINEAS DE CÓDIGOS SE PUEDEN DECLARAR ARRIBA PARA ACCEDER
-		// GLOBALMENTE Y NO CREARLO EN CADA MÉTODO, INVESTIGAR
-
-		FamiliaProducto fp = new FamiliaProducto();
-		fp.setCodFamilia(txtCodigoFamilia.getText());
-		fp.setFamiliaProducto(txtNombreFamiliaProductos.getText());
-		fp.setProductosAsociados(familiaProductoSeleccionada);
 		session.beginTransaction();
-		session.merge(fp);
+		session.merge(p);
 		session.getTransaction().commit();
 	}
 

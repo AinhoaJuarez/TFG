@@ -63,7 +63,7 @@ public class ControllerDialogoUsuario implements Initializable {
 				if (IDUsuario == null) {
 					crearUsuario();
 				} else {
-					modFamiliaProducto();
+					modUsuario();
 				}
 				closeWindow();
 			} else {
