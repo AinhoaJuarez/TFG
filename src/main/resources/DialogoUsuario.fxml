@@ -18,13 +18,13 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtNombre" layoutX="186.0" layoutY="121.0" prefHeight="25.0" prefWidth="382.0" />
+      <TextField fx:id="txtIDUsuario" layoutX="186.0" layoutY="121.0" prefHeight="25.0" prefWidth="382.0" />
       <Label layoutX="31.0" layoutY="173.0" prefHeight="27.0" prefWidth="216.0" text="Nombre de usuario: ">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtDireccion" layoutX="188.0" layoutY="174.0" prefHeight="25.0" prefWidth="382.0" />
+      <TextField fx:id="txtNombreUsuario" layoutX="188.0" layoutY="174.0" prefHeight="25.0" prefWidth="382.0" />
       <Label layoutX="31.0" layoutY="222.0" prefHeight="27.0" prefWidth="162.0" text="Contraseña:">
          <font>
             <Font size="16.0" />
@@ -40,6 +40,6 @@
             <Font size="14.0" />
          </font>
       </Button>
-      <TextField fx:id="txtDireccion1" layoutX="186.0" layoutY="223.0" prefHeight="25.0" prefWidth="382.0" />
+      <TextField fx:id="txtContrasena" layoutX="186.0" layoutY="223.0" prefHeight="25.0" prefWidth="382.0" />
    </children>
 </Pane>
