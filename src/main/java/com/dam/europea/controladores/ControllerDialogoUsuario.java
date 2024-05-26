@@ -58,7 +58,9 @@ public class ControllerDialogoUsuario implements Initializable {
 				txtIDUsuario.setText(u.getIdUsuario());
 				txtNombreUsuario.setText(u.getUserName());
 				txtContrasena.setText(u.getPass());
+
 				comboBoxRol.setValue(u.getRol());;
+
 			}
 		}
 
@@ -67,7 +69,9 @@ public class ControllerDialogoUsuario implements Initializable {
 				if (IDUsuario == null) {
 					crearUsuario();
 				} else {
+
 					modUsuario(u);
+
 				}
 				closeWindow();
 			} else {
@@ -101,10 +105,12 @@ public class ControllerDialogoUsuario implements Initializable {
 		session.getTransaction().commit();
 	}
 
+
 	public void modUsuario(Usuario u) {
 		u.setUserName(txtNombreUsuario.getText());
 		u.setPass(txtContrasena.getText());
 		u.setRol(comboBoxRol.getValue());
+
 		session.merge(u);
 		session.getTransaction().commit();
 	}
