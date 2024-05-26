@@ -11,9 +11,11 @@ import org.hibernate.SessionFactory;
 
 import com.dam.europea.entidades.FamiliaProducto;
 import com.dam.europea.entidades.Proveedor;
+import com.dam.europea.entidades.Usuario;
 
 import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,10 +25,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -92,6 +98,21 @@ public class ControllerGI_Prov implements Initializable{
 	}
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
+		cargarTabla();
+		tableView.setRowFactory(tv -> {
+	        TableRow<Proveedor> row = new TableRow<>();
+	        row.setOnMouseClicked(event -> {
+	            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && (!row.isEmpty())) {
+	                Proveedor rowData = row.getItem();
+	                try {
+						abrirDialogoCrearProveedor(event, rowData.getCodigo());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+	            }
+	        });
+	        return row;
+	    });
 		cargarImagenes();
 		botonSalir.setOnAction(arg0 -> {
 			try {
@@ -149,8 +170,28 @@ public class ControllerGI_Prov implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		btnNew.setOnAction(arg0 -> {
+			try {
+				abrirDialogoCrearProveedor(arg0, null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 	
+	public void abrirDialogoCrearProveedor(Event event, String codigo) throws IOException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoProveedor.fxml"));
+        ControllerDialogoProveedor ct = new ControllerDialogoProveedor(sf, codigo, this);
+        loader.setController(ct);
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+        stage.setScene(scene);
+        stage.show();
+		
+	}
 	public void cargarImagenes() {
 		InputStream archivoProd = getClass().getResourceAsStream("/inventario.png");
 		Image imagenProd= new Image(archivoProd, 75, 75, true, true);

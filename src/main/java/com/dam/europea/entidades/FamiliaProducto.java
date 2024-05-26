@@ -20,17 +20,17 @@ public class FamiliaProducto {
 	private String familiaProducto;
 	@OneToMany(mappedBy="familiaProducto", cascade= CascadeType.PERSIST)
 	private List<Producto> productosAsociados= new ArrayList<>();
-//	private int IVA;
-//
-//	public int getIVA() {
-//		return IVA;
-//	}
-//
-//
-//
-//	public void setIVA(int iVA) {
-//		IVA = iVA;
-//	}
+	private int IVA;
+
+	public int getIVA() {
+		return IVA;
+	}
+
+
+
+	public void setIVA(int iVA) {
+		IVA = iVA;
+	}
 
 
 

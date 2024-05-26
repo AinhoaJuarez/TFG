@@ -49,7 +49,7 @@
          <columns>
             <TableColumn fx:id="idColumn" prefWidth="454.0" text="ID Usuario" />
             <TableColumn fx:id="rolColumn" minWidth="0.0" prefWidth="501.0" text="Rol" />
-            <TableColumn fx:id="pwdColumn" minWidth="0.0" prefWidth="742.0" text="Contraseña encriptada" />
+            <TableColumn fx:id="usrColumn" minWidth="0.0" prefWidth="742.0" text="Nombre de Usuario" />
          </columns>
       </TableView>
       <Label layoutX="1007.0" layoutY="39.0" text="Usuarios">

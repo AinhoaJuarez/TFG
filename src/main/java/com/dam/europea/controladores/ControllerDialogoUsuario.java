@@ -1,6 +1,8 @@
 package com.dam.europea.controladores;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.hibernate.Session;
@@ -13,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -32,7 +35,8 @@ public class ControllerDialogoUsuario implements Initializable {
 	private Button btnAceptar;
 	@FXML
 	private Button btnCancelar;
-	
+	@FXML
+	private ComboBox<String> comboBoxRol;
 	//Clases para rellenar
 	private Usuario u;
 	private ControllerGI_Users ct2;
@@ -45,15 +49,16 @@ public class ControllerDialogoUsuario implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		comboBoxRol.getItems().addAll("Administrador", "Supervisor", "Staff");
 		session = sf.openSession();
 		session.beginTransaction();
 		if (IDUsuario != null) {
 			u = session.find(Usuario.class, IDUsuario);
 			if (u != null) {
-				txtIDUsuario.setText(String.valueOf(u.getIdUsr()));
+				txtIDUsuario.setText(u.getIdUsuario());
 				txtNombreUsuario.setText(u.getUserName());
 				txtContrasena.setText(u.getPass());
-				;
+				comboBoxRol.setValue(u.getRol());;
 			}
 		}
 
@@ -88,19 +93,18 @@ public class ControllerDialogoUsuario implements Initializable {
 	public void crearUsuario() {
 
 		Usuario u = new Usuario();
-		u.setIdUsr(Integer.valueOf(txtIDUsuario.getText()));
+		u.setIdUsuario(txtIDUsuario.getText());
 		u.setUserName(txtNombreUsuario.getText());
 		u.setPass(txtContrasena.getText());
-		session.beginTransaction();
+		u.setRol(comboBoxRol.getValue());
 		session.persist(u);
 		session.getTransaction().commit();
 	}
 
 	public void modUsuario(Usuario u) {
-		u = new Usuario();
 		u.setUserName(txtNombreUsuario.getText());
 		u.setPass(txtContrasena.getText());
-		session.beginTransaction();
+		u.setRol(comboBoxRol.getValue());
 		session.merge(u);
 		session.getTransaction().commit();
 	}

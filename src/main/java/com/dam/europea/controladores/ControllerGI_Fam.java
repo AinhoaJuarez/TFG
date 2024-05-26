@@ -9,12 +9,11 @@ import java.util.ResourceBundle;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import com.dam.europea.entidades.Factura;
 import com.dam.europea.entidades.FamiliaProducto;
-import com.dam.europea.entidades.Producto;
 
 import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,10 +22,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -72,9 +74,8 @@ public class ControllerGI_Fam implements Initializable{
 
 	@FXML
 	private TableColumn<FamiliaProducto, String> descripcionFamiliaColumn;
-//
-//	@FXML
-//	private TableColumn<FamiliaProducto, Double> ivaColumn;
+	@FXML
+	private TableColumn<FamiliaProducto, String> ivaColumn;
 	
 	public ControllerGI_Fam(SessionFactory sf) {
 		this.sf=sf;
@@ -84,6 +85,20 @@ public class ControllerGI_Fam implements Initializable{
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarImagenes();
 		cargarTabla();
+		tableViewFam.setRowFactory(tv -> {
+	        TableRow<FamiliaProducto> row = new TableRow<>();
+	        row.setOnMouseClicked(event -> {
+	            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && (!row.isEmpty())) {
+	            	FamiliaProducto rowData = row.getItem();
+	                try {
+						abrirDialogoCrearFam(event, rowData.getCodFamilia());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+	            }
+	        });
+	        return row;
+	    });
 		botonSalir.setOnAction(arg0 -> {
 			try {
 				switchToInicioSesion(arg0);
@@ -140,13 +155,34 @@ public class ControllerGI_Fam implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		btnNew.setOnAction(arg0 -> {
+			try {
+				abrirDialogoCrearFam(arg0, null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 	
+	private void abrirDialogoCrearFam(Event event, String codFamilia) throws IOException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoFamiliaProducto.fxml"));
+        ControllerDialogoFamiliaProducto ct = new ControllerDialogoFamiliaProducto(sf, codFamilia, this);
+        loader.setController(ct);
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+        stage.setScene(scene);
+        stage.show();
+		
+	}
+
 	public void cargarTabla() {
 		tableViewFam.getItems().clear();
-		codFamiliaColumn.setCellValueFactory(new PropertyValueFactory<>("numeroFactura"));
-		descripcionFamiliaColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-		//ivaColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+		codFamiliaColumn.setCellValueFactory(new PropertyValueFactory<>("codFamilia"));
+		descripcionFamiliaColumn.setCellValueFactory(new PropertyValueFactory<>("familiaProducto"));
+		ivaColumn.setCellValueFactory(new PropertyValueFactory<>("IVA"));
 
 	    Session session = sf.openSession();
 	    TypedQuery<FamiliaProducto> query = session.createQuery("SELECT e FROM FamiliaProducto e", FamiliaProducto.class);

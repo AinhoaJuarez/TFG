@@ -24,36 +24,36 @@ import javafx.stage.Stage;
 public class ControllerDialogoProveedor implements Initializable {
 
 	private SessionFactory sf;
-	private String codigoProveedor;
+	
 	@FXML
 	private TextField txtCodigoProveedor;
 	@FXML
 	private TextField txtNombreProveedor;
-	@FXML
-	private ComboBox<List<Producto>> comboBoxProductos;
 	private Session session;
 	@FXML
 	private Button btnAceptar;
 	@FXML
 	private Button btnCancelar;
-
-	public ControllerDialogoProveedor(SessionFactory sf, String codigoProveedor) {
-		super();
+	//Plantillas rellenables de clases
+	private Proveedor pv;
+	private String codigoProveedor;
+	private ControllerGI_Prov ct2;
+	public ControllerDialogoProveedor(SessionFactory sf, String codigoProveedor, ControllerGI_Prov ct2) {
 		this.sf = sf;
 		this.codigoProveedor = codigoProveedor;
+		this.ct2 = ct2;
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		session = sf.openSession();
+		session.beginTransaction();
 		if (codigoProveedor != null) {
-			session.beginTransaction();
-			Proveedor pv = session.find(Proveedor.class, codigoProveedor);
+			pv = session.find(Proveedor.class, codigoProveedor);
 			if (pv != null) {
 				txtCodigoProveedor.setText(pv.getCodigo());
 				txtNombreProveedor.setText(pv.getNombre());
-				comboBoxProductos.setValue(pv.getProductosAsociados());
-				;
+				
 			}
 		}
 
@@ -62,7 +62,7 @@ public class ControllerDialogoProveedor implements Initializable {
 				if (codigoProveedor == null) {
 					crearProveedor();
 				} else {
-					modFamiliaProducto();
+					modFamiliaProducto(pv);
 				}
 				closeWindow();
 			} else {
@@ -86,59 +86,30 @@ public class ControllerDialogoProveedor implements Initializable {
 	}
 
 	public void crearProveedor() {
-		ObservableList<Proveedor> proveedor = FXCollections.observableArrayList(); // Esto es lo que
-																					// contiene los objetos
-																					// que se muestran en el
-																					// ComboBox
-
-		proveedor.add(new Proveedor("12312312", "CuadernosFinos S.L")); // Objetos de Ejemplo de las posibles familia de
-																		// Productos
-		proveedor.add(new Proveedor("63122312", "CuadernosGordos S.L"));
-		List<Producto> proveedorSelecionado = comboBoxProductos.getValue(); // Aquí sin embargo lo recojo como
-		// List Producto para poder luego
-		// hacer setProductosAsociados
-		// SEGURAMENTE ESTAS LINEAS DE CÓDIGOS SE PUEDEN DECLARAR ARRIBA PARA ACCEDER
-		// GLOBALMENTE Y NO CREARLO EN CADA MÉTODO, INVESTIGAR
 
 		Proveedor pv = new Proveedor();
 		pv.setCodigo(txtCodigoProveedor.getText());
 		pv.setNombre(txtNombreProveedor.getText());
-		pv.setProductosAsociados(proveedorSelecionado);
-		session.beginTransaction();
 		session.persist(pv);
 		session.getTransaction().commit();
 	}
 
-	public void modFamiliaProducto() {
-		ObservableList<Proveedor> proveedor = FXCollections.observableArrayList(); // Esto es lo que
-		// contiene los objetos
-		// que se muestran en el
-		// ComboBox
-
-		proveedor.add(new Proveedor("12312312", "CuadernosFinos S.L")); // Objetos de Ejemplo de las posibles familia de
-// Productos
-		proveedor.add(new Proveedor("63122312", "CuadernosGordos S.L"));
-		List<Producto> proveedorSelecionado = comboBoxProductos.getValue(); // Aquí sin embargo lo recojo como
-// List Producto para poder luego
-// hacer setProductosAsociados
-// SEGURAMENTE ESTAS LINEAS DE CÓDIGOS SE PUEDEN DECLARAR ARRIBA PARA ACCEDER
-// GLOBALMENTE Y NO CREARLO EN CADA MÉTODO, INVESTIGAR
-
-		Proveedor pv = new Proveedor();
+	public void modFamiliaProducto(Proveedor pv) {
+		pv = new Proveedor();
 		pv.setCodigo(txtCodigoProveedor.getText());
 		pv.setNombre(txtNombreProveedor.getText());
-		pv.setProductosAsociados(proveedorSelecionado);
-		session.beginTransaction();
 		session.merge(pv);
 		session.getTransaction().commit();
 	}
 
 	private void closeWindow() {
+		ct2.cargarTabla();
 		if (session != null && session.isOpen()) {
 			session.close();
 		}
 		Stage stage = (Stage) btnAceptar.getScene().getWindow();
 		stage.close();
+		
 	}
 
 }

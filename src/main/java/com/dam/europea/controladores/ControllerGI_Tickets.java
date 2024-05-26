@@ -140,7 +140,28 @@ public class ControllerGI_Tickets implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		btnNew.setOnAction(arg0 -> {
+			try {
+				switchToTickets(arg0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
+	public void switchToTickets(ActionEvent arg0) throws IOException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/PantallaTickets.fxml"));
+	    ControllerTicket ct = new ControllerTicket(sf);
+	    loader.setController(ct);
+	    Parent root = loader.load();
+	    Scene scene = new Scene(root);
+	    Stage stage = (Stage) ((Node) arg0.getSource()).getScene().getWindow();
+	    stage.setScene(scene);
+	    stage.setMaximized(true); 
+	    stage.initStyle(StageStyle.UNDECORATED);
+	    stage.show();
+		
+	}
+
 	public void cargarTabla() {
 		tableViewTickets.getItems().clear();
 		codigoTicketColumn.setCellValueFactory(new PropertyValueFactory<>("numTicket"));
