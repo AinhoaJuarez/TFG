@@ -32,17 +32,15 @@
          </font>
       </Label>
       <TextField fx:id="txtID" layoutX="332.0" layoutY="138.0" />
-      <Button fx:id="btnID" layoutX="493.0" layoutY="138.0" mnemonicParsing="false" text="Button" />
       <Label layoutX="1312.0" layoutY="100.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Rol:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
       <ComboBox fx:id="comboRol" layoutX="1312.0" layoutY="134.0" prefWidth="150.0" />
-      <Button fx:id="btnRol" layoutX="1473.0" layoutY="134.0" mnemonicParsing="false" />
-      <Separator layoutX="23.0" layoutY="213.0" prefHeight="8.0" prefWidth="1920.0" />
+      <Separator layoutX="22.0" layoutY="181.0" prefHeight="8.0" prefWidth="1920.0" />
       <Separator layoutX="12.0" layoutY="90.0" prefHeight="8.0" prefWidth="1920.0" />
-      <Separator layoutX="955.0" layoutY="95.0" orientation="VERTICAL" prefHeight="126.0" prefWidth="11.0" />
+      <Separator layoutX="955.0" layoutY="95.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
       <Button fx:id="btnNew" layoutX="1751.0" layoutY="232.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
       <Button fx:id="btnDel" layoutX="1840.0" layoutY="232.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
       <TableView fx:id="tableView" layoutX="203.0" layoutY="290.0" prefHeight="689.0" prefWidth="1698.0">
@@ -57,5 +55,10 @@
             <Font size="24.0" />
          </font>
       </Label>
+      <Button fx:id="btnBuscar" layoutX="988.0" layoutY="201.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="129.0" text="Buscar">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Button>
    </children>
 </Pane>
