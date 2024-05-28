@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0" prefWidth="1029.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="407.0" prefWidth="1029.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="lblCorM" layoutX="466.0" layoutY="14.0" prefHeight="27.0" prefWidth="147.0" text="Nuevo Producto">
+      <Label fx:id="lblCorM" layoutX="441.0" layoutY="14.0" prefHeight="27.0" prefWidth="147.0" text="Nuevo Producto">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -19,7 +19,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtDNI" layoutX="182.0" layoutY="73.0" prefHeight="25.0" prefWidth="324.0" />
+      <TextField fx:id="txtCodBarras" layoutX="182.0" layoutY="73.0" prefHeight="25.0" prefWidth="324.0" />
       <Label layoutX="46.0" layoutY="133.0" prefHeight="27.0" prefWidth="93.0" text="Descripcion:">
          <font>
             <Font size="16.0" />
@@ -35,48 +35,42 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtCodPost" layoutX="179.0" layoutY="191.0" prefHeight="25.0" prefWidth="324.0" />
-      <Button fx:id="btnAceptar" layoutX="586.0" layoutY="402.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="113.0" text="Aceptar">
+      <TextField fx:id="txtPrecioCompra" layoutX="179.0" layoutY="191.0" prefHeight="25.0" prefWidth="99.0" />
+      <Button fx:id="btnAceptar" layoutX="623.0" layoutY="325.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="113.0" text="Aceptar">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <Button fx:id="btnCancelar" layoutX="342.0" layoutY="402.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="113.0" text="Cancelar">
+      <Button fx:id="btnCancelar" layoutX="288.0" layoutY="325.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="113.0" text="Cancelar">
          <font>
             <Font size="14.0" />
          </font>
       </Button>
-      <ComboBox layoutX="679.0" layoutY="72.0" prefHeight="25.0" prefWidth="324.0" />
-      <Label layoutX="529.0" layoutY="190.0" prefHeight="27.0" prefWidth="113.0" text="Precio Venta: ">
+      <ComboBox fx:id="comboBoxFam" layoutX="679.0" layoutY="72.0" prefHeight="25.0" prefWidth="324.0" />
+      <Label layoutX="772.0" layoutY="190.0" prefHeight="27.0" prefWidth="113.0" text="Precio Venta: ">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="51.0" layoutY="253.0" prefHeight="27.0" prefWidth="113.0" text="Margen: ">
+      <Label layoutX="434.0" layoutY="190.0" prefHeight="27.0" prefWidth="87.0" text="Margen: ">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="398.0" layoutY="253.0" prefHeight="27.0" prefWidth="154.0" text="Cantidad:">
+      <Label layoutX="42.0" layoutY="252.0" prefHeight="27.0" prefWidth="79.0" text="Stock:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="51.0" layoutY="318.0" prefHeight="27.0" prefWidth="154.0" text="Stock:">
+      <ComboBox fx:id="comboBoxProv" layoutX="623.0" layoutY="253.0" prefHeight="25.0" prefWidth="379.0" />
+      <Label layoutX="432.0" layoutY="252.0" prefHeight="27.0" prefWidth="154.0" text="Proveedor Producto: ">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <ComboBox layoutX="515.0" layoutY="319.0" prefHeight="25.0" prefWidth="481.0" />
-      <Label layoutX="344.0" layoutY="318.0" prefHeight="27.0" prefWidth="154.0" text="Proveedor Producto: ">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Label>
-      <TextField fx:id="txtCodPost1" layoutX="642.0" layoutY="191.0" prefHeight="25.0" prefWidth="357.0" />
-      <TextField fx:id="txtCodPost2" layoutX="155.0" layoutY="254.0" prefHeight="25.0" prefWidth="221.0" />
-      <TextField fx:id="txtCodPost3" layoutX="503.0" layoutY="254.0" prefHeight="25.0" prefWidth="493.0" />
-      <TextField fx:id="txtCodPost21" layoutX="113.0" layoutY="319.0" prefHeight="25.0" prefWidth="199.0" />
-      <TextField fx:id="txtDNI1" layoutX="155.0" layoutY="134.0" prefHeight="25.0" prefWidth="844.0" />
+      <TextField fx:id="txtPrecioVenta" layoutX="900.0" layoutY="191.0" prefHeight="25.0" prefWidth="99.0" />
+      <TextField fx:id="txtMargen" layoutX="509.0" layoutY="191.0" prefHeight="25.0" prefWidth="99.0" />
+      <TextField fx:id="txtStock" layoutX="121.0" layoutY="253.0" prefHeight="25.0" prefWidth="105.0" />
+      <TextField fx:id="txtDescripcion" layoutX="181.0" layoutY="134.0" prefHeight="25.0" prefWidth="818.0" />
    </children>
 </Pane>

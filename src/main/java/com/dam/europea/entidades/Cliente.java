@@ -15,6 +15,11 @@ import jakarta.persistence.Table;
 @Table(name = "clientes")
 public class Cliente {
 
+	@Override
+	public String toString() {
+		return nombre;
+	}
+
 	@Id
 	private String dni;
 	@Column

@@ -23,7 +23,6 @@ public class Producto {
     private double precioCompra;
     private double precioVenta;
     private double margen;
-    private int cantidad;
     private int stock;
     @ManyToOne
 	@JoinColumn(name = "proveedor_fk", referencedColumnName = "codigo")
@@ -74,12 +73,6 @@ public class Producto {
 	}
 	public void setMargen(double margen) {
 		this.margen = margen;
-	}
-	public int getCantidad() {
-		return cantidad;
-	}
-	public void setCantidad(int cantidad) {
-		this.cantidad = cantidad;
 	}
 	public int getStock() {
 		return stock;

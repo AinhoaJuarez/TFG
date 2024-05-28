@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.hibernate.Session;
@@ -21,9 +22,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -56,6 +59,12 @@ public class ControllerGI_Fam implements Initializable{
 	private Button btnNew;
 	@FXML
 	private Button btnDel;
+	@FXML
+	private TextField txtDescripcion;
+	@FXML
+	private TextField txtCod;
+	@FXML
+	private ComboBox<Integer> comboIVA;
 	
 	//Botones sin fotos
 	@FXML
@@ -85,6 +94,11 @@ public class ControllerGI_Fam implements Initializable{
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarImagenes();
 		cargarTabla();
+		ArrayList<Integer> ivas = new ArrayList<Integer>();
+		ivas.add(null);
+		ivas.add(4);
+		ivas.add(21);
+		comboIVA.getItems().addAll(ivas);
 		tableViewFam.setRowFactory(tv -> {
 	        TableRow<FamiliaProducto> row = new TableRow<>();
 	        row.setOnMouseClicked(event -> {
@@ -162,6 +176,45 @@ public class ControllerGI_Fam implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		txtCod.textProperty().addListener((observable, oldValue, newValue) -> searchFamilias());
+		txtDescripcion.textProperty().addListener((observable, oldValue, newValue) -> searchFamilias());
+		comboIVA.valueProperty().addListener((observable, oldValue, newValue) -> searchFamilias());
+	}
+	
+	private void searchFamilias() {
+	    String cod = txtCod.getText().trim();
+	    String descripcion = txtDescripcion.getText().trim();
+	    Integer iva = comboIVA.getValue();
+
+	    StringBuilder hql = new StringBuilder("SELECT f FROM FamiliaProducto f WHERE 1=1");
+
+	    if (!cod.isEmpty()) {
+	        hql.append(" AND STR(f.codFamilia) LIKE :cod");
+	    }
+	    if (!descripcion.isEmpty()) {
+	        hql.append(" AND f.familiaProducto LIKE :descripcion");
+	    }
+	    if (iva != null) {
+	        hql.append(" AND f.IVA = :iva");
+	    }
+
+	    Session session = sf.openSession();
+	    TypedQuery<FamiliaProducto> query = session.createQuery(hql.toString(), FamiliaProducto.class);
+
+	    if (!cod.isEmpty()) {
+	        query.setParameter("cod", "%" + cod + "%");
+	    }
+	    if (!descripcion.isEmpty()) {
+	        query.setParameter("descripcion", "%" + descripcion + "%");
+	    }
+	    if (iva != null) {
+	        query.setParameter("iva", iva);
+	    }
+
+	    List<FamiliaProducto> results = query.getResultList();
+	    tableViewFam.getItems().clear();
+	    tableViewFam.getItems().addAll(results);
+	    session.close();
 	}
 	
 	private void abrirDialogoCrearFam(Event event, String codFamilia) throws IOException {

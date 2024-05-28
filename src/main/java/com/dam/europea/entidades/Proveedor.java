@@ -14,6 +14,10 @@ import jakarta.persistence.Table;
 @Table(name = "Proveedores")
 public class Proveedor {
 	
+	@Override
+	public String toString() {
+		return nombre;
+	}
 	@Id
 	private String codigo;
 	@Column

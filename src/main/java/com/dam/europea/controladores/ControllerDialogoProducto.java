@@ -27,11 +27,11 @@ import javafx.stage.Stage;
 public class ControllerDialogoProducto implements Initializable {
 
 	private SessionFactory sf;
-	private String codigoBarras;
+	private String codBarras;
 	@FXML
-	private TextField txtCodigoBarras;
+	private TextField txtCodBarras;
 	@FXML
-	private ComboBox<String> comboBoxFamiliaProducto;
+	private ComboBox<String> comboBoxFam;
 	@FXML
 	private TextField txtDescripcion;
 	@FXML
@@ -41,53 +41,53 @@ public class ControllerDialogoProducto implements Initializable {
 	@FXML
 	private TextField txtMargen;
 	@FXML
-	private TextField txtCantidad;
-	@FXML
 	private TextField txtStock;
 	@FXML
-	private ComboBox<String> comboBoxProveedor;
+	private ComboBox<String> comboBoxProv;
 	private Session session;
 	@FXML
 	private Button btnAceptar;
 	@FXML
 	private Button btnCancelar;
-
-	public ControllerDialogoProducto(SessionFactory sf, String codigoBarras) {
+	private Producto p;
+	private ControllerGI_Prods ct2;
+	public ControllerDialogoProducto(SessionFactory sf, String codBarras, ControllerGI_Prods ct2) {
 		this.sf = sf;
-		this.codigoBarras = codigoBarras;
+		this.codBarras = codBarras;
+		this.ct2=ct2;
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		session = sf.openSession();
+		session.beginTransaction();
 		TypedQuery<String> query = session.createQuery("SELECT fp.codFamilia FROM FamiliaProducto fp", String.class);
 		List<String> codFamilias = query.getResultList();
-		comboBoxFamiliaProducto.getItems().addAll(codFamilias);
+		comboBoxFam.getItems().addAll(codFamilias);
 
 		TypedQuery<String> query2 = session.createQuery("SELECT p.codigo FROM Proveedor p", String.class);
 		List<String> codProveedor = query2.getResultList();
-		comboBoxProveedor.getItems().addAll(codProveedor);
+		comboBoxProv.getItems().addAll(codProveedor);
 
-		if (codigoBarras != null) {
-			session.beginTransaction();
-			Producto p = session.find(Producto.class, codigoBarras);
+		if (codBarras != null) {
+			
+			p = session.find(Producto.class, codBarras);
 			if (p != null) {
-				txtCodigoBarras.setText(p.getCodigoBarras());
-				comboBoxFamiliaProducto.setValue(p.getFamiliaArticulo().getCodFamilia());
+				txtCodBarras.setText(p.getCodigoBarras());
+				comboBoxFam.setValue(p.getFamiliaArticulo().getCodFamilia());
 				txtDescripcion.setText(p.getDescripcion());
 				txtPrecioCompra.setText(String.valueOf(p.getPrecioCompra()));
 				txtPrecioVenta.setText(String.valueOf(p.getPrecioVenta()));
 				txtMargen.setText(String.valueOf(p.getMargen()));
-				txtCantidad.setText(String.valueOf(p.getCantidad()));
 				txtStock.setText(String.valueOf(p.getStock()));
-				comboBoxProveedor.setValue(p.getProveedorProducto().getCodigo());
+				comboBoxProv.setValue(p.getProveedorProducto().getCodigo());
 				;
 			}
 		}
 
 		btnAceptar.setOnAction(event -> {
 			if (areFieldsValid()) {
-				if (codigoBarras == null) {
+				if (codBarras == null) {
 					crearProducto();
 				} else {
 					modFamiliaProducto();
@@ -102,9 +102,9 @@ public class ControllerDialogoProducto implements Initializable {
 	}
 
 	private boolean areFieldsValid() {
-		return !txtCodigoBarras.getText().isEmpty() && !txtDescripcion.getText().isEmpty()
+		return !txtCodBarras.getText().isEmpty() && !txtDescripcion.getText().isEmpty()
 				&& !txtPrecioCompra.getText().isEmpty() && !txtPrecioVenta.getText().isEmpty()
-				&& !txtMargen.getText().isEmpty() && !txtCantidad.getText().isEmpty() && !txtStock.getText().isEmpty();
+				&& !txtMargen.getText().isEmpty() && !txtStock.getText().isEmpty();
 	}
 
 	private void showWarning() {
@@ -118,8 +118,8 @@ public class ControllerDialogoProducto implements Initializable {
 	public void crearProducto() {
 
 		Producto p = new Producto();
-		p.setCodigoBarras(txtCodigoBarras.getText());
-		String codFamilia = comboBoxFamiliaProducto.getValue();
+		p.setCodigoBarras(txtCodBarras.getText());
+		String codFamilia = comboBoxFam.getValue();
 		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
 		p.setFamiliaArticulo(fp);
 		p.setDescripcion(txtDescripcion.getText());
@@ -127,40 +127,36 @@ public class ControllerDialogoProducto implements Initializable {
 																		// ADMITA NUMEROS
 		p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
 		p.setMargen(Integer.valueOf(txtMargen.getText()));
-		p.setCantidad(Integer.valueOf(txtCantidad.getText()));
 		p.setStock(Integer.valueOf(txtStock.getText()));
-		String codProveedor = comboBoxProveedor.getValue();
+		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);
 		p.setProveedorProducto(pv);
 
-		session.beginTransaction();
 		session.persist(p);
 		session.getTransaction().commit();
 	}
 
 	public void modFamiliaProducto() {
 		Producto p = new Producto();
-		p.setCodigoBarras(txtCodigoBarras.getText());
-		String codFamilia = comboBoxFamiliaProducto.getValue();
+		p.setCodigoBarras(txtCodBarras.getText());
+		String codFamilia = comboBoxFam.getValue();
 		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
 		p.setFamiliaArticulo(fp);
 		p.setDescripcion(txtDescripcion.getText());
-		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText())); // MODIFICAR FXML PARA QUE EL TEXTFIELD SOLO
-																		// ADMITA NUMEROS
+		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText()));
 		p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
 		p.setMargen(Integer.valueOf(txtMargen.getText()));
-		p.setCantidad(Integer.valueOf(txtCantidad.getText()));
 		p.setStock(Integer.valueOf(txtStock.getText()));
-		String codProveedor = comboBoxProveedor.getValue();
+		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);
 		p.setProveedorProducto(pv);
 
-		session.beginTransaction();
 		session.merge(p);
 		session.getTransaction().commit();
 	}
 
 	private void closeWindow() {
+		ct2.cargarTabla();
 		if (session != null && session.isOpen()) {
 			session.close();
 		}

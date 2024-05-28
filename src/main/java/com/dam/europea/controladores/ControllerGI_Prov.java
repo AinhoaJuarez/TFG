@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-import com.dam.europea.entidades.FamiliaProducto;
 import com.dam.europea.entidades.Proveedor;
-import com.dam.europea.entidades.Usuario;
 
 import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
@@ -27,11 +26,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -61,6 +60,11 @@ public class ControllerGI_Prov implements Initializable{
 	private Button btnNew;
 	@FXML
 	private Button btnDel;
+	@FXML
+	private TextField txtCod;
+	@FXML
+	private TextField txtNombre;
+	
 	
 	//Botones sin fotos
 	@FXML
@@ -177,8 +181,42 @@ public class ControllerGI_Prov implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		txtCod.textProperty().addListener((observable, oldValue, newValue) -> searchProveedores());
+		txtNombre.textProperty().addListener((observable, oldValue, newValue) -> searchProveedores());
 	}
-	
+	private void searchProveedores() {
+	    String cod = txtCod.getText().trim().toLowerCase();
+	    String nombre = txtNombre.getText().trim().toLowerCase();
+
+	    StringBuilder hql = new StringBuilder("SELECT p FROM Proveedor p WHERE 1=1");
+
+	    if (!cod.isEmpty()) {
+	        hql.append(" AND LOWER(p.codigo) LIKE :cod");
+	    }
+	    if (!nombre.isEmpty()) {
+	        hql.append(" AND LOWER(p.nombre) LIKE :nombre");
+	    }
+
+	    Session session = sf.openSession();
+
+	    TypedQuery<Proveedor> query = session.createQuery(hql.toString(), Proveedor.class);
+
+	    if (!cod.isEmpty()) {
+	        query.setParameter("cod", "%" + cod + "%");
+	    }
+	    if (!nombre.isEmpty()) {
+	        query.setParameter("nombre", "%" + nombre + "%");
+	    }
+
+	    List<Proveedor> results = query.getResultList();
+
+	    tableView.getItems().clear();
+
+	    tableView.getItems().addAll(results);
+
+	    session.close();
+	}
+
 	public void abrirDialogoCrearProveedor(Event event, String codigo) throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoProveedor.fxml"));
         ControllerDialogoProveedor ct = new ControllerDialogoProveedor(sf, codigo, this);

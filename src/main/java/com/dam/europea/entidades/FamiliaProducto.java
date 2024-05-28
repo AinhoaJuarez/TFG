@@ -22,6 +22,13 @@ public class FamiliaProducto {
 	private List<Producto> productosAsociados= new ArrayList<>();
 	private int IVA;
 
+	@Override
+	public String toString() {
+		return familiaProducto ;
+	}
+
+
+
 	public int getIVA() {
 		return IVA;
 	}
