@@ -64,6 +64,9 @@ public class ControllerTicket implements Initializable{
 		this.sf=sf;
 	}
 
+	//En este código, definimos un controlador JavaFX que gestiona la visualización y manipulación de tickets en nuestra aplicación de inventario,
+	//permitiendo también la asociación de clientes a través de una base de datos usando Hibernate.
+	
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
 		

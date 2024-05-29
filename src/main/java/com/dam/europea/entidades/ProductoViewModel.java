@@ -10,95 +10,98 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class ProductoViewModel {
-	private StringProperty codigoBarras;
+
+    // Definimos las propiedades para los campos del modelo de vista de Producto
+    private StringProperty codigoBarras;
     private StringProperty descripcion;
     private ObjectProperty<FamiliaProducto> familiaProducto;
     private ObjectProperty<Proveedor> proveedor;
-    public ObjectProperty<Proveedor> getProveedor() {
-		return proveedor;
-	}
-
-	public void setProveedor(ObjectProperty<Proveedor> proveedor) {
-		this.proveedor = proveedor;
-	}
-
-
-
-	private DoubleProperty precioCompra;
+    private DoubleProperty precioCompra;
     private DoubleProperty precioVenta;
     private DoubleProperty margen;
     private IntegerProperty cantidad;
     private IntegerProperty stock;
+
+    // Métodos getters y setters para la propiedad proveedor
+    public ObjectProperty<Proveedor> getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(ObjectProperty<Proveedor> proveedor) {
+        this.proveedor = proveedor;
+    }
+
+    // Métodos getters y setters para las propiedades del modelo de vista de Producto
     public StringProperty getCodigoBarras() {
-		return codigoBarras;
-	}
+        return codigoBarras;
+    }
 
-	public void setCodigoBarras(StringProperty codigoBarras) {
-		this.codigoBarras = codigoBarras;
-	}
+    public void setCodigoBarras(StringProperty codigoBarras) {
+        this.codigoBarras = codigoBarras;
+    }
 
-	public StringProperty getDescripcion() {
-		return descripcion;
-	}
+    public StringProperty getDescripcion() {
+        return descripcion;
+    }
 
-	public void setDescripcion(StringProperty descripcion) {
-		this.descripcion = descripcion;
-	}
+    public void setDescripcion(StringProperty descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	public ObjectProperty<FamiliaProducto> getFamiliaProducto() {
-		return familiaProducto;
-	}
+    public ObjectProperty<FamiliaProducto> getFamiliaProducto() {
+        return familiaProducto;
+    }
 
-	public void setFamiliaProducto(ObjectProperty<FamiliaProducto> familiaProducto) {
-		this.familiaProducto = familiaProducto;
-	}
+    public void setFamiliaProducto(ObjectProperty<FamiliaProducto> familiaProducto) {
+        this.familiaProducto = familiaProducto;
+    }
 
-	public DoubleProperty getPrecioCompra() {
-		return precioCompra;
-	}
+    public DoubleProperty getPrecioCompra() {
+        return precioCompra;
+    }
 
-	public void setPrecioCompra(DoubleProperty precioCompra) {
-		this.precioCompra = precioCompra;
-	}
+    public void setPrecioCompra(DoubleProperty precioCompra) {
+        this.precioCompra = precioCompra;
+    }
 
-	public DoubleProperty getPrecioVenta() {
-		return precioVenta;
-	}
+    public DoubleProperty getPrecioVenta() {
+        return precioVenta;
+    }
 
-	public void setPrecioVenta(DoubleProperty precioVenta) {
-		this.precioVenta = precioVenta;
-	}
+    public void setPrecioVenta(DoubleProperty precioVenta) {
+        this.precioVenta = precioVenta;
+    }
 
-	public DoubleProperty getMargen() {
-		return margen;
-	}
+    public DoubleProperty getMargen() {
+        return margen;
+    }
 
-	public void setMargen(DoubleProperty margen) {
-		this.margen = margen;
-	}
+    public void setMargen(DoubleProperty margen) {
+        this.margen = margen;
+    }
 
-	public IntegerProperty getCantidad() {
-		return cantidad;
-	}
+    public IntegerProperty getCantidad() {
+        return cantidad;
+    }
 
-	public void setCantidad(IntegerProperty cantidad) {
-		this.cantidad = cantidad;
-	}
+    public void setCantidad(IntegerProperty cantidad) {
+        this.cantidad = cantidad;
+    }
 
-	public IntegerProperty getStock() {
-		return stock;
-	}
+    public IntegerProperty getStock() {
+        return stock;
+    }
 
-	public void setStock(IntegerProperty stock) {
-		this.stock = stock;
-	}
+    public void setStock(IntegerProperty stock) {
+        this.stock = stock;
+    }
 
-	
-
+    // Constructor por defecto para inicializar las propiedades con valores predeterminados
     public ProductoViewModel() {
         this.codigoBarras = new SimpleStringProperty();
         this.descripcion = new SimpleStringProperty();
         this.familiaProducto = new SimpleObjectProperty<>();
+        this.proveedor = new SimpleObjectProperty<>();
         this.precioCompra = new SimpleDoubleProperty();
         this.precioVenta = new SimpleDoubleProperty();
         this.margen = new SimpleDoubleProperty();

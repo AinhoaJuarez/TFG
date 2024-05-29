@@ -1,8 +1,5 @@
 package com.dam.europea.entidades;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,76 +13,91 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "TicketProductos")
 public class TicketProductos {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 
-	@OneToOne
-	@JoinColumn(name = "numTicket")
-	private Ticket numTicket;
+    // Definimos el ID de la entidad TicketProductos, con generación automática de valores
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@OneToOne
-	@JoinColumn(name = "numeroFactura")
-	private Factura numerofactura;
+    
+    @OneToOne
+    @JoinColumn(name = "numTicket")
+    private Ticket numTicket;
 
-	@ManyToOne
-	@JoinColumn(name = "codigoBarras")
-	private Producto producto;
-	@Column
-	private int cantidad;
-	private double descuento;
-	private double precioDescuento;
+    
+    @OneToOne
+    @JoinColumn(name = "numeroFactura")
+    private Factura numerofactura;
 
-	public TicketProductos() {
+    
+    @ManyToOne
+    @JoinColumn(name = "codigoBarras")
+    private Producto producto;
 
-	}
+    // Columnas para la cantidad, el descuento y el precio con descuento de los productos del ticket
+    @Column
+    private int cantidad;
+    private double descuento;
+    private double precioDescuento;
 
-	public Long getId() {
-		return id;
-	}
+    // Constructor vacío necesario para JPA
+    public TicketProductos() {
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    // Métodos getters y setters para cada uno de los campos de la clase TicketProductos
+    public Long getId() {
+        return id;
+    }
 
-	public Ticket getTicket() {
-		return numTicket;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setTicket(Ticket ticket) {
-		this.numTicket = ticket;
-	}
+    public Ticket getTicket() {
+        return numTicket;
+    }
 
-	public Producto getProducto() {
-		return producto;
-	}
+    public void setTicket(Ticket ticket) {
+        this.numTicket = ticket;
+    }
 
-	public void setProducto(Producto producto) {
-		this.producto = producto;
-	}
+    public Factura getFactura() {
+        return numerofactura;
+    }
 
-	public int getCantidad() {
-		return cantidad;
-	}
+    public void setFactura(Factura numerofactura) {
+        this.numerofactura = numerofactura;
+    }
 
-	public void setCantidad(int cantidad) {
-		this.cantidad = cantidad;
-	}
+    public Producto getProducto() {
+        return producto;
+    }
 
-	public double getdescuento() {
-		return descuento;
-	}
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
 
-	public void setDescuento(double descuento) {
-		this.descuento = descuento;
-	}
+    public int getCantidad() {
+        return cantidad;
+    }
 
-	public double getPrecioDescuento() {
-		return precioDescuento;
-	}
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
 
-	public void setPrecioDescuento(double precioDescuento) {
-		this.precioDescuento = precioDescuento;
-	}
+    public double getDescuento() {
+        return descuento;
+    }
 
+    public void setDescuento(double descuento) {
+        this.descuento = descuento;
+    }
+
+    public double getPrecioDescuento() {
+        return precioDescuento;
+    }
+
+    public void setPrecioDescuento(double precioDescuento) {
+        this.precioDescuento = precioDescuento;
+    }
 }

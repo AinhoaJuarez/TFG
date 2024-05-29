@@ -40,9 +40,12 @@ public class ControllerDialogoCliente implements Initializable {
         this.dni = dni;
     }
 
+    // Inicializamos el controlador, abrimos sesión y configuramos los botones
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         session = sf.openSession();
+        
+        // Si el DNI no es nulo, cargamos los datos del cliente en los campos
         if (dni != null) {
             session.beginTransaction();
             Cliente c = session.find(Cliente.class, dni);
@@ -55,6 +58,7 @@ public class ControllerDialogoCliente implements Initializable {
             }
         }
         
+        // Configuramos el comportamiento del botón "Aceptar"
         btnAceptar.setOnAction(event -> {
             if (areFieldsValid()) {
                 if (dni == null) {
@@ -68,15 +72,18 @@ public class ControllerDialogoCliente implements Initializable {
             }
         });
 
+        // Configuramos el comportamiento del botón "Cancelar"
         btnCancelar.setOnAction(event -> closeWindow());
     }
 
+    // Validamos que todos los campos estén completos
     private boolean areFieldsValid() {
         return !txtNombre.getText().isEmpty() && !txtDNI.getText().isEmpty() &&
                !txtDireccion.getText().isEmpty() && !txtCodPost.getText().isEmpty() &&
                !txtLocalidad.getText().isEmpty();
     }
 
+    // Mostramos una alerta si hay campos vacíos
     private void showWarning() {
         Alert alert = new Alert(AlertType.WARNING);
         alert.setTitle("Campos vacíos");
@@ -85,6 +92,7 @@ public class ControllerDialogoCliente implements Initializable {
         alert.showAndWait();
     }
 
+    // Creamos un nuevo cliente con los datos ingresados
     public void crearCliente() {
         Cliente c = new Cliente();
         c.setCodPos(txtCodPost.getText());
@@ -97,6 +105,7 @@ public class ControllerDialogoCliente implements Initializable {
         session.getTransaction().commit();
     }
 
+    // Modificamos un cliente existente con los nuevos datos
     public void modCliente() {
         Cliente c = new Cliente();
         c.setCodPos(txtCodPost.getText());
@@ -109,6 +118,7 @@ public class ControllerDialogoCliente implements Initializable {
         session.getTransaction().commit();
     }
 
+    // Cerramos la ventana y la sesión
     private void closeWindow() {
         if (session != null && session.isOpen()) {
             session.close();

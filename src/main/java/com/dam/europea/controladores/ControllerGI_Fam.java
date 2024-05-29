@@ -79,7 +79,9 @@ public class ControllerGI_Fam implements Initializable{
 	public ControllerGI_Fam(SessionFactory sf) {
 		this.sf=sf;
 	}
-
+	
+	//En el código, definimos un controlador JavaFX que gestiona la visualización y navegación de familia de productos en nuestra aplicación de inventario,
+	//interactuando con una base de datos a través de Hibernate.
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarImagenes();
