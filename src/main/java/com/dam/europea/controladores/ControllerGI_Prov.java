@@ -100,6 +100,9 @@ public class ControllerGI_Prov implements Initializable{
 	    	tableView.getItems().addAll(entityData);
 	    }
 	}
+	
+	//En el código, definimos un controlador JavaFX que gestiona la visualización y navegación de proveedores de productos en nuestra aplicación de inventario,
+	//interactuando con una base de datos a través de Hibernate.
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarTabla();

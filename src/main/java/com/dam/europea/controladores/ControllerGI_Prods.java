@@ -105,6 +105,9 @@ public class ControllerGI_Prods implements Initializable {
 	public ControllerGI_Prods(SessionFactory sf) {
 		this.sf = sf;
 	}
+	
+	//En el código, definimos un controlador JavaFX que gestiona la visualización y navegación de productos en nuestra aplicación de inventario,
+	//interactuando con una base de datos a través de Hibernate.
 
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {

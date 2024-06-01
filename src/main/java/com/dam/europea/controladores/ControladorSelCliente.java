@@ -11,23 +11,23 @@ import javafx.scene.control.TableView;
 
 public class ControladorSelCliente implements Initializable{
 
-	    @FXML
-	    private TableView<Cliente> tablaClientes;
+    @FXML
+    private TableView<Cliente> tablaClientes;
 
-	    private Cliente clienteSeleccionado;
+    private Cliente clienteSeleccionado;
 
-	    @Override
-	    public void initialize(URL url, ResourceBundle resourceBundle) {
-	        tablaClientes.setOnMouseClicked(event -> {
-	            clienteSeleccionado = tablaClientes.getSelectionModel().getSelectedItem();
-	            
-	            System.out.println("Cliente seleccionado: " + clienteSeleccionado);
-	        });
-	    }
+    // Inicializamos el controlador y configuramos el comportamiento al hacer clic en la tabla
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        tablaClientes.setOnMouseClicked(event -> {
+            clienteSeleccionado = tablaClientes.getSelectionModel().getSelectedItem();
+            
+            System.out.println("Cliente seleccionado: " + clienteSeleccionado);
+        });
+    }
 
-	    public Cliente getClienteSeleccionado() {
-	        return clienteSeleccionado;
-	    }
-
-	}
-
+    // Metodo para obtener el cliente seleccionado
+    public Cliente getClienteSeleccionado() {
+        return clienteSeleccionado;
+    }
+}

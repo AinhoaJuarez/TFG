@@ -1,6 +1,5 @@
 package com.dam.europea.entidades;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +26,11 @@ public class Cliente {
 	private String codPos;
 	private String localidad;
 	private String nombre;
-	@OneToMany(mappedBy="numeroFactura", cascade= CascadeType.PERSIST)
-	private List<Factura> facturas;
-	@OneToMany(mappedBy="numTicket", cascade= CascadeType.PERSIST)
-	private List<Ticket> tickets; 
-	
-	
+	@OneToMany(mappedBy = "numeroFactura", cascade = CascadeType.PERSIST)
+	private List<Factura> facturas = new ArrayList<Factura>();
+	@OneToMany(mappedBy = "numTicket", cascade = CascadeType.PERSIST)
+	private List<Ticket> tickets = new ArrayList<Ticket>();
+
 	public Cliente(String dni, String direccion, String codPos, String localidad, String nombre, List<Factura> facturas,
 			List<Ticket> tickets) {
 		super();
@@ -45,6 +43,21 @@ public class Cliente {
 		this.tickets = tickets;
 	}
 
+	// Constructor con parámetros para inicializar todos los campos de la clase
+	// Cliente
+	public Cliente(String dni, String direccion, String codPos, String localidad, String nombre,
+			ArrayList<Factura> facturas, ArrayList<Ticket> tickets) {
+		super();
+		this.dni = dni;
+		this.direccion = direccion;
+		this.codPos = codPos;
+		this.localidad = localidad;
+		this.nombre = nombre;
+		this.facturas = facturas;
+		this.tickets = tickets;
+	}
+
+	// Métodos getters y setters para cada uno de los campos de la clase Cliente
 	public String getDireccion() {
 		return direccion;
 	}
@@ -77,37 +90,31 @@ public class Cliente {
 		this.nombre = nombre;
 	}
 
-	// Lo pongo como String porque en principio al no querer operar con el nos puede
-	// ahorrar errores
-	
-
-	// Para poder relacionarse con las clases de las que va a recibir/enviar Foreign
-	// Key
-
-	// Incluyo también contructores con varios parametros y vacio, por si nos
-	// interesa recibir solo el DNI, todo o simplemente construir el objeto
-	public Cliente(String dni, List<Factura> factura, List<Ticket> ticket) {
+	// Constructor con parámetros para inicializar DNI y listas de facturas y
+	// tickets
+	public Cliente(String dni, ArrayList<Factura> facturas, ArrayList<Ticket> tickets) {
 		super();
 		this.dni = dni;
-		this.facturas = factura;
-		this.tickets = ticket;
+		this.facturas = facturas;
+		this.tickets = tickets;
 	}
 
-	public Cliente(String dni) {
-		super();
-		this.dni = dni;
-	}
 
+	// Constructor vacío necesario para JPA
 	public Cliente() {
 		super();
 	}
 
+
+	public void setDni(String dni) {
+		this.dni = dni;
+	}
 	public String getDni() {
 		return dni;
 	}
 
-	public void setDni(String dni) {
-		this.dni = dni;
+	public void setFacturas(ArrayList<Factura> facturas) {
+		this.facturas = facturas;
 	}
 
 	public List<Factura> getFactura() {
@@ -125,5 +132,4 @@ public class Cliente {
 	public void setTicket(ArrayList<Ticket> ticket) {
 		this.tickets = ticket;
 	}
-
 }

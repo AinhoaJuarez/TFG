@@ -1,0 +1,225 @@
+PANTALLA FACTURAS
+
+
+BASICA
+
+SELECT codigo_factura, fecha_factura, cliente_asociado, total_factura
+FROM facturas;
+
+-----------
+FECHA
+
+SELECT codigo_factura, fecha_factura, cliente_asociado, total_factura
+FROM facturas
+WHERE fecha_factura BETWEEN '2024-01-01' AND '2024-12-31';
+
+------------
+CODIGO FACTURA
+
+SELECT codigo_factura, fecha_factura, cliente_asociado, total_factura
+FROM facturas
+WHERE codigo_factura = 'codigo_deseado';
+
+------------
+CLIENTE
+
+SELECT codigo_factura, fecha_factura, cliente_asociado, total_factura
+FROM facturas
+WHERE cliente_asociado = 'cliente_deseado';
+
+------------------------------------------
+
+PANTALLA TICKETS
+
+BASICA
+
+SELECT codigo_ticket, fecha_ticket, cliente_asociado, total_ticket
+FROM tickets;
+
+---------------
+FECHA
+
+SELECT codigo_ticket, fecha_ticket, cliente_asociado, total_ticket
+FROM tickets
+WHERE fecha_ticket BETWEEN '2024-01-01' AND '2024-12-31';
+
+--------------
+CODIGO
+
+SELECT codigo_ticket, fecha_ticket, cliente_asociado, total_ticket
+FROM tickets
+WHERE codigo_ticket = 'codigo_deseado';
+
+-------------
+CLIENTE
+
+SELECT codigo_ticket, fecha_ticket, cliente_asociado, total_ticket
+FROM tickets
+WHERE cliente_asociado = 'cliente_deseado';
+
+-------------
+TOTAL
+
+SELECT codigo_ticket, fecha_ticket, cliente_asociado, total_ticket
+FROM tickets
+WHERE total_ticket >= 100;
+
+-------------------------------------
+
+PANTALLA USERS
+
+BASICA
+
+SELECT id_usuario, rol, contrasena_encriptada
+FROM usuarios;
+
+---------------
+ID
+
+SELECT id_usuario, rol, contrasena_encriptada
+FROM usuarios
+WHERE id_usuario = 'id_deseado';
+
+--------------
+ROL
+
+SELECT id_usuario, rol, contrasena_encriptada
+FROM usuarios
+WHERE rol = 'rol_deseado';
+
+---------------------------------
+
+PANTALLA PROVEEDORES
+
+BASICA
+
+SELECT codigo_proveedor, nombre_proveedor, descripcion
+FROM proveedores;
+
+----------------
+CODIGO
+
+SELECT codigo_proveedor, nombre_proveedor, descripcion
+FROM proveedores
+WHERE codigo_proveedor = 'codigo_deseado';
+
+---------------
+DESCRIPCION
+
+SELECT codigo_proveedor, nombre_proveedor, descripcion
+FROM proveedores
+WHERE descripcion LIKE '%descripcion_deseada%';
+
+----------------------------------
+
+PANTALLA CLIENTES
+
+BASICA
+
+SELECT dni, nombre, direccion, localidad, codigo_postal
+FROM clientes;
+
+--------------
+NOMBRES
+
+SELECT dni, nombre, direccion, localidad, codigo_postal
+FROM clientes
+WHERE nombre LIKE '%nombre_deseado%';
+
+-------------
+LOCALIDAD
+
+SELECT dni, nombre, direccion, localidad, codigo_postal
+FROM clientes
+WHERE localidad LIKE '%localidad_deseada%';
+
+-------------
+CCPP
+
+SELECT dni, nombre, direccion, localidad, codigo_postal
+FROM clientes
+WHERE codigo_postal = 'codigo_postal_deseado';
+
+-----------------------------------------
+
+PANTALLA FAMILIA PRODUCTOS
+
+BASICA
+
+SELECT codigo_familia_producto, descripcion_familia_producto, tipo_iva
+FROM familia_productos;
+
+--------------
+CODIGO
+
+SELECT codigo_familia_producto, descripcion_familia_producto, tipo_iva
+FROM familia_productos
+WHERE codigo_familia_producto = 'codigo_deseado';
+
+-------------
+IVA
+
+SELECT codigo_familia_producto, descripcion_familia_producto, tipo_iva
+FROM familia_productos
+WHERE tipo_iva = 'tipo_iva_deseado';
+
+------------
+DESCRIPCION
+
+SELECT codigo_familia_producto, descripcion_familia_producto, tipo_iva
+FROM familia_productos
+WHERE descripcion_familia_producto LIKE '%descripcion_deseada%';
+
+--------------------------------
+
+
+PANTALLA PRODUCTOS
+
+BASICA
+
+SELECT codigo_barras, descripcion_producto, familia, stock, proveedor, pvp
+FROM productos;
+
+---------------
+FECHA
+
+SELECT codigo_barras, descripcion_producto, familia, stock, proveedor, pvp
+FROM productos
+WHERE fecha_creacion BETWEEN '2024-01-01' AND '2024-12-31';
+
+--------------
+CODIGO
+
+SELECT codigo_barras, descripcion_producto, familia, stock, proveedor, pvp
+FROM productos
+WHERE codigo_barras = 'codigo_deseado';
+
+--------------
+FAMILIA
+
+SELECT codigo_barras, descripcion_producto, familia, stock, proveedor, pvp
+FROM productos
+WHERE familia = 'familia_deseada';
+
+--------------
+TIPO IVA
+
+SELECT codigo_barras, descripcion_producto, familia, stock, proveedor, pvp
+FROM productos
+WHERE tipo_iva = 'tipo_iva_deseado';
+
+--------------
+PROVEEDOR
+
+SELECT codigo_barras, descripcion_producto, familia, stock, proveedor, pvp
+FROM productos
+WHERE proveedor = 'proveedor_deseado';
+
+--------------
+DESCRIPCION
+
+SELECT codigo_barras, descripcion_producto, familia, stock, proveedor, pvp
+FROM productos
+WHERE descripcion_producto LIKE '%descripcion_deseada%';
+
+--------------
