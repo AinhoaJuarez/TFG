@@ -3,7 +3,10 @@ package com.dam.europea.controladores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.hibernate.Session;
@@ -22,7 +25,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -57,8 +62,6 @@ public class ControllerGI_Tickets implements Initializable{
 	@FXML
 	private Button btnDel;
 	@FXML
-    private TextField txtCod;
-	@FXML
 	private Button btnDescripcion;
 	@FXML
 	private Button btnCodPostal;
@@ -67,6 +70,16 @@ public class ControllerGI_Tickets implements Initializable{
 	@FXML
     private TableView<Ticket> tableViewTickets;
 	private SessionFactory sf;
+	@FXML
+	private TextField txtCod;
+	@FXML
+	private TextField txtTotal;
+	@FXML
+	private TextField txtFechaInicio;
+	@FXML
+	private TextField txtFechaFin;
+	@FXML
+	private ComboBox<Cliente> comboCliente;
 	@FXML
     private TableColumn<Ticket, Integer> codigoTicketColumn;
     @FXML
@@ -87,6 +100,17 @@ public class ControllerGI_Tickets implements Initializable{
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarTabla();
 		cargarImagenes();
+		cargarClientes();
+		tableViewTickets.setRowFactory(tv -> {
+		    TableRow<Ticket> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (!row.isEmpty())) {
+		            Ticket rowData = row.getItem();
+		            switchToPantallaTickets(rowData);
+		        }
+		    });
+		    return row;
+		});
 		botonSalir.setOnAction(arg0 -> {
 			try {
 				switchToInicioSesion(arg0);
@@ -150,10 +174,83 @@ public class ControllerGI_Tickets implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		txtCod.textProperty().addListener((obs, oldVal, newVal) -> searchTickets());
+		txtFechaInicio.textProperty().addListener((obs, oldVal, newVal) -> searchTickets());
+		txtFechaFin.textProperty().addListener((obs, oldVal, newVal) -> searchTickets());
+		comboCliente.valueProperty().addListener((obs, oldVal, newVal) -> searchTickets());
 	}
+	private void switchToPantallaTickets(Ticket selectedTicket) {
+	    try {
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/PantallaTickets.fxml"));
+	        ControllerTicket pantallaTicketsController = new ControllerTicket(sf, selectedTicket);
+	        loader.setController(pantallaTicketsController);
+	        Parent root = loader.load();
+	        Scene scene = new Scene(root);
+	        Stage stage = (Stage) tableViewTickets.getScene().getWindow();
+	        stage.setScene(scene);
+	        stage.show();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	private void cargarClientes() {
+		Session session = sf.openSession();
+		TypedQuery<Cliente> query = session.createQuery("SELECT c FROM Cliente c", Cliente.class);
+		List<Cliente> clientes = query.getResultList();
+		if (clientes != null) {
+			comboCliente.getItems().addAll(clientes);
+		}
+		session.close();
+	}
+	private void searchTickets() {
+        tableViewTickets.getItems().clear();
+        String fechaInicioStr = txtFechaInicio.getText();
+        String fechaFinStr = txtFechaFin.getText();
+        String codStr = txtCod.getText();
+        Cliente selectedCliente = comboCliente.getValue();
+
+        Session session = sf.openSession();
+        StringBuilder queryStr = new StringBuilder("SELECT t FROM Ticket t WHERE 1=1");
+
+        if (!fechaInicioStr.isEmpty()) {
+            queryStr.append(" AND t.fecha >= :fechaInicio");
+        }
+        if (!fechaFinStr.isEmpty()) {
+            queryStr.append(" AND t.fecha <= :fechaFin");
+        }
+        if (selectedCliente != null) {
+            queryStr.append(" AND t.cliente = :cliente");
+        }
+        if (!codStr.isEmpty()) {
+            queryStr.append(" AND t.numTicket = :numTicket");
+        }
+
+        TypedQuery<Ticket> query = session.createQuery(queryStr.toString(), Ticket.class);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        if (!fechaInicioStr.isEmpty()) {
+            query.setParameter("fechaInicio", LocalDate.parse(fechaInicioStr, formatter));
+        }
+        if (!fechaFinStr.isEmpty()) {
+            query.setParameter("fechaFin", LocalDate.parse(fechaFinStr, formatter));
+        }
+        if (selectedCliente != null) {
+            query.setParameter("cliente", selectedCliente);
+        }
+        if (!codStr.isEmpty()) {
+            query.setParameter("numTicket", Integer.parseInt(codStr));
+        }
+
+        List<Ticket> result = query.getResultList();
+        if (result != null) {
+            tableViewTickets.getItems().addAll(result);
+        }
+        session.close();
+    }
 	public void switchToTickets(ActionEvent arg0) throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/PantallaTickets.fxml"));
-	    ControllerTicket ct = new ControllerTicket(sf);
+	    ControllerTicket ct = new ControllerTicket(sf, null);
 	    loader.setController(ct);
 	    Parent root = loader.load();
 	    Scene scene = new Scene(root);

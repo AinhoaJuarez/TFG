@@ -28,7 +28,6 @@ public class App extends Application {
 
     public static void main(String[] args) {
         sf = new Configuration().configure().buildSessionFactory();
-        Session session = sf.openSession();
         launch(args);
         if (sf != null) {
             sf.close();
@@ -38,15 +37,6 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            Producto p = new Producto();
-            p.setCodigoBarras("");
-            session.persist(p);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/InicioSesion.fxml"));
         ControladorInicioSesion controller = new ControladorInicioSesion(sf);
         loader.setController(controller);

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import org.hibernate.Session;
@@ -22,9 +23,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -58,7 +61,10 @@ public class ControllerGI_Users implements Initializable{
 	private Button btnNew;
 	@FXML
 	private Button btnDel;
-	
+	@FXML
+	private TextField txtID;
+	@FXML
+	private ComboBox<String> comboRol;
 	//Botones sin fotos
 	@FXML
 	private Button btnDescripcion;
@@ -103,6 +109,12 @@ public class ControllerGI_Users implements Initializable{
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarImagenes();
 		cargarTabla();
+		ArrayList<String> ivas = new ArrayList<String>();
+		ivas.add(null);
+		ivas.add("Administrador");
+		ivas.add("Supervisor");
+		ivas.add("Staff");
+		comboRol.getItems().addAll(ivas);
 		tableView.setRowFactory(tv -> {
 	        TableRow<Usuario> row = new TableRow<>();
 	        row.setOnMouseClicked(event -> {
@@ -180,7 +192,41 @@ public class ControllerGI_Users implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		txtID.textProperty().addListener((observable, oldValue, newValue) -> searchUsuarios());
+        comboRol.valueProperty().addListener((observable, oldValue, newValue) -> searchUsuarios());
 	}
+	private void searchUsuarios() {
+        String id = txtID.getText().trim().toLowerCase();
+        String rol = comboRol.getValue() != null ? comboRol.getValue().trim().toLowerCase() : "";
+
+        StringBuilder hql = new StringBuilder("SELECT u FROM Usuario u WHERE 1=1");
+
+        if (!id.isEmpty()) {
+            hql.append(" AND LOWER(u.idUsuario) LIKE :id");
+        }
+        if (!rol.isEmpty()) {
+            hql.append(" AND LOWER(u.rol) LIKE :rol");
+        }
+
+        Session session = sf.openSession();
+
+        TypedQuery<Usuario> query = session.createQuery(hql.toString(), Usuario.class);
+
+        if (!id.isEmpty()) {
+            query.setParameter("id", "%" + id + "%");
+        }
+        if (!rol.isEmpty()) {
+            query.setParameter("rol", "%" + rol + "%");
+        }
+
+        List<Usuario> results = query.getResultList();
+
+        tableView.getItems().clear();
+
+        tableView.getItems().addAll(results);
+
+        session.close();
+    }
 	
 	private void abrirDialogoCrearUsuario(Event event, String idUsr) throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoUsuario.fxml"));

@@ -25,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -166,8 +167,33 @@ public class ControllerGI_Facturas implements Initializable {
 		txtCod.textProperty().addListener((observable, oldValue, newValue) -> searchFacturas());
 		txtTotal.textProperty().addListener((observable, oldValue, newValue) -> searchFacturas());
 		comboCliente.valueProperty().addListener((observable, oldValue, newValue) -> searchFacturas());
+		tableViewFacturas.setRowFactory(tv -> {
+		    TableRow<Factura> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (!row.isEmpty())) {
+		            Factura rowData = row.getItem();
+		            switchToPantallaFacturas(rowData);
+		        }
+		    });
+		    return row;
+		});
 	}
 
+	private void switchToPantallaFacturas(Factura selectedFactura) {
+	    try {
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Facturas.fxml"));
+	        ControllerFactura pantallaTicketsController = new ControllerFactura(sf, selectedFactura);
+	        loader.setController(pantallaTicketsController);
+	        Parent root = loader.load();
+	        Scene scene = new Scene(root);
+	        Stage stage = (Stage) tableViewFacturas.getScene().getWindow();
+	        stage.setScene(scene);
+	        stage.show();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	private void cargarClientesComboBox() {
 		comboCliente.getItems().clear();
 		comboCliente.getItems().add(null);
@@ -217,7 +243,7 @@ public class ControllerGI_Facturas implements Initializable {
 
 	public void switchToFacturas(ActionEvent arg0) throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/Facturas.fxml"));
-		ControllerFactura ct = new ControllerFactura(sf);
+		ControllerFactura ct = new ControllerFactura(sf, null);
 		loader.setController(ct);
 		Parent root = loader.load();
 		Scene scene = new Scene(root);

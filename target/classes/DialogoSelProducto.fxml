@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="504.0" prefWidth="716.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="22.0" layoutY="14.0" prefHeight="33.0" prefWidth="101.0" text="Código Barras:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtCod" layoutX="131.0" layoutY="18.0" />
+      <Label layoutX="386.0" layoutY="14.0" prefHeight="33.0" prefWidth="91.0" text="Descripción:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField  fx:id="txtDes" layoutX="486.0" layoutY="18.0" prefHeight="25.0" prefWidth="214.0" />
+      <TableView fx:id="tablaProds" layoutX="14.0" layoutY="63.0" prefHeight="423.0" prefWidth="694.0">
+        <columns>
+          <TableColumn fx:id="colCod" prefWidth="164.0" text="Código Barras" />
+          <TableColumn fx:id="colDes" prefWidth="369.0" text="Descripción" />
+          <TableColumn fx:id="colPrecio" prefWidth="158.0" text="Precio" />
+        </columns>
+      </TableView>
+   </children>
+</Pane>

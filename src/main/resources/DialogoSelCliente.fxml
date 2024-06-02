@@ -1,21 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 
-<DialogPane prefHeight="435.0" prefWidth="536.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dam.europea.controladores.ControladorSelCliente" >
-   <header>
-      <Label text="Seleccion Cliente" />
-   </header>
-   <content>
-      <TableView fx:id="tablaClientes" prefHeight="8.0" prefWidth="536.0">
-        <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
-        </columns>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="521.0" prefWidth="723.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="31.0" layoutY="17.0" prefHeight="33.0" prefWidth="101.0" text="DNI:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtDNI" layoutX="77.0" layoutY="21.0" prefHeight="25.0" prefWidth="175.0" />
+      <Label layoutX="389.0" layoutY="17.0" prefHeight="33.0" prefWidth="67.0" text="Nombre:">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="txtNombre" layoutX="456.0" layoutY="21.0" prefHeight="25.0" prefWidth="238.0" />
+      <TableView fx:id="tablaCli" layoutX="15.0" layoutY="64.0" prefHeight="448.0" prefWidth="694.0">
+         <columns>
+            <TableColumn fx:id="colDNI" prefWidth="237.0" text="DNI" />
+            <TableColumn fx:id="colNombre" prefWidth="456.0" text="Nombre y Apellidos" />
+         </columns>
       </TableView>
-   </content>
-</DialogPane>
+   </children>
+</Pane>

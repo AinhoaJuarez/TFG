@@ -2,7 +2,6 @@ package com.dam.europea.controladores;
 	
 import java.io.IOException;
 
-import jakarta.persistence.EntityManagerFactory;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

@@ -109,7 +109,7 @@ public class Controller implements Initializable {
     // Cambiamos a la escena de tickets
     public void switchToTickets(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/PantallaTickets.fxml"));
-        ControllerTicket ct = new ControllerTicket(sf);
+        ControllerTicket ct = new ControllerTicket(sf, null);
         loader.setController(ct);
         Parent root = loader.load();
         Scene scene = new Scene(root);
@@ -129,7 +129,7 @@ public class Controller implements Initializable {
     // Cambiamos a la escena de facturas
     public void switchToFacturas(ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/Facturas.fxml"));
-        ControllerFactura ct = new ControllerFactura(sf);
+        ControllerFactura ct = new ControllerFactura(sf, null);
         loader.setController(ct);
         Parent root = loader.load();
         Scene scene = new Scene(root);

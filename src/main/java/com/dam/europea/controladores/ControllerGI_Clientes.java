@@ -411,20 +411,4 @@ public class ControllerGI_Clientes implements Initializable {
 		session.close();
 	}
 
-	private void buscarClientePorNombre() {
-		String nombre = txtNombre.getText().trim();
-
-		if (!nombre.isEmpty()) {
-			String hql = "SELECT c FROM Cliente c WHERE c.nombre LIKE :nombre";
-
-			Session session = sf.openSession();
-			Query<Cliente> query = session.createQuery(hql, Cliente.class);
-			query.setParameter("nombre", "%" + nombre + "%");
-
-			List<Cliente> results = query.getResultList();
-			tableView.getItems().clear();
-			tableView.getItems().addAll(results);
-			session.close();
-		}
-	}
 }

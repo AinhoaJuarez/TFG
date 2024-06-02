@@ -1,18 +1,25 @@
 package com.dam.europea.entidades;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Factura {
     
     // Definimos el ID de la factura
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int numeroFactura;
     
     @ManyToOne
@@ -21,24 +28,24 @@ public class Factura {
 
     // Definimos las columnas de la tabla Factura
     @Column
-    private String fechaExpedicion;
-    private String fechaOperacion;
+    private Date fechaExpedicion;
+    private Date fechaOperacion;
     private String NIF;
     private String direccion;
     private int telefono;
     private String nombreApellidos;
     
-    @OneToOne(mappedBy = "numerofactura", cascade = CascadeType.ALL, orphanRemoval = true)
-    private TicketProductos ticketProductos;
+    @OneToMany(mappedBy = "numeroFactura", cascade = CascadeType.ALL)
+	private List<TicketProductos> ticketProductos = new ArrayList<>();
     
-    private int IVA;
+    private double IVA;
     private double totalSinIVA;
     private double totalConIVA;
     private double descuento;
 
     // Constructor con parámetros para inicializar todos los campos de la clase Factura
-    public Factura(int numeroFactura, Cliente cliente, String fechaExpedicion, String fechaOperacion, String nIF,
-                   String direccion, int telefono, String nombreApellidos, TicketProductos ticketProductos, int iVA,
+    public Factura(int numeroFactura, Cliente cliente, Date fechaExpedicion, Date fechaOperacion, String nIF,
+                   String direccion, int telefono, String nombreApellidos, List<TicketProductos> ticketProductos, int iVA,
                    double totalSinIVA, double totalConIVA, double descuento) {
         super();
         this.numeroFactura = numeroFactura;
@@ -77,19 +84,19 @@ public class Factura {
         this.cliente = cliente;
     }
 
-    public String getFechaExpedicion() {
+    public Date getFechaExpedicion() {
         return fechaExpedicion;
     }
 
-    public void setFechaExpedicion(String fechaExpedicion) {
+    public void setFechaExpedicion(Date fechaExpedicion) {
         this.fechaExpedicion = fechaExpedicion;
     }
 
-    public String getFechaOperacion() {
+    public Date getFechaOperacion() {
         return fechaOperacion;
     }
 
-    public void setFechaOperacion(String fechaOperacion) {
+    public void setFechaOperacion(Date fechaOperacion) {
         this.fechaOperacion = fechaOperacion;
     }
 
@@ -125,19 +132,19 @@ public class Factura {
         this.nombreApellidos = nombreApellidos;
     }
 
-    public TicketProductos getListadoProductos() {
+    public List<TicketProductos> getListadoProductos() {
         return ticketProductos;
     }
 
-    public void setListadoProductos(TicketProductos ticketProductos) {
+    public void setListadoProductos(List<TicketProductos> ticketProductos) {
         this.ticketProductos = ticketProductos;
     }
 
-    public int getIVA() {
+    public double getIVA() {
         return IVA;
     }
 
-    public void setIVA(int iVA) {
+    public void setIVA(double iVA) {
         IVA = iVA;
     }
 

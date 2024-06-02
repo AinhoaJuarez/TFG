@@ -27,7 +27,7 @@ public class TicketProductos {
 	private Ticket numTicket;
 	@ManyToOne
 	@JoinColumn(name = "numeroFactura")
-	private Factura numerofactura;
+	private Factura numeroFactura;
 
 	@ManyToOne
 	@JoinColumn(name = "codigoBarras")
@@ -54,7 +54,7 @@ public class TicketProductos {
 	public String toString() {
 		return "TicketProductos [id=" + id + ", cantidad=" + cantidad + ", descuento=" + descuento
 				+ ", precioDescuento=" + precioDescuento + ", precioTotal=" + precioTotal + ", numTicket=" + numTicket
-				+ ", numerofactura=" + numerofactura + ", producto=" + producto + ", descripcion=" + descripcion + "]";
+				+ ", numerofactura=" + numeroFactura + ", producto=" + producto + ", descripcion=" + descripcion + "]";
 	}
 
 	private String descripcion;
@@ -82,11 +82,11 @@ public class TicketProductos {
 	}
 
 	public Factura getFactura() {
-		return numerofactura;
+		return numeroFactura;
 	}
 
 	public void setFactura(Factura numerofactura) {
-		this.numerofactura = numerofactura;
+		this.numeroFactura = numerofactura;
 	}
 
 	public Producto getProducto() {

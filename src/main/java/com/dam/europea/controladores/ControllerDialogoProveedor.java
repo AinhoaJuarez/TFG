@@ -1,23 +1,17 @@
 package com.dam.europea.controladores;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-
-import com.dam.europea.entidades.Producto;
 import com.dam.europea.entidades.Proveedor;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 

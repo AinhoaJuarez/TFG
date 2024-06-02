@@ -1,7 +1,6 @@
 package com.dam.europea.controladores;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -13,8 +12,6 @@ import com.dam.europea.entidades.Producto;
 import com.dam.europea.entidades.Proveedor;
 
 import jakarta.persistence.TypedQuery;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -51,10 +48,11 @@ public class ControllerDialogoProducto implements Initializable {
 	private Button btnCancelar;
 	private Producto p;
 	private ControllerGI_Prods ct2;
+
 	public ControllerDialogoProducto(SessionFactory sf, String codBarras, ControllerGI_Prods ct2) {
 		this.sf = sf;
 		this.codBarras = codBarras;
-		this.ct2=ct2;
+		this.ct2 = ct2;
 	}
 
 	@Override
@@ -70,7 +68,7 @@ public class ControllerDialogoProducto implements Initializable {
 		comboBoxProv.getItems().addAll(codProveedor);
 
 		if (codBarras != null) {
-			
+
 			p = session.find(Producto.class, codBarras);
 			if (p != null) {
 				txtCodBarras.setText(p.getCodigoBarras());
@@ -99,7 +97,22 @@ public class ControllerDialogoProducto implements Initializable {
 		});
 
 		btnCancelar.setOnAction(event -> closeWindow());
+		txtPrecioCompra.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
+		txtPrecioVenta.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
 	}
+
+	private void calculateMargen() {
+		try {
+			double precioCompra = Double.parseDouble(txtPrecioCompra.getText());
+			double precioVenta = Double.parseDouble(txtPrecioVenta.getText());
+			double margen = precioVenta - precioCompra;
+			txtMargen.setText(String.valueOf(margen));
+		} catch (NumberFormatException e) {
+			txtMargen.setText("");
+		}
+	}
+
+	
 
 	private boolean areFieldsValid() {
 		return !txtCodBarras.getText().isEmpty() && !txtDescripcion.getText().isEmpty()
