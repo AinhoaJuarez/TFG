@@ -38,11 +38,11 @@
       </Label>
       <TextField fx:id="txtNombre" layoutX="1317.0" layoutY="134.0" prefHeight="25.0" prefWidth="239.0" />
       <Separator layoutY="181.0" prefHeight="8.0" prefWidth="1920.0" />
-      <Separator layoutX="1.0" layoutY="90.0" prefHeight="8.0" prefWidth="1920.0" />
+      <Separator layoutY="90.0" prefHeight="8.0" prefWidth="1920.0" />
       <Separator layoutX="978.0" layoutY="95.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
       <Button fx:id="btnNew" layoutX="1751.0" layoutY="203.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
       <Button fx:id="btnDel" layoutX="1840.0" layoutY="203.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
-      <TableView fx:id="tableView" layoutX="203.0" layoutY="264.0" prefHeight="715.0" prefWidth="1698.0">
+      <TableView fx:id="tableView" layoutX="203.0" layoutY="273.0" prefHeight="699.0" prefWidth="1698.0">
          <columns>
             <TableColumn fx:id="codProveedorColumn" prefWidth="426.0" text="Código Proveedor" />
             <TableColumn fx:id="nombreProveedorColumn" minWidth="0.0" prefWidth="1270.0" text="Nombre Proveedor" />

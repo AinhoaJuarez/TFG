@@ -12,7 +12,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #90b1db" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<TableView fx:id="tableView" layoutX="186.0" layoutY="248.0" prefHeight="716.0" prefWidth="1698.0">
+		<TableView fx:id="tableView" layoutX="186.0" layoutY="257.0" prefHeight="700.0" prefWidth="1698.0">
 			<columns>
 				<TableColumn fx:id="codigoBarrasColumn" prefWidth="230.0" text="Código Barras" />
 				<TableColumn fx:id="descripcionColumn" minWidth="0.0" prefWidth="615.0" text="Descripción del Producto" />
@@ -66,12 +66,12 @@
 			</font>
 		</Label>
 		<TextField fx:id="txtDescripcion" layoutX="1448.0" layoutY="112.0" prefHeight="25.0" prefWidth="347.0" />
-		<Separator layoutX="3.0" layoutY="153.0" prefHeight="8.0" prefWidth="1920.0" />
+		<Separator layoutY="153.0" prefHeight="8.0" prefWidth="1920.0" />
 		<Separator layoutX="411.0" layoutY="75.0" orientation="VERTICAL" prefHeight="83.0" prefWidth="11.0" />
-		<Separator layoutX="-8.0" layoutY="70.0" prefHeight="8.0" prefWidth="1920.0" />
+		<Separator layoutX="-8.0" layoutY="70.0" prefHeight="8.0" prefWidth="1928.0" />
 		<Separator layoutX="732.0" layoutY="74.0" orientation="VERTICAL" prefHeight="83.0" prefWidth="11.0" />
 		<Separator layoutX="1066.0" layoutY="74.0" orientation="VERTICAL" prefHeight="83.0" prefWidth="11.0" />
-		<Separator layoutX="1374.0" layoutY="72.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
+		<Separator layoutX="1374.0" layoutY="73.0" orientation="VERTICAL" prefHeight="85.0" prefWidth="11.0" />
 		<Button fx:id="btnNew" layoutX="1734.0" layoutY="179.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
 		<Button fx:id="btnDel" layoutX="1823.0" layoutY="179.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
 		<Label layoutX="999.0" layoutY="23.0" text="Productos">

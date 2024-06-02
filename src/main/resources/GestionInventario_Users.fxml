@@ -38,12 +38,12 @@
          </font>
       </Label>
       <ComboBox fx:id="comboRol" layoutX="1312.0" layoutY="134.0" prefWidth="150.0" />
-      <Separator layoutX="-2.0" layoutY="181.0" prefHeight="8.0" prefWidth="1944.0" />
-      <Separator layoutX="-4.0" layoutY="90.0" prefHeight="8.0" prefWidth="1936.0" />
+      <Separator layoutX="-2.0" layoutY="181.0" prefHeight="8.0" prefWidth="1922.0" />
+      <Separator layoutX="-4.0" layoutY="90.0" prefHeight="8.0" prefWidth="1924.0" />
       <Separator layoutX="955.0" layoutY="95.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
       <Button fx:id="btnNew" layoutX="1751.0" layoutY="202.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
       <Button fx:id="btnDel" layoutX="1840.0" layoutY="202.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
-      <TableView fx:id="tableView" layoutX="203.0" layoutY="261.0" prefHeight="718.0" prefWidth="1698.0">
+      <TableView fx:id="tableView" layoutX="203.0" layoutY="271.0" prefHeight="699.0" prefWidth="1698.0">
          <columns>
             <TableColumn fx:id="idColumn" prefWidth="454.0" text="ID Usuario" />
             <TableColumn fx:id="rolColumn" minWidth="0.0" prefWidth="501.0" text="Rol" />

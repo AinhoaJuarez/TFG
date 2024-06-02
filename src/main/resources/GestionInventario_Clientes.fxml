@@ -42,11 +42,11 @@
          </font>
       </Label>
       <TextField fx:id="txtNombre" layoutX="86.0" layoutY="126.0" prefHeight="25.0" prefWidth="239.0" />
-      <Separator layoutX="14.0" layoutY="166.0" prefHeight="8.0" prefWidth="1920.0" />
-      <Separator layoutX="2.0" layoutY="80.0" prefHeight="8.0" prefWidth="1920.0" />
-      <Separator layoutX="516.0" layoutY="80.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
-      <Separator layoutX="1209.0" layoutY="80.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
-      <TableView fx:id="tableView" layoutX="193.0" layoutY="243.0" prefHeight="714.0" prefWidth="1698.0">
+      <Separator layoutX="-1.0" layoutY="166.0" prefHeight="8.0" prefWidth="1921.0" />
+      <Separator layoutY="80.0" prefHeight="8.0" prefWidth="1920.0" />
+      <Separator layoutX="516.0" layoutY="83.0" orientation="VERTICAL" prefHeight="87.0" prefWidth="11.0" />
+      <Separator layoutX="1209.0" layoutY="83.0" orientation="VERTICAL" prefHeight="87.0" prefWidth="11.0" />
+      <TableView fx:id="tableView" layoutX="193.0" layoutY="252.0" prefHeight="698.0" prefWidth="1698.0">
          <columns>
             <TableColumn fx:id="columnDNI" prefWidth="230.0" text="DNI" />
             <TableColumn fx:id="columnNombre" minWidth="0.0" prefWidth="523.0" text="Nombre" />
