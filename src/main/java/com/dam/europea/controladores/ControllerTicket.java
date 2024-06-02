@@ -162,14 +162,19 @@ public class ControllerTicket implements Initializable {
 		});
 		botonAgregar.setOnAction(arg0 -> {
 			try {
-				addToticket(arg0);
+
+				if (tableView.getSelectionModel().getSelectedItem() != null) {
+					updateProductInTicket(arg0);
+				} else {
+					addToticket(arg0);
+				}
 				updateTotalTicketPrice();
 				session.beginTransaction();
 				cargarTabla();
 				ticketProducto = new TicketProductos();
 
 				Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
-	            Long lastId = query.getSingleResult();
+				Long lastId = query.getSingleResult();
 
 				// Increment the last ID by one and set it for the new TicketProducto
 				if (lastId != null) {
@@ -205,6 +210,115 @@ public class ControllerTicket implements Initializable {
 				e.printStackTrace();
 			}
 		});
+		tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				populateFieldsFromSelectedProduct(newValue);
+			}
+		});
+		botonDesasociar.setOnAction(this::handleDesasociar);
+		botonDelLinea.setOnAction(this::handleDelLinea);
+		botonDelTicket.setOnAction(this::handleDelTicket);
+	}
+
+	private void handleDesasociar(ActionEvent event) {
+		if (ticket != null) {
+			ticket.setCliente(null);
+			lbl_Cliente.setText("Cliente: No asignado");
+			session.merge(ticket);
+			session.getTransaction().commit();
+			session.beginTransaction();
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Cliente Desasociado");
+			alert.setHeaderText(null);
+			alert.setContentText("El cliente ha sido desasociado del ticket.");
+			alert.showAndWait();
+		} else {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Ticket No Encontrado");
+			alert.setHeaderText(null);
+			alert.setContentText("No hay un ticket activo para desasociar un cliente.");
+			alert.showAndWait();
+		}
+	}
+
+	private void handleDelLinea(ActionEvent event) {
+		TicketProductos selectedProduct = tableView.getSelectionModel().getSelectedItem();
+		if (selectedProduct != null) {
+			tableView.getItems().remove(selectedProduct);
+			session.remove(selectedProduct);
+			session.getTransaction().commit();
+			updateTotalTicketPrice();
+			session.beginTransaction();
+
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Producto Eliminado");
+			alert.setHeaderText(null);
+			alert.setContentText("El producto ha sido eliminado del ticket.");
+			alert.showAndWait();
+		} else {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Producto No Seleccionado");
+			alert.setHeaderText(null);
+			alert.setContentText("Por favor, seleccione un producto para eliminar.");
+			alert.showAndWait();
+		}
+	}
+
+	private void handleDelTicket(ActionEvent event) {
+		if (ticket != null) {
+			// Remove all line items associated with the ticket
+			TypedQuery<TicketProductos> query = session
+					.createQuery("SELECT tp FROM TicketProductos tp WHERE tp.numTicket = :ticket", TicketProductos.class);
+			query.setParameter("ticket", ticket);
+			List<TicketProductos> ticketProductosList = query.getResultList();
+
+			for (TicketProductos tp : ticketProductosList) {
+				session.remove(tp);
+			}
+
+			// Remove the ticket itself
+			session.remove(ticket);
+			session.getTransaction().commit();
+			session.beginTransaction();
+			nuevoTicketProducto();
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Ticket Eliminado");
+			alert.setHeaderText(null);
+			alert.setContentText("El ticket ha sido eliminado.");
+			alert.showAndWait();
+
+			// Clear the UI fields
+			tableView.getItems().clear();
+			txt_codBarras.clear();
+			txt_desArticulo.clear();
+			txt_precio.clear();
+			txt_cantidad.clear();
+			txt_descuento.clear();
+			txt_precioDes.clear();
+			txt_totalTicket.clear();
+			lbl_Cliente.setText("Cliente: No asociado");
+			lbl_NumTicket.setText("Nº de ticket: ");
+
+			ticket = null; // Clear the ticket object
+		} else {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Ticket No Encontrado");
+			alert.setHeaderText(null);
+			alert.setContentText("No hay un ticket activo para eliminar.");
+			alert.showAndWait();
+		}
+	}
+
+	private void populateFieldsFromSelectedProduct(TicketProductos selectedProduct) {
+		if (selectedProduct.getProducto() != null) {
+			txt_codBarras.setText(selectedProduct.getProducto().getCodigoBarras());
+		} else {
+			txt_desArticulo.setText(selectedProduct.getDescripcion());
+			txt_precio.setText(String.valueOf(selectedProduct.getPrecioTotal()));
+			txt_cantidad.setText(String.valueOf(selectedProduct.getCantidad()));
+			txt_descuento.setText(String.valueOf(selectedProduct.getDescuento()));
+			txt_precioDes.setText(String.valueOf(selectedProduct.getPrecioDescuento()));
+		}
 	}
 
 	public void loadTicketDetails() {
@@ -234,7 +348,7 @@ public class ControllerTicket implements Initializable {
 		tableView.getItems().setAll(ticketProductosList);
 		ticketProducto = new TicketProductos();
 		Query<Long> query2 = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
-        Long lastId = query2.getSingleResult();
+		Long lastId = query2.getSingleResult();
 
 		if (lastId != null) {
 			ticketProducto.setId(lastId + 1);
@@ -304,7 +418,7 @@ public class ControllerTicket implements Initializable {
 		ticket = new Ticket();
 		ticketProducto = new TicketProductos();
 		Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
-        Long lastId = query.getSingleResult();
+		Long lastId = query.getSingleResult();
 
 		if (lastId != null) {
 			ticketProducto.setId(lastId + 1);
@@ -421,7 +535,8 @@ public class ControllerTicket implements Initializable {
 			loader.setController(controller);
 			Parent root = loader.load();
 
-			controller.setTotalTicket(Double.valueOf(txt_totalTicket.getText().replace(',', '.'))); // Pass the total ticket amount
+			controller.setTotalTicket(Double.valueOf(txt_totalTicket.getText().replace(',', '.'))); // Pass the total
+																									// ticket amount
 
 			// Create the dialog stage
 			Stage dialogStage = new Stage();
@@ -465,7 +580,12 @@ public class ControllerTicket implements Initializable {
 
 				// Commit transaction
 				session.getTransaction().commit();
-
+				txt_codBarras.clear();
+				txt_desArticulo.clear();
+				txt_precio.clear();
+				txt_cantidad.clear();
+				txt_descuento.clear();
+				txt_precioDes.clear();
 				// Show a confirmation message to the user
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Factura Actualizada");
@@ -521,7 +641,10 @@ public class ControllerTicket implements Initializable {
 		}
 
 		try {
-			ticketProducto.setCantidad(Integer.valueOf(txt_cantidad.getText()));
+			int cantidad = 0;
+			cantidad = Integer.valueOf(txt_cantidad.getText());
+			ticketProducto.setCantidad(cantidad);
+			double precio = 0.0;
 
 			if (!txt_codBarras.getText().isEmpty()) {
 				producto = getProductByCodigoProducto(txt_codBarras.getText());
@@ -536,10 +659,12 @@ public class ControllerTicket implements Initializable {
 
 				if (txt_precioDes.getText().isEmpty()) {
 					ticketProducto.setPrecioDescuento(0);
-					ticketProducto.setPrecioTotal(Double.valueOf(txt_precio.getText().replace(',', '.')));
+					precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
+					ticketProducto.setPrecioTotal(precio * cantidad);
 				} else {
 					ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
-					ticketProducto.setPrecioTotal(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
+					precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
+					ticketProducto.setPrecioTotal(precio * cantidad);
 				}
 			} else {
 				ticketProducto.setDescripcion(txt_desArticulo.getText());
@@ -552,16 +677,24 @@ public class ControllerTicket implements Initializable {
 
 				if (txt_precioDes.getText().isEmpty()) {
 					ticketProducto.setPrecioDescuento(0);
-					ticketProducto.setPrecioTotal(Double.valueOf(txt_precio.getText().replace(',', '.')));
+					precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
+					ticketProducto.setPrecioTotal(precio * cantidad);
 				} else {
 					ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
-					ticketProducto.setPrecioTotal(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
+					precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
+					ticketProducto.setPrecioTotal(precio * cantidad);
 				}
 			}
 
 			ticketProducto.setTicket(ticket);
 			session.persist(ticketProducto);
 			session.getTransaction().commit();
+			txt_codBarras.clear();
+			txt_desArticulo.clear();
+			txt_precio.clear();
+			txt_cantidad.clear();
+			txt_descuento.clear();
+			txt_precioDes.clear();
 		} catch (NumberFormatException e) {
 			// Handle number format exceptions
 			Alert alert = new Alert(AlertType.ERROR);
@@ -576,6 +709,77 @@ public class ControllerTicket implements Initializable {
 			alert.setTitle("Error");
 			alert.setHeaderText(null);
 			alert.setContentText("Se produjo un error al agregar el producto al ticket: " + e.getMessage());
+			alert.showAndWait();
+		}
+	}
+
+	public void updateProductInTicket(ActionEvent event) {
+		TicketProductos selectedProduct = tableView.getSelectionModel().getSelectedItem();
+		try {
+			int cantidad = 0;
+			cantidad = Integer.valueOf(txt_cantidad.getText());
+			selectedProduct.setCantidad(cantidad);
+			double precio = 0.0;
+			if (!txt_codBarras.getText().isEmpty()) {
+				producto = getProductByCodigoProducto(txt_codBarras.getText());
+				selectedProduct.setProducto(producto);
+				selectedProduct.setDescripcion(producto.getDescripcion());
+
+				if (txt_descuento.getText().isEmpty()) {
+					selectedProduct.setDescuento(0);
+				} else {
+					selectedProduct.setDescuento(Double.valueOf(txt_descuento.getText()));
+				}
+
+				if (txt_precioDes.getText().isEmpty() || Double.valueOf(txt_precioDes.getText()) == 0.0) {
+					selectedProduct.setPrecioDescuento(0);
+					precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
+					selectedProduct.setPrecioTotal(precio * cantidad);
+				} else {
+					selectedProduct.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
+					precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
+					selectedProduct.setPrecioTotal(precio * cantidad);
+				}
+			} else {
+				selectedProduct.setDescripcion(txt_desArticulo.getText());
+
+				if (txt_descuento.getText().isEmpty()) {
+					selectedProduct.setDescuento(0);
+				} else {
+					selectedProduct.setDescuento(Double.valueOf(txt_descuento.getText()));
+				}
+
+				if (txt_precioDes.getText().isEmpty() || Double.valueOf(txt_precioDes.getText()) == 0.0) {
+					selectedProduct.setPrecioDescuento(0);
+					precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
+					selectedProduct.setPrecioTotal(precio * cantidad);
+				} else {
+					selectedProduct.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
+					precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
+					selectedProduct.setPrecioTotal(precio * cantidad);
+				}
+			}
+			System.out.println(selectedProduct.toString());
+			session.merge(selectedProduct);
+			session.getTransaction().commit();
+			txt_codBarras.clear();
+			txt_desArticulo.clear();
+			txt_precio.clear();
+			txt_cantidad.clear();
+			txt_descuento.clear();
+			txt_precioDes.clear();
+		} catch (NumberFormatException e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error de Formato");
+			alert.setHeaderText(null);
+			alert.setContentText(
+					"Por favor, ingrese un valor numérico válido en los campos de cantidad, descuento y precio.");
+			alert.showAndWait();
+		} catch (Exception e) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Error");
+			alert.setHeaderText(null);
+			alert.setContentText("Se produjo un error al actualizar el producto en el ticket: " + e.getMessage());
 			alert.showAndWait();
 		}
 	}
