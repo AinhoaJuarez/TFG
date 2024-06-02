@@ -6,7 +6,7 @@ body {
   }
   
   header {
-    background-color: #fff;
+    background-color: #f6f6f6;
     padding: 20px;
     text-align: center;
   }
@@ -68,12 +68,17 @@ body {
   }
   
   footer {
-    background-color: #fff;
+    color: #ffffff;
     padding: 20px;
     text-align: center;
+    background-image: url(../imagenes/iconoGrande.jpeg); 
+    background-attachment: fixed; 
+    background-position: center; 
+    
   }
   
   footer p {
     margin: 0;
+    text-shadow: 2px 2px 5px #888; 
   }
   

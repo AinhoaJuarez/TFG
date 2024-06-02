@@ -51,7 +51,11 @@ p {
 }
 
 footer {
-    background-color: #f0f0f0;
+    color: #f0f0f0;
     padding: 20px;
     text-align: center;
+    background-image: url(../../imagenes/iconoGrande.jpeg); 
+    background-attachment: fixed; 
+    background-position: center; 
+    text-shadow: 2px 2px 5px #888; 
 }
