@@ -9,24 +9,25 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableView;
 
-public class ControladorSelTicket implements Initializable{
+// Controlador para seleccionar tickets
+public class ControladorSelTicket implements Initializable {
 
-	    @FXML
-	    private TableView<Ticket> tablaTickets;
-	    private Ticket ticketSeleccionado;
+    @FXML
+    private TableView<Ticket> tablaTickets;
+    private Ticket ticketSeleccionado;
 
-	    @Override
-	    public void initialize(URL url, ResourceBundle resourceBundle) {
-	    	tablaTickets.setOnMouseClicked(event -> {
-	            ticketSeleccionado = tablaTickets.getSelectionModel().getSelectedItem();
-	            
-	            System.out.println("Cliente seleccionado: " + ticketSeleccionado);
-	        });
-	    }
+    // Inicializamos el controlador y configuramos la tabla
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Manejamos el clic en la tabla para seleccionar un ticket
+        tablaTickets.setOnMouseClicked(event -> {
+            ticketSeleccionado = tablaTickets.getSelectionModel().getSelectedItem();
+            System.out.println("Ticket seleccionado: " + ticketSeleccionado);
+        });
+    }
 
-	    public Ticket getTicketSeleccionado() {
-	        return ticketSeleccionado;
-	    }
-
-	}
-
+    // Método para obtener el ticket seleccionado
+    public Ticket getTicketSeleccionado() {
+        return ticketSeleccionado;
+    }
+}
