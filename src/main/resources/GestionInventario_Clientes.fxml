@@ -42,10 +42,10 @@
          </font>
       </Label>
       <TextField fx:id="txtNombre" layoutX="86.0" layoutY="126.0" prefHeight="25.0" prefWidth="239.0" />
-      <Separator layoutX="-1.0" layoutY="166.0" prefHeight="8.0" prefWidth="1921.0" />
+      <Separator layoutY="170.0" prefHeight="8.0" prefWidth="1921.0" />
       <Separator layoutY="80.0" prefHeight="8.0" prefWidth="1920.0" />
-      <Separator layoutX="516.0" layoutY="83.0" orientation="VERTICAL" prefHeight="87.0" prefWidth="11.0" />
-      <Separator layoutX="1209.0" layoutY="83.0" orientation="VERTICAL" prefHeight="87.0" prefWidth="11.0" />
+      <Separator layoutX="516.0" layoutY="83.0" orientation="VERTICAL" prefHeight="92.0" prefWidth="11.0" />
+      <Separator layoutX="1209.0" layoutY="83.0" orientation="VERTICAL" prefHeight="91.0" prefWidth="11.0" />
       <TableView fx:id="tableView" layoutX="193.0" layoutY="252.0" prefHeight="698.0" prefWidth="1698.0">
          <columns>
             <TableColumn fx:id="columnDNI" prefWidth="230.0" text="DNI" />
@@ -56,9 +56,9 @@
          </columns>
       </TableView>
       <TextField fx:id="txtLocalidad" layoutX="708.0" layoutY="121.0" prefHeight="25.0" prefWidth="239.0" />
-      <Button fx:id="btnNew" layoutX="1741.0" layoutY="183.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
-      <Button fx:id="btnDel" layoutX="1830.0" layoutY="183.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
-      <Label layoutX="1000.0" layoutY="16.0" text="Clientes">
+      <Button fx:id="btnNew" layoutX="1741.0" layoutY="190.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
+      <Button fx:id="btnDel" layoutX="1830.0" layoutY="190.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
+      <Label layoutX="921.0" layoutY="36.0" text="Clientes">
          <font>
             <Font size="24.0" />
          </font>
