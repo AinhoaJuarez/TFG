@@ -75,7 +75,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="911.0" layoutY="38.0" text="Facturas">
+      <Label layoutX="921.0" layoutY="36.0" text="Facturas">
          <font>
             <Font size="24.0" />
          </font>
