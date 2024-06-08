@@ -1,6 +1,5 @@
 package com.dam.europea.controladores;
 
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,83 +22,61 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class ControladorSelCliente implements Initializable{
-	private SessionFactory sf;
-	private Session session;
-    @FXML
-    private TableView<Cliente> tablaCli;
-    @FXML
+// Controlador para seleccionar clientes
+public class ControladorSelCliente implements Initializable {
+	private SessionFactory sf; // Fábrica de sesiones de Hibernate
+	private Session session; // Sesión de Hibernate
+
+	@FXML
+	private TableView<Cliente> tablaCli;
+	@FXML
 	private TableColumn<Cliente, String> colDNI;
-    @FXML
+	@FXML
 	private TextField txtNombre;
 	@FXML
 	private TextField txtDNI;
 	@FXML
 	private TableColumn<Cliente, String> colNombre;
 
-    private Producto productoSeleccionado;
-    private ControllerTicket parentController;
-    private ControllerFactura parentController2;
-    
-    public ControladorSelCliente(SessionFactory sf) {
+	private Producto productoSeleccionado;
+	private ControllerTicket parentController;
+	private ControllerFactura parentController2;
+
+	// Constructor que recibe una fábrica de sesiones de Hibernate
+	public ControladorSelCliente(SessionFactory sf) {
+
 		this.sf = sf;
 	}
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-    	cargarTabla();
-    	txtDNI.textProperty().addListener((observable, oldValue, newValue) -> searchProductos());
-    	txtNombre.textProperty().addListener((observable, oldValue, newValue) -> searchProductos());
-    	tablaCli.setOnMouseClicked(new EventHandler<MouseEvent>() {
-	        @Override
-	        public void handle(MouseEvent mouseEvent) {
-	            if (mouseEvent.getClickCount() == 2 && tablaCli.getSelectionModel().getSelectedItem() != null) {
-	            	Cliente selectedCli = tablaCli.getSelectionModel().getSelectedItem();
-	                if(parentController!=null) {
-		                parentController.setClienteDetails(selectedCli);
-	                }else {
-	                	parentController2.setClienteDetails(selectedCli);
-	                }
-	                ((Stage) tablaCli.getScene().getWindow()).close();
-	            }
-	        }
-	    });
-    }
-    
-    private void searchProductos() {
-		String DNI = txtDNI.getText().trim();
-		String nombre = txtNombre.getText().trim();
-		StringBuilder hql = new StringBuilder("SELECT c FROM Cliente c WHERE 1=1");
 
-		if (!DNI.isEmpty()) {
-			hql.append(" AND LOWER(c.dni) LIKE :dni");
-		}
-		if (!nombre.isEmpty()) {
-			hql.append(" AND LOWER(c.nombre) LIKE :nombre");
-		}
+	// Inicializamos el controlador y configuramos la tabla
+	@Override
+	public void initialize(URL url, ResourceBundle resourceBundle) {
+		session = sf.openSession();
+		cargarTabla();
+		txtDNI.textProperty().addListener((observable, oldValue, newValue) -> searchProductos());
+		txtNombre.textProperty().addListener((observable, oldValue, newValue) -> searchProductos());
 
-		Session session = sf.openSession();
-		TypedQuery<Cliente> query = session.createQuery(hql.toString(), Cliente.class);
-
-		if (!DNI.isEmpty()) {
-			query.setParameter("dni", "%" + DNI + "%");
-		}
-		
-		if (!nombre.isEmpty()) {
-			query.setParameter("nombre", "%" + nombre + "%");
-		}
-		System.out.println(query);
-		List<Cliente> results = query.getResultList();
-
-		tablaCli.getItems().clear();
-
-		tablaCli.getItems().addAll(results);
-
-		session.close();
+		// Manejamos el doble clic para seleccionar un cliente
+		tablaCli.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 2 && tablaCli.getSelectionModel().getSelectedItem() != null) {
+					Cliente selectedCli = tablaCli.getSelectionModel().getSelectedItem();
+					if (parentController != null) {
+						parentController.setClienteDetails(selectedCli);
+					} else {
+						parentController2.setClienteDetails(selectedCli);
+					}
+					((Stage) tablaCli.getScene().getWindow()).close();
+				}
+			}
+		});
 	}
-    
-    public void cargarTabla() {
-    	session= sf.openSession();
-    	tablaCli.getItems().clear();
+
+	// Cargamos todos los clientes en la tabla
+	public void cargarTabla() {
+		session = sf.openSession();
+		tablaCli.getItems().clear();
 		colDNI.setCellValueFactory(new PropertyValueFactory<>("dni"));
 		colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
@@ -110,15 +87,44 @@ public class ControladorSelCliente implements Initializable{
 		}
 		session.close();
 	}
-    public Producto getProductoSeleccionado() {
-        return productoSeleccionado;
-    }
-    public void setParentController(ControllerTicket parentController, ControllerFactura parentController2) {
-    	if(parentController!=null){
-    		this.parentController = parentController;
-    	}else {
-    		this.parentController2 = parentController2;
-    	}
-        
-    }
+
+	private void searchProductos() {
+		String DNI = txtDNI.getText().trim();
+		String nombre = txtNombre.getText().trim();
+		StringBuilder hql = new StringBuilder("SELECT c FROM Cliente c WHERE 1=1");
+		if (!DNI.isEmpty()) {
+			hql.append(" AND LOWER(c.dni) LIKE :dni");
+		}
+		if (!nombre.isEmpty()) {
+			hql.append(" AND LOWER(c.nombre) LIKE :nombre");
+		}
+
+		Session session = sf.openSession();
+		TypedQuery<Cliente> query = session.createQuery(hql.toString(), Cliente.class);
+		// Buscamos clientes según los criterios de los campos de texto
+		if (!DNI.isEmpty()) {
+			query.setParameter("dni", "%" + DNI + "%");
+		}
+		if (!nombre.isEmpty()) {
+			query.setParameter("nombre", "%" + nombre + "%");
+		}
+		List<Cliente> results = query.getResultList();
+
+		tablaCli.getItems().clear();
+		tablaCli.getItems().addAll(results);
+		session.close();
+	}
+
+	public Producto getProductoSeleccionado() {
+		return productoSeleccionado;
+	}
+
+	// Establecemos el controlador padre según el tipo
+	public void setParentController(ControllerTicket parentController, ControllerFactura parentController2) {
+		if (parentController != null) {
+			this.parentController = parentController;
+		} else {
+			this.parentController2 = parentController2;
+		}
+	}
 }

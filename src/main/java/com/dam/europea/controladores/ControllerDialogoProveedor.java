@@ -15,95 +15,100 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+// Controlador para el diálogo de gestión de Proveedor
 public class ControllerDialogoProveedor implements Initializable {
 
-	private SessionFactory sf;
-	
-	@FXML
-	private TextField txtCodigoProveedor;
-	@FXML
-	private TextField txtNombreProveedor;
-	private Session session;
-	@FXML
-	private Button btnAceptar;
-	@FXML
-	private Button btnCancelar;
-	//Plantillas rellenables de clases
-	private Proveedor pv;
-	private String codigoProveedor;
-	private ControllerGI_Prov ct2;
-	public ControllerDialogoProveedor(SessionFactory sf, String codigoProveedor, ControllerGI_Prov ct2) {
-		this.sf = sf;
-		this.codigoProveedor = codigoProveedor;
-		this.ct2 = ct2;
-	}
+    private SessionFactory sf; // Fábrica de sesiones de Hibernate
+    @FXML
+    private TextField txtCodigoProveedor;
+    @FXML
+    private TextField txtNombreProveedor;
+    private Session session;
+    @FXML
+    private Button btnAceptar;
+    @FXML
+    private Button btnCancelar;
+    // Plantilla rellenable de clase Proveedor
+    private Proveedor pv; 
+    private String codigoProveedor;
+    private ControllerGI_Prov ct2;
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		session = sf.openSession();
-		session.beginTransaction();
-		if (codigoProveedor != null) {
-			pv = session.find(Proveedor.class, codigoProveedor);
-			if (pv != null) {
-				txtCodigoProveedor.setText(pv.getCodigo());
-				txtNombreProveedor.setText(pv.getNombre());
-				
-			}
-		}
+    // Constructor que recibe la fábrica de sesiones, el código del proveedor y el controlador
+    public ControllerDialogoProveedor(SessionFactory sf, String codigoProveedor, ControllerGI_Prov ct2) {
+        this.sf = sf;
+        this.codigoProveedor = codigoProveedor;
+        this.ct2 = ct2;
+    }
 
-		btnAceptar.setOnAction(event -> {
-			if (areFieldsValid()) {
-				if (codigoProveedor == null) {
-					crearProveedor();
-				} else {
-					modFamiliaProducto(pv);
-				}
-				closeWindow();
-			} else {
-				showWarning();
-			}
-		});
+    // Inicializamos el controlador y configuramos los elementos de la interfaz
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        session = sf.openSession();
+        session.beginTransaction();
+        if (codigoProveedor != null) {
+            pv = session.find(Proveedor.class, codigoProveedor);
+            if (pv != null) {
+                txtCodigoProveedor.setText(pv.getCodigo());
+                txtNombreProveedor.setText(pv.getNombre());
+            }
+        }
 
-		btnCancelar.setOnAction(event -> closeWindow());
-	}
+        // Configuramos el botón aceptar para crear o modificar un proveedor
+        btnAceptar.setOnAction(event -> {
+            if (areFieldsValid()) {
+                if (codigoProveedor == null) {
+                    crearProveedor();
+                } else {
+                    modFamiliaProducto(pv);
+                }
+                closeWindow();
+            } else {
+                showWarning();
+            }
+        });
 
-	private boolean areFieldsValid() {
-		return !txtCodigoProveedor.getText().isEmpty() && !txtNombreProveedor.getText().isEmpty();
-	}
+        btnCancelar.setOnAction(event -> closeWindow());
+    }
 
-	private void showWarning() {
-		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Campos vacíos");
-		alert.setHeaderText(null);
-		alert.setContentText("Por favor, complete todos los campos.");
-		alert.showAndWait();
-	}
+    // Validamos que los campos no estén vacíos
+    private boolean areFieldsValid() {
+        return !txtCodigoProveedor.getText().isEmpty() && !txtNombreProveedor.getText().isEmpty();
+    }
 
-	public void crearProveedor() {
+    // Mostramos una alerta si los campos están vacíos
+    private void showWarning() {
+        Alert alert = new Alert(AlertType.WARNING);
+        alert.setTitle("Campos vacíos");
+        alert.setHeaderText(null);
+        alert.setContentText("Por favor, complete todos los campos.");
+        alert.showAndWait();
+    }
 
-		Proveedor pv = new Proveedor();
-		pv.setCodigo(txtCodigoProveedor.getText());
-		pv.setNombre(txtNombreProveedor.getText());
-		session.persist(pv);
-		session.getTransaction().commit();
-	}
+    // Método para crear un nuevo proveedor
+    public void crearProveedor() {
+        Proveedor pv = new Proveedor();
+        pv.setCodigo(txtCodigoProveedor.getText());
+        pv.setNombre(txtNombreProveedor.getText());
+        session.persist(pv);
+        session.getTransaction().commit();
+    }
 
-	public void modFamiliaProducto(Proveedor pv) {
-		pv = new Proveedor();
-		pv.setCodigo(txtCodigoProveedor.getText());
-		pv.setNombre(txtNombreProveedor.getText());
-		session.merge(pv);
-		session.getTransaction().commit();
-	}
+    // Método para modificar un proveedor existente
+    public void modFamiliaProducto(Proveedor pv) {
+        pv = new Proveedor();
+        pv.setCodigo(txtCodigoProveedor.getText());
+        pv.setNombre(txtNombreProveedor.getText());
+        session.merge(pv);
+        session.getTransaction().commit();
+    }
 
-	private void closeWindow() {
-		ct2.cargarTabla();
-		if (session != null && session.isOpen()) {
-			session.close();
-		}
-		Stage stage = (Stage) btnAceptar.getScene().getWindow();
-		stage.close();
-		
-	}
-
+    // Método para cerrar la ventana
+    private void closeWindow() {
+        ct2.cargarTabla(); // Recargamos la tabla en el controlador principal
+        if (session != null && session.isOpen()) {
+            session.close();
+        }
+        Stage stage = (Stage) btnAceptar.getScene().getWindow();
+        stage.close();
+    }
 }

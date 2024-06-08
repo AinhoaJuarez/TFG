@@ -21,10 +21,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+// Controlador para el diálogo de gestión de Producto
 public class ControllerDialogoProducto implements Initializable {
 
-	private SessionFactory sf;
-	private String codBarras;
+	private SessionFactory sf; // Fábrica de sesiones de Hibernate
+	private String codBarras; // Código de barras del producto
 	@FXML
 	private TextField txtCodBarras;
 	@FXML
@@ -41,34 +42,40 @@ public class ControllerDialogoProducto implements Initializable {
 	private TextField txtStock;
 	@FXML
 	private ComboBox<String> comboBoxProv;
-	private Session session;
+	private Session session; // Sesión de Hibernate
 	@FXML
 	private Button btnAceptar;
 	@FXML
 	private Button btnCancelar;
 	private Producto p;
-	private ControllerGI_Prods ct2;
+	private ControllerGI_Prods ct2; // Controlador para gestionar la tabla de productos
 
+	// Constructor que recibe la fábrica de sesiones, el código de barras y el
+	// controlador
 	public ControllerDialogoProducto(SessionFactory sf, String codBarras, ControllerGI_Prods ct2) {
 		this.sf = sf;
 		this.codBarras = codBarras;
 		this.ct2 = ct2;
 	}
 
+	// Inicializamos el controlador y configuramos los elementos de la interfaz
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		session = sf.openSession();
 		session.beginTransaction();
+
+		// Cargamos las familias de productos en el ComboBox
 		TypedQuery<String> query = session.createQuery("SELECT fp.codFamilia FROM FamiliaProducto fp", String.class);
 		List<String> codFamilias = query.getResultList();
 		comboBoxFam.getItems().addAll(codFamilias);
 
+		// Cargamos los proveedores en el ComboBox
 		TypedQuery<String> query2 = session.createQuery("SELECT p.codigo FROM Proveedor p", String.class);
 		List<String> codProveedor = query2.getResultList();
 		comboBoxProv.getItems().addAll(codProveedor);
 
+		// Si el código de barras no es nulo, cargamos los datos del producto
 		if (codBarras != null) {
-
 			p = session.find(Producto.class, codBarras);
 			if (p != null) {
 				txtCodBarras.setText(p.getCodigoBarras());
@@ -79,10 +86,10 @@ public class ControllerDialogoProducto implements Initializable {
 				txtMargen.setText(String.valueOf(p.getMargen()));
 				txtStock.setText(String.valueOf(p.getStock()));
 				comboBoxProv.setValue(p.getProveedorProducto().getCodigo());
-				;
 			}
 		}
 
+		// Configuramos el botón aceptar para crear o modificar un producto
 		btnAceptar.setOnAction(event -> {
 			if (areFieldsValid()) {
 				if (codBarras == null) {
@@ -97,10 +104,13 @@ public class ControllerDialogoProducto implements Initializable {
 		});
 
 		btnCancelar.setOnAction(event -> closeWindow());
+
+		// Listener para calcular el margen automáticamente cuando cambian los precios
 		txtPrecioCompra.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
 		txtPrecioVenta.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
 	}
 
+	// Método para calcular el margen
 	private void calculateMargen() {
 		try {
 			double precioCompra = Double.parseDouble(txtPrecioCompra.getText());
@@ -112,14 +122,14 @@ public class ControllerDialogoProducto implements Initializable {
 		}
 	}
 
-	
-
+	// Validamos que los campos no estén vacíos
 	private boolean areFieldsValid() {
 		return !txtCodBarras.getText().isEmpty() && !txtDescripcion.getText().isEmpty()
 				&& !txtPrecioCompra.getText().isEmpty() && !txtPrecioVenta.getText().isEmpty()
 				&& !txtMargen.getText().isEmpty() && !txtStock.getText().isEmpty();
 	}
 
+	// Mostramos una alerta si los campos están vacíos
 	private void showWarning() {
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.setTitle("Campos vacíos");
@@ -128,18 +138,17 @@ public class ControllerDialogoProducto implements Initializable {
 		alert.showAndWait();
 	}
 
+	// Método para crear un nuevo producto
 	public void crearProducto() {
-
 		Producto p = new Producto();
 		p.setCodigoBarras(txtCodBarras.getText());
 		String codFamilia = comboBoxFam.getValue();
 		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
 		p.setFamiliaArticulo(fp);
 		p.setDescripcion(txtDescripcion.getText());
-		p.setPrecioCompra(Double.valueOf(txtPrecioCompra.getText())); // MODIFICAR FXML PARA QUE EL TEXTFIELD SOLO
-																		// ADMITA NUMEROS
-		p.setPrecioVenta(Double.valueOf(txtPrecioVenta.getText()));
-		p.setMargen(Double.valueOf(txtMargen.getText()));
+		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText()));
+		p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
+		p.setMargen(Integer.valueOf(txtMargen.getText()));
 		p.setStock(Integer.valueOf(txtStock.getText()));
 		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);
@@ -148,6 +157,8 @@ public class ControllerDialogoProducto implements Initializable {
 		session.persist(p);
 		session.getTransaction().commit();
 	}
+
+	// Método para modificar un producto existente
 
 	public void modFamiliaProducto() {
 		Producto p = new Producto();
@@ -162,19 +173,18 @@ public class ControllerDialogoProducto implements Initializable {
 		p.setStock(Integer.valueOf(txtStock.getText()));
 		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);
-		p.setProveedorProducto(pv);
 
 		session.merge(p);
 		session.getTransaction().commit();
 	}
 
+	// Método para cerrar la ventana
 	private void closeWindow() {
-		ct2.cargarTabla();
+		ct2.cargarTabla(); // Recargamos la tabla en el controlador principal
 		if (session != null && session.isOpen()) {
 			session.close();
 		}
 		Stage stage = (Stage) btnAceptar.getScene().getWindow();
 		stage.close();
 	}
-
 }

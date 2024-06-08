@@ -13,44 +13,44 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #90b1db" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="botonMenu" layoutX="44.0" layoutY="39.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="52.0" />
-      <Label layoutX="1686.0" layoutY="43.0" prefHeight="43.0" prefWidth="129.0" text="Usuario Activo">
+      <Button fx:id="botonMenu" layoutX="34.0" layoutY="29.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="52.0" />
+      <Label layoutX="1676.0" layoutY="33.0" prefHeight="43.0" prefWidth="129.0" text="Usuario Activo">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Button fx:id="botonSalir" layoutX="1850.0" layoutY="39.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="61.0" />
-      <Button fx:id="btnProductos" layoutX="33.0" layoutY="273.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-      <Button fx:id="btnFamilia" layoutX="33.0" layoutY="374.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-      <Button fx:id="btnClientes" layoutX="33.0" layoutY="474.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-      <Button fx:id="btnProveedores" layoutX="33.0" layoutY="575.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-      <Button fx:id="btnUsers" layoutX="33.0" layoutY="679.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-      <Button fx:id="btnTickets" layoutX="33.0" layoutY="780.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-      <Button fx:id="btnFacturas" layoutX="33.0" layoutY="881.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-      <Label layoutX="687.0" layoutY="104.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Código:">
+      <Button fx:id="botonSalir" layoutX="1840.0" layoutY="29.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="61.0" />
+      <Button fx:id="btnProductos" layoutX="24.0" layoutY="251.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+      <Button fx:id="btnFamilia" layoutX="24.0" layoutY="352.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+      <Button fx:id="btnClientes" layoutX="24.0" layoutY="452.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+      <Button fx:id="btnProveedores" layoutX="24.0" layoutY="553.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+      <Button fx:id="btnUsers" layoutX="24.0" layoutY="657.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+      <Button fx:id="btnTickets" layoutX="24.0" layoutY="758.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+      <Button fx:id="btnFacturas" layoutX="24.0" layoutY="859.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+      <Label layoutX="687.0" layoutY="91.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Código:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtCod" layoutX="687.0" layoutY="138.0" />
-      <Label layoutX="1081.0" layoutY="99.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Cliente:">
+      <TextField fx:id="txtCod" layoutX="687.0" layoutY="126.0" />
+      <Label layoutX="1081.0" layoutY="91.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Cliente:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="1582.0" layoutY="99.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Total:">
+      <Label layoutX="1582.0" layoutY="91.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Total:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtTotal" layoutX="1582.0" layoutY="133.0" prefHeight="25.0" prefWidth="161.0" />
-      <Separator layoutX="-3.0" layoutY="180.0" prefHeight="8.0" prefWidth="1923.0" />
-      <Separator layoutX="-9.0" layoutY="90.0" prefHeight="8.0" prefWidth="1929.0" />
-      <Separator layoutX="967.0" layoutY="94.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
-      <Separator layoutX="1424.0" layoutY="94.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
-      <Button fx:id="btnNew" layoutX="1751.0" layoutY="200.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
-      <Button fx:id="btnDel" layoutX="1840.0" layoutY="200.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
-      <TableView fx:id="tableViewTickets" layoutX="203.0" layoutY="273.0" prefHeight="700.0" prefWidth="1698.0">
+      <TextField fx:id="txtTotal" layoutX="1582.0" layoutY="126.0" prefHeight="25.0" prefWidth="161.0" />
+      <Separator layoutY="170.0" prefHeight="8.0" prefWidth="1921.0" />
+      <Separator layoutY="80.0" prefHeight="8.0" prefWidth="1921.0" />
+      <Separator layoutX="967.0" layoutY="84.0" orientation="VERTICAL" prefHeight="91.0" prefWidth="11.0" />
+      <Separator layoutX="1424.0" layoutY="84.0" orientation="VERTICAL" prefHeight="91.0" prefWidth="11.0" />
+      <Button fx:id="btnNew" layoutX="1741.0" layoutY="190.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
+      <Button fx:id="btnDel" layoutX="1830.0" layoutY="190.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
+      <TableView fx:id="tableViewTickets" layoutX="193.0" layoutY="252.0" prefHeight="700.0" prefWidth="1698.0">
          <columns>
             <TableColumn fx:id="codigoTicketColumn" prefWidth="294.0" text="Código de Ticket" />
             <TableColumn fx:id="fechaTicketColumn" minWidth="0.0" prefWidth="596.0" text="Fecha de Ticket" />
@@ -58,29 +58,30 @@
             <TableColumn fx:id="totalTicketColumn" minWidth="0.0" prefWidth="340.0" text="Total Ticket" />
          </columns>
       </TableView>
-      <ComboBox fx:id="comboCliente" layoutX="1077.0" layoutY="132.0" prefWidth="150.0" />
-      <Separator layoutX="613.0" layoutY="94.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
-      <Label layoutX="53.0" layoutY="138.0" prefHeight="25.0" prefWidth="52.0" text="Desde">
+      <ComboBox fx:id="comboCliente" layoutX="1077.0" layoutY="126.0" prefWidth="150.0" />
+      <Separator layoutX="613.0" layoutY="84.0" orientation="VERTICAL" prefHeight="91.0" prefWidth="11.0" />
+      <Label layoutX="32.0" layoutY="127.0" prefHeight="25.0" prefWidth="52.0" text="Desde">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="312.0" layoutY="138.0" prefHeight="25.0" prefWidth="52.0" text="Hasta">
+      <Label layoutX="304.0" layoutY="129.0" prefHeight="25.0" prefWidth="52.0" text="Hasta">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="53.0" layoutY="104.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Fecha:">
+      <Label layoutX="79.0" layoutY="89.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Fecha:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label layoutX="936.0" layoutY="26.0" text="Tickets">
+      <Label layoutX="921.0" layoutY="36.0" text="Tickets">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <DatePicker fx:id="datePickerInicio" layoutX="99.0" layoutY="138.0" />
-      <DatePicker fx:id="datePickerFinal" layoutX="357.0" layoutY="137.0" />
+      <DatePicker fx:id="datePickerInicio" layoutX="99.0" layoutY="126.0" />
+      <DatePicker fx:id="datePickerFinal" layoutX="357.0" layoutY="126.0" />
+
    </children>
 </Pane>
