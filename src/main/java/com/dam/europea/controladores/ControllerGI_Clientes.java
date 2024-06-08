@@ -12,6 +12,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
 import com.dam.europea.entidades.Cliente;
+import com.dam.europea.entidades.Ticket;
 
 import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
@@ -23,7 +24,9 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -91,14 +94,15 @@ public class ControllerGI_Clientes implements Initializable {
 
 	@FXML
 	private TableColumn<Cliente, Integer> columnCodPostal;
+	private Session session;
 
 	public ControllerGI_Clientes(SessionFactory sf) {
 		this.sf = sf;
 	}
-	
-	
-	//En el código, definimos un controlador JavaFX que gestiona la visualización y navegación de clientes en nuestra aplicación de inventario,
-	//interactuando con una base de datos a través de Hibernate.
+
+	// En el código, definimos un controlador JavaFX que gestiona la visualización y
+	// navegación de clientes en nuestra aplicación de inventario,
+	// interactuando con una base de datos a través de Hibernate.
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
 		cargarTabla();
@@ -181,15 +185,44 @@ public class ControllerGI_Clientes implements Initializable {
 				e.printStackTrace();
 			}
 		});
+		btnDel.setOnAction(arg0 -> {
+			try {
+				deleteSelectedClient();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 		addSearchListeners();
-//		btnBuscar.setOnAction(arg0 -> {
-//			buscarClientes();
-//		});
-//
-//		btnBuscarNombre.setOnAction(arg0 -> {
-//			buscarClientePorNombre();
-//		});
 
+	}
+
+	private void deleteSelectedClient() {
+		session = sf.openSession();
+		session.beginTransaction();
+		Cliente selectedCliente = tableView.getSelectionModel().getSelectedItem();
+		if (selectedCliente != null) {
+			Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
+					"¿Estás seguro de que deseas eliminar este cliente?", ButtonType.YES, ButtonType.NO);
+			confirmationAlert.showAndWait().ifPresent(response -> {
+				if (response == ButtonType.YES) {
+					session.remove(selectedCliente);
+					session.getTransaction().commit();
+					session.close();
+					tableView.getItems().remove(selectedCliente);
+					showAlert(Alert.AlertType.INFORMATION, "Cliente Eliminado", "El cliente ha sido eliminado.");
+				}
+			});
+		} else {
+			showAlert(Alert.AlertType.WARNING, "Ninguna selección", "Por favor seleccione un cliente para eliminar.");
+		}
+	}
+
+	private void showAlert(Alert.AlertType alertType, String title, String message) {
+		Alert alert = new Alert(alertType);
+		alert.setTitle(title);
+		alert.setHeaderText(null);
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
 
 	private void addSearchListeners() {
@@ -199,6 +232,7 @@ public class ControllerGI_Clientes implements Initializable {
 	}
 
 	public void cargarTabla() {
+		session=sf.openSession();
 		tableView.getItems().clear();
 		columnDNI.setCellValueFactory(new PropertyValueFactory<>("dni"));
 		columnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -206,12 +240,12 @@ public class ControllerGI_Clientes implements Initializable {
 		columnLocalidad.setCellValueFactory(new PropertyValueFactory<>("localidad"));
 		columnCodPostal.setCellValueFactory(new PropertyValueFactory<>("codPos"));
 
-		Session session = sf.openSession();
 		TypedQuery<Cliente> query = session.createQuery("SELECT e FROM Cliente e", Cliente.class);
 		ArrayList<Cliente> entityData = (ArrayList<Cliente>) query.getResultList();
 		if (entityData != null) {
 			tableView.getItems().addAll(entityData);
 		}
+		session.close();
 	}
 
 	public void cargarImagenes() {
@@ -376,6 +410,8 @@ public class ControllerGI_Clientes implements Initializable {
 	}
 
 	private void buscarClientes() {
+		session = sf.openSession();
+		
 		String codPostal = txtCodPostal.getText().trim();
 		String nombre = txtNombre.getText().trim();
 		String localidad = txtLocalidad.getText().trim();
@@ -392,7 +428,6 @@ public class ControllerGI_Clientes implements Initializable {
 			hql.append(" AND LOWER(c.localidad) LIKE :localidad");
 		}
 
-		Session session = sf.openSession();
 		Query<Cliente> query = session.createQuery(hql.toString(), Cliente.class);
 
 		if (!codPostal.isEmpty()) {

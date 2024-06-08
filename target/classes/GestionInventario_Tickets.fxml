@@ -80,7 +80,7 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <DatePicker layoutX="99.0" layoutY="138.0" />
-      <DatePicker layoutX="357.0" layoutY="137.0" />
+      <DatePicker fx:id="datePickerInicio" layoutX="99.0" layoutY="138.0" />
+      <DatePicker fx:id="datePickerFinal" layoutX="357.0" layoutY="137.0" />
    </children>
 </Pane>

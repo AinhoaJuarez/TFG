@@ -136,10 +136,10 @@ public class ControllerDialogoProducto implements Initializable {
 		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
 		p.setFamiliaArticulo(fp);
 		p.setDescripcion(txtDescripcion.getText());
-		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText())); // MODIFICAR FXML PARA QUE EL TEXTFIELD SOLO
+		p.setPrecioCompra(Double.valueOf(txtPrecioCompra.getText())); // MODIFICAR FXML PARA QUE EL TEXTFIELD SOLO
 																		// ADMITA NUMEROS
-		p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
-		p.setMargen(Integer.valueOf(txtMargen.getText()));
+		p.setPrecioVenta(Double.valueOf(txtPrecioVenta.getText()));
+		p.setMargen(Double.valueOf(txtMargen.getText()));
 		p.setStock(Integer.valueOf(txtStock.getText()));
 		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);
@@ -156,9 +156,9 @@ public class ControllerDialogoProducto implements Initializable {
 		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
 		p.setFamiliaArticulo(fp);
 		p.setDescripcion(txtDescripcion.getText());
-		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText()));
-		p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
-		p.setMargen(Integer.valueOf(txtMargen.getText()));
+		p.setPrecioCompra(Double.valueOf(txtPrecioCompra.getText()));
+		p.setPrecioVenta(Double.valueOf(txtPrecioVenta.getText()));
+		p.setMargen(Double.valueOf(txtMargen.getText()));
 		p.setStock(Integer.valueOf(txtStock.getText()));
 		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);

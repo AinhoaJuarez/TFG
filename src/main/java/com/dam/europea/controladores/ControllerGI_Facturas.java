@@ -12,6 +12,7 @@ import org.hibernate.SessionFactory;
 
 import com.dam.europea.entidades.Cliente;
 import com.dam.europea.entidades.Factura;
+import com.dam.europea.entidades.Ticket;
 
 import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
@@ -22,7 +23,9 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -93,11 +96,13 @@ public class ControllerGI_Facturas implements Initializable {
 	public ControllerGI_Facturas(SessionFactory sf) {
 		this.sf = sf;
 	}
+	private Session session;
 
 	//En el código, definimos un controlador JavaFX que gestiona la visualización y navegación de facturas en nuestra aplicación de inventario,
 	//interactuando con una base de datos a través de Hibernate.
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
+		
 		cargarImagenes();
 		cargarClientesComboBox();
 		botonSalir.setOnAction(arg0 -> {
@@ -164,6 +169,13 @@ public class ControllerGI_Facturas implements Initializable {
 				e.printStackTrace();
 			}
 		});
+		btnDel.setOnAction(arg0 -> {
+			try {
+				deleteSelectedFactura();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 		txtCod.textProperty().addListener((observable, oldValue, newValue) -> searchFacturas());
 		txtTotal.textProperty().addListener((observable, oldValue, newValue) -> searchFacturas());
 		comboCliente.valueProperty().addListener((observable, oldValue, newValue) -> searchFacturas());
@@ -178,6 +190,33 @@ public class ControllerGI_Facturas implements Initializable {
 		    return row;
 		});
 	}
+	
+	private void deleteSelectedFactura() {
+		session = sf.openSession();
+		session.beginTransaction();
+        Factura selectedFactura = tableViewFacturas.getSelectionModel().getSelectedItem();
+        if (selectedFactura != null) {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de que deseas eliminar esta factura?", ButtonType.YES, ButtonType.NO);
+            confirmationAlert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    session.remove(selectedFactura);
+                    session.getTransaction().commit();
+                    session.close();
+                    tableViewFacturas.getItems().remove(selectedFactura);
+                    showAlert(Alert.AlertType.INFORMATION, "Factura Eliminada", "La facturat ha sido eliminada.");
+                }
+            });
+        } else {
+            showAlert(Alert.AlertType.WARNING, "Ninguna selección", "Por favor seleccione una factura para eliminar.");
+        }
+    }
+	private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
 	private void switchToPantallaFacturas(Factura selectedFactura) {
 	    try {
@@ -195,10 +234,11 @@ public class ControllerGI_Facturas implements Initializable {
 	}
 	
 	private void cargarClientesComboBox() {
+		session = sf.openSession();
 		comboCliente.getItems().clear();
 		comboCliente.getItems().add(null);
 
-		Session session = sf.openSession();
+		
 		TypedQuery<Cliente> query = session.createQuery("SELECT c FROM Cliente c", Cliente.class);
 		List<Cliente> clientes = query.getResultList();
 		comboCliente.getItems().addAll(clientes);
@@ -206,6 +246,7 @@ public class ControllerGI_Facturas implements Initializable {
 	}
 
 	private void searchFacturas() {
+		session = sf.openSession();
 		String cod = txtCod.getText().trim();
 		String total = txtTotal.getText().trim();
 		Cliente cliente = comboCliente.getValue();
@@ -222,7 +263,6 @@ public class ControllerGI_Facturas implements Initializable {
 			hql.append(" AND f.cliente = :cliente");
 		}
 
-		Session session = sf.openSession();
 		TypedQuery<Factura> query = session.createQuery(hql.toString(), Factura.class);
 
 		if (!cod.isEmpty()) {
@@ -257,6 +297,7 @@ public class ControllerGI_Facturas implements Initializable {
 	}
 
 	public void cargarTabla() {
+		session = sf.openSession();
 		tableViewFacturas.getItems().clear();
 		codFacturaColumn.setCellValueFactory(new PropertyValueFactory<>("numeroFactura"));
 		fechaFacturaColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -270,12 +311,12 @@ public class ControllerGI_Facturas implements Initializable {
 		});
 		totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalConIVA"));
 
-		Session session = sf.openSession();
 		TypedQuery<Factura> query = session.createQuery("SELECT e FROM Factura e", Factura.class);
 		ArrayList<Factura> entityData = (ArrayList<Factura>) query.getResultList();
 		if (entityData != null) {
 			tableViewFacturas.getItems().addAll(entityData);
 		}
+		session.close();
 	}
 
 	public void cargarImagenes() {

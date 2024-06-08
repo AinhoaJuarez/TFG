@@ -15,18 +15,18 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="txtDNI" layoutX="94.0" layoutY="21.0" prefHeight="25.0" prefWidth="122.0" />
+      <TextField fx:id="txtNum" layoutX="94.0" layoutY="21.0" prefHeight="25.0" prefWidth="122.0" />
       <Label layoutX="573.0" layoutY="17.0" prefHeight="33.0" prefWidth="67.0" text="Total:">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="txtNombre" layoutX="618.0" layoutY="21.0" prefHeight="25.0" prefWidth="76.0" />
-      <TableView fx:id="tablaCli" layoutX="15.0" layoutY="64.0" prefHeight="448.0" prefWidth="694.0">
+      <TextField fx:id="txtTotal" layoutX="618.0" layoutY="21.0" prefHeight="25.0" prefWidth="76.0" />
+      <TableView fx:id="tableViewTickets" layoutX="15.0" layoutY="64.0" prefHeight="448.0" prefWidth="694.0">
          <columns>
-            <TableColumn fx:id="colDNI" prefWidth="82.0" text="Num Ticket" />
-            <TableColumn fx:id="colNombre" minWidth="0.0" prefWidth="140.0" text="Fecha Expedición" />
-            <TableColumn fx:id="colNombre1" prefWidth="470.0" text="Total" />
+            <TableColumn fx:id="colNumTicket" prefWidth="82.0" text="Num Ticket" />
+            <TableColumn fx:id="colFecha" minWidth="0.0" prefWidth="140.0" text="Fecha Expedición" />
+            <TableColumn fx:id="colCliente" prefWidth="470.0" text="Cliente" />
          </columns>
       </TableView>
       <Label layoutX="234.0" layoutY="17.0" prefHeight="33.0" prefWidth="116.0" text="Fecha Expedición:">
@@ -34,6 +34,6 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <DatePicker layoutX="350.0" layoutY="21.0" />
+      <DatePicker fx:id="datePicker" layoutX="350.0" layoutY="21.0" />
    </children>
 </Pane>

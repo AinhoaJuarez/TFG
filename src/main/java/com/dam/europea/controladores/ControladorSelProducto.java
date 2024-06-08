@@ -47,7 +47,7 @@ public class ControladorSelProducto implements Initializable{
 	}
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-    	session = sf.openSession();
+    	
     	cargarTabla();
     	txtCod.textProperty().addListener((observable, oldValue, newValue) -> searchProductos());
 		txtDes.textProperty().addListener((observable, oldValue, newValue) -> searchProductos());
@@ -101,6 +101,7 @@ public class ControladorSelProducto implements Initializable{
 	}
     
     public void cargarTabla() {
+    	session = sf.openSession();
     	tablaProds.getItems().clear();
     	colCod.setCellValueFactory(new PropertyValueFactory<>("codigoBarras"));
     	colDes.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
@@ -111,6 +112,7 @@ public class ControladorSelProducto implements Initializable{
 		if (entityData != null) {
 			tablaProds.getItems().addAll(entityData);
 		}
+		session.close();
 	}
     public Producto getProductoSeleccionado() {
         return productoSeleccionado;

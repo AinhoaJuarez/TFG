@@ -11,6 +11,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import com.dam.europea.entidades.Proveedor;
+import com.dam.europea.entidades.Ticket;
 
 import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
@@ -22,7 +23,9 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -83,22 +86,24 @@ public class ControllerGI_Prov implements Initializable{
 
 	@FXML
 	private TableColumn<Proveedor, String> nombreProveedorColumn;
-
+	private Session session;
 	
 	public ControllerGI_Prov(SessionFactory sf) {
 		this.sf=sf;
 	}
 	public void cargarTabla() {
+		session = sf.openSession();
 		tableView.getItems().clear();
 		codProveedorColumn.setCellValueFactory(new PropertyValueFactory<>("codigo"));
 		nombreProveedorColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
-	    Session session = sf.openSession();
+	    
 	    TypedQuery<Proveedor> query = session.createQuery("SELECT e FROM Proveedor e", Proveedor.class);
 	    ArrayList<Proveedor> entityData = (ArrayList<Proveedor>) query.getResultList();
 	    if(entityData!=null) {
 	    	tableView.getItems().addAll(entityData);
 	    }
+	    session.close();
 	}
 	
 	//En el código, definimos un controlador JavaFX que gestiona la visualización y navegación de proveedores de productos en nuestra aplicación de inventario,
@@ -184,10 +189,46 @@ public class ControllerGI_Prov implements Initializable{
 				e.printStackTrace();
 			}
 		});
+		btnDel.setOnAction(arg0 -> {
+			try {
+				deleteSelectedTicket();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 		txtCod.textProperty().addListener((observable, oldValue, newValue) -> searchProveedores());
 		txtNombre.textProperty().addListener((observable, oldValue, newValue) -> searchProveedores());
 	}
+	
+	private void deleteSelectedTicket() {
+		session = sf.openSession();
+		session.beginTransaction();
+        Proveedor selectedProveedor = tableView.getSelectionModel().getSelectedItem();
+        if (selectedProveedor != null) {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de que deseas eliminar este proveedor?", ButtonType.YES, ButtonType.NO);
+            confirmationAlert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    session.remove(selectedProveedor);
+                    session.getTransaction().commit();
+                    session.close();
+                    tableView.getItems().remove(selectedProveedor);
+                    showAlert(Alert.AlertType.INFORMATION, "Proveedor Eliminado", "El proveedor ha sido eliminado.");
+                }
+            });
+        } else {
+            showAlert(Alert.AlertType.WARNING, "Ninguna selección", "Por favor seleccione un proveedor para eliminar.");
+        }
+    }
+	private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+	
 	private void searchProveedores() {
+		session = sf.openSession();
 	    String cod = txtCod.getText().trim().toLowerCase();
 	    String nombre = txtNombre.getText().trim().toLowerCase();
 
@@ -200,7 +241,6 @@ public class ControllerGI_Prov implements Initializable{
 	        hql.append(" AND LOWER(p.nombre) LIKE :nombre");
 	    }
 
-	    Session session = sf.openSession();
 
 	    TypedQuery<Proveedor> query = session.createQuery(hql.toString(), Proveedor.class);
 
@@ -216,7 +256,6 @@ public class ControllerGI_Prov implements Initializable{
 	    tableView.getItems().clear();
 
 	    tableView.getItems().addAll(results);
-
 	    session.close();
 	}
 

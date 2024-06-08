@@ -108,8 +108,6 @@ public class ControllerTicket implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
-		session = sf.openSession();
-		session.beginTransaction();
 
 		if (ticket != null) {
 			loadTicketDetails();
@@ -187,6 +185,7 @@ public class ControllerTicket implements Initializable {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			session.close();
 		});
 		txt_descuento.textProperty().addListener((observable, oldValue, newValue) -> {
 			if (!newValue.isEmpty()) {
@@ -221,12 +220,14 @@ public class ControllerTicket implements Initializable {
 	}
 
 	private void handleDesasociar(ActionEvent event) {
+		session = sf.openSession();
+		session.beginTransaction();
 		if (ticket != null) {
 			ticket.setCliente(null);
 			lbl_Cliente.setText("Cliente: No asignado");
 			session.merge(ticket);
 			session.getTransaction().commit();
-			session.beginTransaction();
+			session.close();
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Cliente Desasociado");
 			alert.setHeaderText(null);
@@ -242,19 +243,28 @@ public class ControllerTicket implements Initializable {
 	}
 
 	private void handleDelLinea(ActionEvent event) {
+		session = sf.openSession();
+		session.beginTransaction();
 		TicketProductos selectedProduct = tableView.getSelectionModel().getSelectedItem();
 		if (selectedProduct != null) {
 			tableView.getItems().remove(selectedProduct);
 			session.remove(selectedProduct);
 			session.getTransaction().commit();
+			session.close();
 			updateTotalTicketPrice();
-			session.beginTransaction();
+			
 
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Producto Eliminado");
 			alert.setHeaderText(null);
 			alert.setContentText("El producto ha sido eliminado del ticket.");
 			alert.showAndWait();
+			txt_codBarras.clear();
+			txt_desArticulo.clear();
+			txt_precio.clear();
+			txt_cantidad.clear();
+			txt_descuento.clear();
+			txt_precioDes.clear();
 		} else {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("Producto No Seleccionado");
@@ -265,10 +275,12 @@ public class ControllerTicket implements Initializable {
 	}
 
 	private void handleDelTicket(ActionEvent event) {
+		session = sf.openSession();
+		session.beginTransaction();
 		if (ticket != null) {
 			// Remove all line items associated with the ticket
-			TypedQuery<TicketProductos> query = session
-					.createQuery("SELECT tp FROM TicketProductos tp WHERE tp.numTicket = :ticket", TicketProductos.class);
+			TypedQuery<TicketProductos> query = session.createQuery(
+					"SELECT tp FROM TicketProductos tp WHERE tp.numTicket = :ticket", TicketProductos.class);
 			query.setParameter("ticket", ticket);
 			List<TicketProductos> ticketProductosList = query.getResultList();
 
@@ -279,7 +291,7 @@ public class ControllerTicket implements Initializable {
 			// Remove the ticket itself
 			session.remove(ticket);
 			session.getTransaction().commit();
-			session.beginTransaction();
+			session.close();
 			nuevoTicketProducto();
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Ticket Eliminado");
@@ -327,6 +339,7 @@ public class ControllerTicket implements Initializable {
 	}
 
 	public void loadTicketProductos() {
+		session = sf.openSession();
 		colCodBarras.setCellValueFactory(cellData -> {
 			if (cellData.getValue().getProducto() != null) {
 				return new javafx.beans.property.SimpleStringProperty(
@@ -355,10 +368,11 @@ public class ControllerTicket implements Initializable {
 		} else {
 			ticketProducto.setId(1L);
 		}
-
+		session.close();
 	}
 
 	private void updateTotalTicketPrice() {
+		session = sf.openSession();
 		TypedQuery<Double> query = session.createQuery(
 				"SELECT SUM(tp.precioTotal) FROM TicketProductos tp WHERE tp.numTicket = :ticket", Double.class);
 		query.setParameter("ticket", ticket);
@@ -368,6 +382,7 @@ public class ControllerTicket implements Initializable {
 		} else {
 			txt_totalTicket.setText("0.00");
 		}
+		session.close();
 	}
 
 	private void showProductoNotFoundError() {
@@ -379,6 +394,7 @@ public class ControllerTicket implements Initializable {
 	}
 
 	public void cargarTabla() {
+		session = sf.openSession();
 		tableView.getItems().clear();
 		colCodBarras.setCellValueFactory(cellData -> {
 			if (cellData.getValue().getProducto() != null) {
@@ -404,17 +420,19 @@ public class ControllerTicket implements Initializable {
 	}
 
 	public Producto getProductByCodigoProducto(String codigoProducto) {
-
+		session = sf.openSession();
 		Query<Producto> query = session.createQuery("FROM Producto p WHERE p.codigoBarras = :codigoBarras",
 				Producto.class);
 		query.setParameter("codigoBarras", codigoProducto);
 		Producto return2 = query.uniqueResult();
 		setProductDetails(return2);
+		session.close();
 		return return2;
 
 	}
 
 	public void nuevoTicketProducto() {
+		session = sf.openSession();
 		ticket = new Ticket();
 		ticketProducto = new TicketProductos();
 		Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
@@ -428,7 +446,7 @@ public class ControllerTicket implements Initializable {
 		session.persist(ticket);
 		session.getTransaction().commit();
 		lbl_NumTicket.setText("Nº de ticket: " + String.valueOf(ticket.getNumTicket()));
-		session.beginTransaction();
+		session.close();
 	}
 
 	public void cargarImagenes() {
@@ -564,6 +582,8 @@ public class ControllerTicket implements Initializable {
 	}
 
 	private void mergeTotalFactura(ActionEvent event, double descuentoTicket, double importeFinal) {
+		session = sf.openSession();
+		session.beginTransaction();
 		try {
 			double totalTicket = Double.parseDouble(txt_totalTicket.getText().replace(',', '.'));
 
@@ -615,9 +635,12 @@ public class ControllerTicket implements Initializable {
 			alert.setContentText("Se produjo un error al actualizar la factura: " + e.getMessage());
 			alert.showAndWait();
 		}
+		session.close();
 	}
 
 	public void addToticket(ActionEvent event) {
+		session = sf.openSession();
+		session.beginTransaction();
 		StringBuilder missingFields = new StringBuilder();
 
 		if (txt_cantidad.getText().isEmpty()) {
@@ -689,6 +712,7 @@ public class ControllerTicket implements Initializable {
 			ticketProducto.setTicket(ticket);
 			session.persist(ticketProducto);
 			session.getTransaction().commit();
+			session.close();
 			txt_codBarras.clear();
 			txt_desArticulo.clear();
 			txt_precio.clear();
@@ -714,6 +738,8 @@ public class ControllerTicket implements Initializable {
 	}
 
 	public void updateProductInTicket(ActionEvent event) {
+		session = sf.openSession();
+		session.beginTransaction();
 		TicketProductos selectedProduct = tableView.getSelectionModel().getSelectedItem();
 		try {
 			int cantidad = 0;
@@ -762,6 +788,7 @@ public class ControllerTicket implements Initializable {
 			System.out.println(selectedProduct.toString());
 			session.merge(selectedProduct);
 			session.getTransaction().commit();
+			session.close();
 			txt_codBarras.clear();
 			txt_desArticulo.clear();
 			txt_precio.clear();

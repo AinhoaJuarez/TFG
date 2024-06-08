@@ -46,7 +46,6 @@ public class ControladorSelCliente implements Initializable{
 	}
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-    	session = sf.openSession();
     	cargarTabla();
     	txtDNI.textProperty().addListener((observable, oldValue, newValue) -> searchProductos());
     	txtNombre.textProperty().addListener((observable, oldValue, newValue) -> searchProductos());
@@ -99,16 +98,17 @@ public class ControladorSelCliente implements Initializable{
 	}
     
     public void cargarTabla() {
+    	session= sf.openSession();
     	tablaCli.getItems().clear();
 		colDNI.setCellValueFactory(new PropertyValueFactory<>("dni"));
 		colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 
-		Session session = sf.openSession();
 		TypedQuery<Cliente> query = session.createQuery("SELECT e FROM Cliente e", Cliente.class);
 		ArrayList<Cliente> entityData = (ArrayList<Cliente>) query.getResultList();
 		if (entityData != null) {
 			tablaCli.getItems().addAll(entityData);
 		}
+		session.close();
 	}
     public Producto getProductoSeleccionado() {
         return productoSeleccionado;

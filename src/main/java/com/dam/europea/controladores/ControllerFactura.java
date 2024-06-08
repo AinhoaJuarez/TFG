@@ -106,8 +106,7 @@ public class ControllerFactura implements Initializable {
 	// Inicializamos el controlador, cargamos imágenes y configuramos los botones
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
-		session = sf.openSession();
-		session.beginTransaction();
+		
 		cargarImagenes();
 		if (factura != null) {
 			loadFacturaDetails();
@@ -216,8 +215,19 @@ public class ControllerFactura implements Initializable {
 		});
 		botonDesasociar.setOnAction(this::handleDesasociar);
 		botonDelTicket.setOnAction(this::desasociarTicket);
+		botonAsociar.setOnAction(event -> {
+			try {
+				abrirDialogoSeleccionTicket(event);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 	}
 
+	
+	
+	
 	private void desasociarTicket(ActionEvent event) {
 		// Prompt user to confirm the action
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -392,7 +402,7 @@ public class ControllerFactura implements Initializable {
 	public void saveFacturaToPDF() {
 		// Assuming you have a Factura object named factura
 		String dest = "factura_" + factura.getNumeroFactura() + ".pdf";
-		PDFGenerator.createFacturaPDF(factura, dest);
+//		PDFGenerator.createFacturaPDF(factura, dest);
 
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle("PDF Generado");
@@ -487,6 +497,8 @@ public class ControllerFactura implements Initializable {
 	}
 
 	private void loadFacturaProductos() {
+		session = sf.openSession();
+		
 		colCodBarras.setCellValueFactory(cellData -> {
 			if (cellData.getValue().getProducto() != null) {
 				return new javafx.beans.property.SimpleStringProperty(
@@ -515,6 +527,7 @@ public class ControllerFactura implements Initializable {
 		} else {
 			ticketProducto.setId(1L);
 		}
+		session.close();
 	}
 
 	// Método para cargar las imágenes en los botones
@@ -594,7 +607,9 @@ public class ControllerFactura implements Initializable {
 
 	// Método para abrir el diálogo de selección de ticket
 	private void abrirDialogoSeleccionTicket(ActionEvent event) throws IOException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoSelTicket.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoSelFact.fxml"));
+		ControladorSelTicket ct = new ControladorSelTicket(sf, this, factura);
+		loader.setController(ct);
 		Parent root = loader.load();
 		Scene scene = new Scene(root);
 		Stage stage = new Stage();
@@ -605,6 +620,8 @@ public class ControllerFactura implements Initializable {
 	}
 
 	public void addTofactura(ActionEvent event) {
+		session = sf.openSession();
+		session.beginTransaction();
 		StringBuilder missingFields = new StringBuilder();
 
 		if (txt_cantidad.getText().isEmpty()) {
@@ -676,6 +693,7 @@ public class ControllerFactura implements Initializable {
 			ticketProducto.setFactura(factura);
 			session.persist(ticketProducto);
 			session.getTransaction().commit();
+			session.close();
 			txt_codBarras.clear();
 			txt_desArticulo.clear();
 			txt_precio.clear();
@@ -701,6 +719,8 @@ public class ControllerFactura implements Initializable {
 	}
 
 	public void updateProductInFactura(ActionEvent event) {
+		session =sf.openSession();
+		session.beginTransaction();
 		TicketProductos selectedProduct = tableView.getSelectionModel().getSelectedItem();
 		try {
 			int cantidad = 0;
@@ -749,6 +769,7 @@ public class ControllerFactura implements Initializable {
 			System.out.println(selectedProduct.toString());
 			session.merge(selectedProduct);
 			session.getTransaction().commit();
+			session.close();
 			txt_codBarras.clear();
 			txt_desArticulo.clear();
 			txt_precio.clear();

@@ -49,7 +49,6 @@ public class ControllerDialogoCliente implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         session = sf.openSession();
-        session.beginTransaction();
         
         // Si el DNI no es nulo, cargamos los datos del cliente en los campos
         if (dni != null) {
@@ -63,7 +62,7 @@ public class ControllerDialogoCliente implements Initializable {
                 txtNombre.setText(c.getNombre());
             }
         }
-        
+        session.close();
         // Configuramos el comportamiento del botón "Aceptar"
         btnAceptar.setOnAction(event -> {
             if (areFieldsValid()) {
@@ -100,6 +99,8 @@ public class ControllerDialogoCliente implements Initializable {
 
     // Creamos un nuevo cliente con los datos ingresados
     public void crearCliente() {
+    	session=sf.openSession();
+    	session.beginTransaction();
         Cliente c = new Cliente();
         c.setCodPos(txtCodPost.getText());
         c.setDireccion(txtDireccion.getText());
@@ -108,9 +109,12 @@ public class ControllerDialogoCliente implements Initializable {
         c.setNombre(txtNombre.getText());
         session.persist(c);
         session.getTransaction().commit();
+        session.close();
         
     }
     public void modCliente(Cliente c) {
+    	session=sf.openSession();
+    	session.beginTransaction();
         c = new Cliente();
         c.setCodPos(txtCodPost.getText());
         c.setDireccion(txtDireccion.getText());
@@ -118,7 +122,7 @@ public class ControllerDialogoCliente implements Initializable {
         c.setNombre(txtNombre.getText());
         session.merge(c);
         session.getTransaction().commit();
-        
+        session.close();
     }
 
     // Cerramos la ventana y la sesión

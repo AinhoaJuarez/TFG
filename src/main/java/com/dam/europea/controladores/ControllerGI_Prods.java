@@ -13,6 +13,7 @@ import org.hibernate.SessionFactory;
 import com.dam.europea.entidades.FamiliaProducto;
 import com.dam.europea.entidades.Producto;
 import com.dam.europea.entidades.Proveedor;
+import com.dam.europea.entidades.Ticket;
 
 import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
@@ -24,7 +25,9 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -110,7 +113,6 @@ public class ControllerGI_Prods implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
-		session = sf.openSession();
 		cargarImagenes();
 		cargarTabla();
 		addItemsComboBoxIVA();
@@ -194,14 +196,49 @@ public class ControllerGI_Prods implements Initializable {
 				e.printStackTrace();
 			}
 		});
+		btnDel.setOnAction(arg0 -> {
+			try {
+				deleteSelectedTicket();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 		txtCod.textProperty().addListener((observable, oldValue, newValue) -> searchProductos());
 		txtDescripcion.textProperty().addListener((observable, oldValue, newValue) -> searchProductos());
 		comboProv.valueProperty().addListener((observable, oldValue, newValue) -> searchProductos());
 		comboFam.valueProperty().addListener((observable, oldValue, newValue) -> searchProductos());
 		comboIVA.valueProperty().addListener((observable, oldValue, newValue) -> searchProductos());
 	}
+	
+	private void deleteSelectedTicket() {
+		session = sf.openSession();
+		session.beginTransaction();
+        Producto selectedProducto = tableView.getSelectionModel().getSelectedItem();
+        if (selectedProducto != null) {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION, "¿Estás seguro de que deseas eliminar este producto?", ButtonType.YES, ButtonType.NO);
+            confirmationAlert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    session.remove(selectedProducto);
+                    session.getTransaction().commit();
+                    session.close();
+                    tableView.getItems().remove(selectedProducto);
+                    showAlert(Alert.AlertType.INFORMATION, "Producto Eliminado", "El producto ha sido eliminado.");
+                }
+            });
+        } else {
+            showAlert(Alert.AlertType.WARNING, "Ninguna selección", "Por favor seleccione un producto para eliminar.");
+        }
+    }
+	private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
 	private void searchProductos() {
+		session = sf.openSession();
 		String cod = txtCod.getText().trim();
 		String descripcion = txtDescripcion.getText().trim();
 		Proveedor proveedor = comboProv.getValue();
@@ -228,7 +265,6 @@ public class ControllerGI_Prods implements Initializable {
 			hql.append(" AND STR(p.familiaProducto.IVA) = :iva");
 		}
 
-		Session session = sf.openSession();
 		TypedQuery<Producto> query = session.createQuery(hql.toString(), Producto.class);
 
 		if (!cod.isEmpty()) {
@@ -258,6 +294,7 @@ public class ControllerGI_Prods implements Initializable {
 	}
 
 	public void addItemsComboBoxProv() {
+		session = sf.openSession();
 		comboProv.getItems().clear();
 
 		comboProv.getItems().add(null);
@@ -265,10 +302,11 @@ public class ControllerGI_Prods implements Initializable {
 		TypedQuery<Proveedor> query = session.createQuery("SELECT c FROM Proveedor c", Proveedor.class);
 		List<Proveedor> clientes = query.getResultList();
 		comboProv.getItems().addAll(clientes);
-
+		session.close();
 	}
 
 	public void addItemsComboBoxFam() {
+		session = sf.openSession();
 		comboFam.getItems().clear();
 
 		comboFam.getItems().add(null);
@@ -277,7 +315,8 @@ public class ControllerGI_Prods implements Initializable {
 				FamiliaProducto.class);
 		List<FamiliaProducto> clientes = query.getResultList();
 		comboFam.getItems().addAll(clientes);
-
+		session.close();
+		
 	}
 
 	public void addItemsComboBoxIVA() {
@@ -304,6 +343,7 @@ public class ControllerGI_Prods implements Initializable {
 	}
 
 	public void cargarTabla() {
+		session = sf.openSession();
 		tableView.getItems().clear();
 		codigoBarrasColumn.setCellValueFactory(new PropertyValueFactory<>("codigoBarras"));
 		descripcionColumn.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
@@ -331,6 +371,7 @@ public class ControllerGI_Prods implements Initializable {
 		if (entityData != null) {
 			tableView.getItems().addAll(entityData);
 		}
+		session.close();
 	}
 
 	public void cargarImagenes() {
