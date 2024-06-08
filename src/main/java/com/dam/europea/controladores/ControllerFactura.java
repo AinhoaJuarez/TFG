@@ -607,6 +607,8 @@ public class ControllerFactura implements Initializable {
 
     // Añadir a la factura
     public void addTofactura(ActionEvent event) {
+        session = sf.openSession();
+        session.beginTransaction();
         StringBuilder missingFields = new StringBuilder();
 
         if (txt_cantidad.getText().isEmpty()) {
@@ -619,6 +621,7 @@ public class ControllerFactura implements Initializable {
             missingFields.append("Descripción Artículo\n");
         }
 
+        // If there are missing fields, show an alert and return early
         if (missingFields.length() > 0) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Campos Faltantes");
@@ -629,53 +632,72 @@ public class ControllerFactura implements Initializable {
         }
 
         try {
-            int cantidad = Integer.valueOf(txt_cantidad.getText());
-            ticketProducto.setCantidad(cantidad);
-            double precio = 0.0;
+            int cantidad = Integer.parseInt(txt_cantidad.getText());
 
             if (!txt_codBarras.getText().isEmpty()) {
                 producto = getProductByCodigoProducto(txt_codBarras.getText());
+
+                // Comprobacion para stock
+                if (producto.getStock() < cantidad) {
+                    Alert alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Stock Insuficiente");
+                    alert.setHeaderText(null);
+                    alert.setContentText("El stock del producto " + producto.getDescripcion() + " es insuficiente.");
+                    alert.showAndWait();
+                    return;
+                }
+
                 ticketProducto.setProducto(producto);
                 ticketProducto.setDescripcion(producto.getDescripcion());
 
-                if (txt_descuento.getText().isEmpty()) {
-                    ticketProducto.setDescuento(0);
-                } else {
-                    ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
-                }
+                double descuento = txt_descuento.getText().isEmpty() ? 0 : Double.parseDouble(txt_descuento.getText());
+                ticketProducto.setDescuento(descuento);
 
                 if (txt_precioDes.getText().isEmpty()) {
                     ticketProducto.setPrecioDescuento(0);
-                    precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
+                    double precio = Double.parseDouble(txt_precio.getText().replace(',', '.'));
                     ticketProducto.setPrecioTotal(precio * cantidad);
                 } else {
-                    ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
-                    precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
-                    ticketProducto.setPrecioTotal(precio * cantidad);
+                    double precioDescuento = Double.parseDouble(txt_precioDes.getText().replace(',', '.'));
+                    ticketProducto.setPrecioDescuento(precioDescuento);
+                    ticketProducto.setPrecioTotal(precioDescuento * cantidad);
                 }
             } else {
                 ticketProducto.setDescripcion(txt_desArticulo.getText());
 
-                if (txt_descuento.getText().isEmpty()) {
-                    ticketProducto.setDescuento(0);
-                } else {
-                    ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
-                }
+                double descuento = txt_descuento.getText().isEmpty() ? 0 : Double.parseDouble(txt_descuento.getText());
+                ticketProducto.setDescuento(descuento);
 
                 if (txt_precioDes.getText().isEmpty()) {
                     ticketProducto.setPrecioDescuento(0);
-                    precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
+                    double precio = Double.parseDouble(txt_precio.getText().replace(',', '.'));
                     ticketProducto.setPrecioTotal(precio * cantidad);
                 } else {
-                    ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
-                    precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
-                    ticketProducto.setPrecioTotal(precio * cantidad);
+                    double precioDescuento = Double.parseDouble(txt_precioDes.getText().replace(',', '.'));
+                    ticketProducto.setPrecioDescuento(precioDescuento);
+                    ticketProducto.setPrecioTotal(precioDescuento * cantidad);
                 }
             }
 
             ticketProducto.setFactura(factura);
             session.persist(ticketProducto);
             session.getTransaction().commit();
+            session.close();
+
+            session.beginTransaction();
+            int newStock = producto.getStock() - cantidad;
+            producto.setStock(newStock);
+            session.merge(producto);
+            session.getTransaction().commit();
+
+            if (newStock < 2) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Stock Bajo");
+                alert.setHeaderText(null);
+                alert.setContentText("El stock del producto " + producto.getDescripcion() + " es menor a 2.");
+                alert.showAndWait();
+            }
+
             txt_codBarras.clear();
             txt_desArticulo.clear();
             txt_precio.clear();
@@ -683,20 +705,26 @@ public class ControllerFactura implements Initializable {
             txt_descuento.clear();
             txt_precioDes.clear();
         } catch (NumberFormatException e) {
+            // Handle number format exceptions
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error de Formato");
             alert.setHeaderText(null);
-            alert.setContentText(
-                    "Por favor, ingrese un valor numérico válido en los campos de cantidad, descuento y precio.");
+            alert.setContentText("Por favor, ingrese un valor numérico válido en los campos de cantidad, descuento y precio.");
             alert.showAndWait();
         } catch (Exception e) {
+            // Handle any other exceptions
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.setContentText("Se produjo un error al agregar el producto a la factura: " + e.getMessage());
             alert.showAndWait();
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
+
 
     // Actualizar producto en la factura
     public void updateProductInFactura(ActionEvent event) {
