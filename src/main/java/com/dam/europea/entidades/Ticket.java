@@ -48,7 +48,6 @@ public class Ticket {
 		this.ticketProductos = ticketProductos;
 		this.importeTicket = importeTicket;
 		this.descuentoTicket = descuentoTicket;
-
 	}
 
 	// Constructor vacío necesario para JPA

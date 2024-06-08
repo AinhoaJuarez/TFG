@@ -19,7 +19,6 @@ public class Factura {
     
     // Definimos el ID de la factura
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int numeroFactura;
     
     @ManyToOne

@@ -1,6 +1,9 @@
 package com.dam.europea.controladores;
 
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.ResourceBundle;
 
 import org.hibernate.Session;
@@ -18,7 +21,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class ControllerDialogoUsuario implements Initializable {
-	
 
 	private SessionFactory sf;
 	private String IDUsuario;
@@ -35,7 +37,7 @@ public class ControllerDialogoUsuario implements Initializable {
 	private Button btnCancelar;
 	@FXML
 	private ComboBox<String> comboBoxRol;
-	//Clases para rellenar
+	// Clases para rellenar
 	private Usuario u;
 	private ControllerGI_Users ct2;
 
@@ -49,7 +51,6 @@ public class ControllerDialogoUsuario implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		comboBoxRol.getItems().addAll("Administrador", "Supervisor", "Staff");
 		session = sf.openSession();
-		session.beginTransaction();
 		if (IDUsuario != null) {
 			u = session.find(Usuario.class, IDUsuario);
 			if (u != null) {
@@ -57,7 +58,8 @@ public class ControllerDialogoUsuario implements Initializable {
 				txtNombreUsuario.setText(u.getUserName());
 				txtContrasena.setText(u.getPass());
 
-				comboBoxRol.setValue(u.getRol());;
+				comboBoxRol.setValue(u.getRol());
+				;
 
 			}
 		}
@@ -65,10 +67,20 @@ public class ControllerDialogoUsuario implements Initializable {
 		btnAceptar.setOnAction(event -> {
 			if (areFieldsValid()) {
 				if (IDUsuario == null) {
-					crearUsuario();
+					try {
+						crearUsuario();
+					} catch (NoSuchAlgorithmException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				} else {
 
-					modUsuario(u);
+					try {
+						modUsuario(u);
+					} catch (NoSuchAlgorithmException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 
 				}
 				closeWindow();
@@ -81,7 +93,8 @@ public class ControllerDialogoUsuario implements Initializable {
 	}
 
 	private boolean areFieldsValid() {
-		return !txtIDUsuario.getText().isEmpty() && !txtNombreUsuario.getText().isEmpty() && !txtContrasena.getText().isEmpty();
+		return !txtIDUsuario.getText().isEmpty() && !txtNombreUsuario.getText().isEmpty()
+				&& !txtContrasena.getText().isEmpty();
 	}
 
 	private void showWarning() {
@@ -92,25 +105,41 @@ public class ControllerDialogoUsuario implements Initializable {
 		alert.showAndWait();
 	}
 
-	public void crearUsuario() {
-
+	public void crearUsuario() throws NoSuchAlgorithmException {
+		session = sf.openSession();
+		session.beginTransaction();
 		Usuario u = new Usuario();
 		u.setIdUsuario(txtIDUsuario.getText());
 		u.setUserName(txtNombreUsuario.getText());
-		u.setPass(txtContrasena.getText());
+		byte[] password = txtContrasena.getText().getBytes();
+		MessageDigest md = MessageDigest.getInstance("SHA-512");
+		md.update(password);
+		byte[] passHash = md.digest();
+		String mensajeHashBase64 = Base64.getEncoder().encodeToString(passHash);
+		u.setPass(mensajeHashBase64);
 		u.setRol(comboBoxRol.getValue());
 		session.persist(u);
 		session.getTransaction().commit();
+		session.close();
 	}
 
-
-	public void modUsuario(Usuario u) {
+	public void modUsuario(Usuario u) throws NoSuchAlgorithmException {
+		session = sf.openSession();
+		session.beginTransaction();
 		u.setUserName(txtNombreUsuario.getText());
-		u.setPass(txtContrasena.getText());
+		if (txtContrasena.getText().length() < 30) {
+			byte[] password = txtContrasena.getText().getBytes();
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			md.update(password);
+			byte[] passHash = md.digest();
+			String mensajeHashBase64 = Base64.getEncoder().encodeToString(passHash);
+			u.setPass(mensajeHashBase64);
+		}
 		u.setRol(comboBoxRol.getValue());
 
 		session.merge(u);
 		session.getTransaction().commit();
+		session.close();
 	}
 
 	private void closeWindow() {
@@ -120,7 +149,7 @@ public class ControllerDialogoUsuario implements Initializable {
 		}
 		Stage stage = (Stage) btnAceptar.getScene().getWindow();
 		stage.close();
-		
+
 	}
 
 }

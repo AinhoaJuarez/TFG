@@ -489,7 +489,14 @@ public class ControllerFactura implements Initializable {
 		} else {
 			ticketProducto.setId(1L);
 		}
+		Query<Integer> query2 = session.createQuery("select max(tp.id) from Factura tp", Integer.class);
+		int lastId2 = query2.getSingleResult();
 
+		if (lastId != null) {
+			factura.setNumeroFactura(lastId2+1);
+		} else {
+			factura.setNumeroFactura(1);
+		}
 		session.persist(factura);
 		session.getTransaction().commit();
 		txt_NumFactura.setText(String.valueOf(factura.getNumeroFactura()));
