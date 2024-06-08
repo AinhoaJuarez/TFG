@@ -108,7 +108,6 @@ public class ControllerTicket implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
-
 		if (ticket != null) {
 			loadTicketDetails();
 			loadTicketProductos();
@@ -167,7 +166,6 @@ public class ControllerTicket implements Initializable {
 					addToticket(arg0);
 				}
 				updateTotalTicketPrice();
-				session.beginTransaction();
 				cargarTabla();
 				ticketProducto = new TicketProductos();
 
@@ -252,7 +250,6 @@ public class ControllerTicket implements Initializable {
 			session.getTransaction().commit();
 			session.close();
 			updateTotalTicketPrice();
-			
 
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Producto Eliminado");
@@ -433,6 +430,7 @@ public class ControllerTicket implements Initializable {
 
 	public void nuevoTicketProducto() {
 		session = sf.openSession();
+		session.beginTransaction();
 		ticket = new Ticket();
 		ticketProducto = new TicketProductos();
 		Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
@@ -639,103 +637,113 @@ public class ControllerTicket implements Initializable {
 	}
 
 	public void addToticket(ActionEvent event) {
-		session = sf.openSession();
-		session.beginTransaction();
-		StringBuilder missingFields = new StringBuilder();
+	    Session session = sf.openSession();
+	    session.beginTransaction();
+	    StringBuilder missingFields = new StringBuilder();
 
-		if (txt_cantidad.getText().isEmpty()) {
-			missingFields.append("Cantidad\n");
-		}
-		if (txt_precioDes.getText().isEmpty() && txt_precio.getText().isEmpty()) {
-			missingFields.append("Precio Descuento o Precio\n");
-		}
-		if (txt_desArticulo.getText().isEmpty() && txt_codBarras.getText().isEmpty()) {
-			missingFields.append("Descripción Artículo\n");
-		}
+	    if (txt_cantidad.getText().isEmpty()) {
+	        missingFields.append("Cantidad\n");
+	    }
+	    if (txt_precioDes.getText().isEmpty() && txt_precio.getText().isEmpty()) {
+	        missingFields.append("Precio Descuento o Precio\n");
+	    }
+	    if (txt_desArticulo.getText().isEmpty() && txt_codBarras.getText().isEmpty()) {
+	        missingFields.append("Descripción Artículo\n");
+	    }
 
-		// If there are missing fields, show an alert and return early
-		if (missingFields.length() > 0) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Campos Faltantes");
-			alert.setHeaderText("Faltan los siguientes campos:");
-			alert.setContentText(missingFields.toString());
-			alert.showAndWait();
-			return;
-		}
+	    // If there are missing fields, show an alert and return early
+	    if (missingFields.length() > 0) {
+	        Alert alert = new Alert(Alert.AlertType.ERROR);
+	        alert.setTitle("Campos Faltantes");
+	        alert.setHeaderText("Faltan los siguientes campos:");
+	        alert.setContentText(missingFields.toString());
+	        alert.showAndWait();
+	        return;
+	    }
 
-		try {
-			int cantidad = 0;
-			cantidad = Integer.valueOf(txt_cantidad.getText());
-			ticketProducto.setCantidad(cantidad);
-			double precio = 0.0;
+	    try {
+	        int cantidad = Integer.parseInt(txt_cantidad.getText());
+	        ticketProducto.setCantidad(cantidad);
+	        double precio;
 
-			if (!txt_codBarras.getText().isEmpty()) {
-				producto = getProductByCodigoProducto(txt_codBarras.getText());
-				ticketProducto.setProducto(producto);
-				ticketProducto.setDescripcion(producto.getDescripcion());
+	        if (!txt_codBarras.getText().isEmpty()) {
+	            producto = getProductByCodigoProducto(txt_codBarras.getText());
+	            ticketProducto.setProducto(producto);
+	            ticketProducto.setDescripcion(producto.getDescripcion());
 
-				if (txt_descuento.getText().isEmpty()) {
-					ticketProducto.setDescuento(0);
-				} else {
-					ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
-				}
+	            double descuento = txt_descuento.getText().isEmpty() ? 0 : Double.parseDouble(txt_descuento.getText());
+	            ticketProducto.setDescuento(descuento);
 
-				if (txt_precioDes.getText().isEmpty()) {
-					ticketProducto.setPrecioDescuento(0);
-					precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
-					ticketProducto.setPrecioTotal(precio * cantidad);
-				} else {
-					ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
-					precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
-					ticketProducto.setPrecioTotal(precio * cantidad);
-				}
-			} else {
-				ticketProducto.setDescripcion(txt_desArticulo.getText());
+	            if (txt_precioDes.getText().isEmpty()) {
+	                ticketProducto.setPrecioDescuento(0);
+	                precio = Double.parseDouble(txt_precio.getText().replace(',', '.'));
+	            } else {
+	                ticketProducto.setPrecioDescuento(Double.parseDouble(txt_precioDes.getText().replace(',', '.')));
+	                precio = Double.parseDouble(txt_precioDes.getText().replace(',', '.'));
+	            }
+	            ticketProducto.setPrecioTotal(precio * cantidad);
+	        } else {
+	            ticketProducto.setDescripcion(txt_desArticulo.getText());
 
-				if (txt_descuento.getText().isEmpty()) {
-					ticketProducto.setDescuento(0);
-				} else {
-					ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
-				}
+	            double descuento = txt_descuento.getText().isEmpty() ? 0 : Double.parseDouble(txt_descuento.getText());
+	            ticketProducto.setDescuento(descuento);
 
-				if (txt_precioDes.getText().isEmpty()) {
-					ticketProducto.setPrecioDescuento(0);
-					precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
-					ticketProducto.setPrecioTotal(precio * cantidad);
-				} else {
-					ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
-					precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
-					ticketProducto.setPrecioTotal(precio * cantidad);
-				}
-			}
+	            if (txt_precioDes.getText().isEmpty()) {
+	                ticketProducto.setPrecioDescuento(0);
+	                precio = Double.parseDouble(txt_precio.getText().replace(',', '.'));
+	            } else {
+	                ticketProducto.setPrecioDescuento(Double.parseDouble(txt_precioDes.getText().replace(',', '.')));
+	                precio = Double.parseDouble(txt_precioDes.getText().replace(',', '.'));
+	            }
+	            ticketProducto.setPrecioTotal(precio * cantidad);
+	        }
 
-			ticketProducto.setTicket(ticket);
-			session.persist(ticketProducto);
-			session.getTransaction().commit();
-			session.close();
-			txt_codBarras.clear();
-			txt_desArticulo.clear();
-			txt_precio.clear();
-			txt_cantidad.clear();
-			txt_descuento.clear();
-			txt_precioDes.clear();
-		} catch (NumberFormatException e) {
-			// Handle number format exceptions
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error de Formato");
-			alert.setHeaderText(null);
-			alert.setContentText(
-					"Por favor, ingrese un valor numérico válido en los campos de cantidad, descuento y precio.");
-			alert.showAndWait();
-		} catch (Exception e) {
-			// Handle any other exceptions
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText(null);
-			alert.setContentText("Se produjo un error al agregar el producto al ticket: " + e.getMessage());
-			alert.showAndWait();
-		}
+	        ticketProducto.setTicket(ticket);
+	        session.persist(ticketProducto);
+	        session.getTransaction().commit();
+
+	        if (producto != null) {
+	            session.beginTransaction();
+	            int newStock = producto.getStock() - cantidad;
+	            producto.setStock(newStock);
+	            session.merge(producto);
+	            session.getTransaction().commit();
+
+	            if (newStock < 2) {
+	                Alert alert = new Alert(Alert.AlertType.WARNING);
+	                alert.setTitle("Stock Bajo");
+	                alert.setHeaderText(null);
+	                alert.setContentText("El stock del producto " + producto.getDescripcion() + " es menor a 2.");
+	                alert.showAndWait();
+	            }
+	        }
+
+	        txt_codBarras.clear();
+	        txt_desArticulo.clear();
+	        txt_precio.clear();
+	        txt_cantidad.clear();
+	        txt_descuento.clear();
+	        txt_precioDes.clear();
+
+	    } catch (NumberFormatException e) {
+	        Alert alert = new Alert(Alert.AlertType.ERROR);
+	        alert.setTitle("Error de Formato");
+	        alert.setHeaderText(null);
+	        alert.setContentText("Por favor, ingrese un valor numérico válido en los campos de cantidad, descuento y precio.");
+	        alert.showAndWait();
+	    } catch (Exception e) {
+	        Alert alert = new Alert(Alert.AlertType.ERROR);
+	        alert.setTitle("Error");
+	        alert.setHeaderText(null);
+	        alert.setContentText("Se produjo un error al agregar el producto al ticket: " + e.getMessage());
+	        alert.showAndWait();
+	    } finally {
+	        if (session != null && session.isOpen()) {
+	            session.close();
+	        }
+	    }
 	}
+
 
 	public void updateProductInTicket(ActionEvent event) {
 		session = sf.openSession();
@@ -789,6 +797,24 @@ public class ControllerTicket implements Initializable {
 			session.merge(selectedProduct);
 			session.getTransaction().commit();
 			session.close();
+			
+			if (producto != null) {
+				session =sf.openSession();
+				session.beginTransaction();
+				int newStock = producto.getStock() - cantidad;
+				producto.setStock(newStock);
+				session.merge(producto);
+				session.getTransaction().commit();
+
+				if (newStock < 2) {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("Stock Bajo");
+					alert.setHeaderText(null);
+					alert.setContentText("El stock del producto " + producto.getDescripcion() + " es menor a 2.");
+					alert.showAndWait();
+				}
+			}
+			
 			txt_codBarras.clear();
 			txt_desArticulo.clear();
 			txt_precio.clear();

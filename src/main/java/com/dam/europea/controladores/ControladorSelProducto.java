@@ -34,6 +34,7 @@ public class ControladorSelProducto implements Initializable {
     private TextField txtDes;
     @FXML
     private TextField txtCod;
+    @FXML
     private TableColumn<Producto, String> colDes;
     @FXML
     private TableColumn<Producto, Double> colPrecio;
