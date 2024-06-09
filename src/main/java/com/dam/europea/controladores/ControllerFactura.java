@@ -106,11 +106,12 @@ public class ControllerFactura implements Initializable {
 	// Inicializamos el controlador, cargamos imágenes y configuramos los botones
 	@Override
 	public void initialize(URL url, ResourceBundle arg1) {
-		
+		configurarTabla();
 		cargarImagenes();
 		if (factura != null) {
 			loadFacturaDetails();
 			loadFacturaProductos();
+			cargarTabla();
 		} else {
 			nuevoTicketProducto();
 		}
@@ -132,6 +133,7 @@ public class ControllerFactura implements Initializable {
 		botonAsociar.setOnAction(arg0 -> {
 			try {
 				abrirDialogoSeleccionCliente(arg0);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -139,6 +141,7 @@ public class ControllerFactura implements Initializable {
 		botonTicket.setOnAction(arg0 -> {
 			try {
 				abrirDialogoSeleccionTicket(arg0);
+				updateTotalFacturaPrice();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -165,6 +168,7 @@ public class ControllerFactura implements Initializable {
 					addTofactura(arg0);
 				}
 				updateTotalFacturaPrice();
+				session = sf.openSession();
 				session.beginTransaction();
 				cargarTabla();
 				ticketProducto = new TicketProductos();
@@ -215,21 +219,12 @@ public class ControllerFactura implements Initializable {
 		});
 		botonDesasociar.setOnAction(this::handleDesasociar);
 		botonDelTicket.setOnAction(this::desasociarTicket);
-		botonAsociar.setOnAction(event -> {
-			try {
-				abrirDialogoSeleccionTicket(event);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		});
+
 	}
 
-	
-	
-	
 	private void desasociarTicket(ActionEvent event) {
 		session = sf.openSession();
+		session.beginTransaction();
 		// Prompt user to confirm the action
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Confirmar Desasociación de Ticket");
@@ -274,6 +269,7 @@ public class ControllerFactura implements Initializable {
 
 	private void handleDesasociar(ActionEvent event) {
 		session = sf.openSession();
+		session.beginTransaction();
 		if (factura != null) {
 			factura.setCliente(null);
 			lbl_Cliente.setText("Cliente: No asignado");
@@ -324,6 +320,7 @@ public class ControllerFactura implements Initializable {
 
 	private void mergeTotalFactura(ActionEvent event) {
 		session = sf.openSession();
+		session.beginTransaction();
 		try {
 			double totalFactura = Double.parseDouble(txt_TotalFactura.getText().replace(',', '.'));
 
@@ -332,7 +329,8 @@ public class ControllerFactura implements Initializable {
 			if (factura != null) {
 				LocalDate fechaExpedicion = botonFecha.getValue();
 				if (fechaExpedicion != null) {
-					factura.setFechaExpedicion(java.sql.Date.valueOf(fechaExpedicion));
+					factura.setFechaExpedicion(LocalDate.now());
+					factura.setFechaOperacion(fechaExpedicion);
 				} else {
 					// Handle the case where the date is not selected
 					Alert alert = new Alert(AlertType.ERROR);
@@ -365,7 +363,7 @@ public class ControllerFactura implements Initializable {
 
 				// Commit transaction
 				session.getTransaction().commit();
-				
+
 				txt_codBarras.clear();
 				txt_desArticulo.clear();
 				txt_precio.clear();
@@ -417,7 +415,7 @@ public class ControllerFactura implements Initializable {
 		alert.showAndWait();
 	}
 
-	private void updateTotalFacturaPrice() {
+	public void updateTotalFacturaPrice() {
 		session = sf.openSession();
 		TypedQuery<Double> query = session.createQuery(
 				"SELECT SUM(tp.precioTotal) FROM TicketProductos tp WHERE tp.numeroFactura = :factura", Double.class);
@@ -442,18 +440,6 @@ public class ControllerFactura implements Initializable {
 	public void cargarTabla() {
 		session = sf.openSession();
 		tableView.getItems().clear();
-		colCodBarras.setCellValueFactory(cellData -> {
-			if (cellData.getValue().getProducto() != null) {
-				return new javafx.beans.property.SimpleStringProperty(
-						cellData.getValue().getProducto().getCodigoBarras());
-			} else {
-				return new javafx.beans.property.SimpleStringProperty("");
-			}
-		});
-		colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-		colPrecio.setCellValueFactory(new PropertyValueFactory<>("precioTotal"));
-		colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-		colDescuento.setCellValueFactory(new PropertyValueFactory<>("descuento"));
 
 		TypedQuery<TicketProductos> query = session
 				.createQuery("SELECT e FROM TicketProductos e WHERE e.numeroFactura = :factura", TicketProductos.class);
@@ -475,13 +461,17 @@ public class ControllerFactura implements Initializable {
 		setProductDetails(return2);
 		session.close();
 		return return2;
-		
 
 	}
 
 	private void loadFacturaDetails() {
 		txt_TotalFactura.setText(String.valueOf(factura.getTotalConIVA()).replace('.', ','));
-		// Add any other fields you need to populate from the ticket object
+		if (factura.getCliente() != null) {
+			lbl_Cliente.setText(factura.getCliente().getNombre());
+		}
+
+		botonFecha.setValue(factura.getFechaOperacion());
+		txt_NumFactura.setText(String.valueOf(factura.getNumeroFactura()));
 	}
 
 	public void setProductDetails(Producto product) {
@@ -491,74 +481,62 @@ public class ControllerFactura implements Initializable {
 	}
 
 	public void nuevoTicketProducto() {
-	    Session session = null;
-	    try {
-	        session = sf.openSession();
-	        session.beginTransaction();
+		try {
+			session = sf.openSession();
+			session.beginTransaction();
 
-	        factura = new Factura();
-	        ticketProducto = new TicketProductos();
+			factura = new Factura();
+			ticketProducto = new TicketProductos();
 
-	        // Get the last ID of TicketProductos
-	        Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
-	        Long lastTicketProductoId = query.uniqueResult();
+			// Get the last ID of TicketProductos
+			Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
+			Long lastTicketProductoId = query.uniqueResult();
 
-	        if (lastTicketProductoId != null) {
-	            ticketProducto.setId(lastTicketProductoId + 1);
-	        } else {
-	            ticketProducto.setId(1L);
-	        }
+			if (lastTicketProductoId != null) {
+				ticketProducto.setId(lastTicketProductoId + 1);
+			} else {
+				ticketProducto.setId(1L);
+			}
 
-	        // Get the last ID of Factura
-	        Query<Integer> query2 = session.createQuery("select max(tp.numeroFactura) from Factura tp", Integer.class);
-	        Integer lastFacturaId = query2.uniqueResult();
+			// Get the last ID of Factura
+			Query<Integer> query2 = session.createQuery("select max(tp.numeroFactura) from Factura tp", Integer.class);
+			Integer lastFacturaId = query2.uniqueResult();
 
-	        if (lastFacturaId != null) {
-	            factura.setNumeroFactura(lastFacturaId + 1);
-	        } else {
-	            factura.setNumeroFactura(1);
-	        }
+			if (lastFacturaId != null) {
+				factura.setNumeroFactura(lastFacturaId + 1);
+			} else {
+				factura.setNumeroFactura(1);
+			}
 
-	        // Persist the new Factura
-	        session.persist(factura);
-	        session.getTransaction().commit();
+			// Persist the new Factura
+			session.persist(factura);
+			session.getTransaction().commit();
 
-	        // Set the text field to the new Factura number
-	        txt_NumFactura.setText(String.valueOf(factura.getNumeroFactura()));
-	    } catch (Exception e) {
-	        if (session != null && session.getTransaction().isActive()) {
-	            session.getTransaction().rollback();
-	        }
-	        e.printStackTrace();
-	        showAlert("Error", "An error occurred while creating a new TicketProducto: " + e.getMessage());
-	    } finally {
-	        if (session != null) {
-	            session.close();
-	        }
-	    }
+			// Set the text field to the new Factura number
+			txt_NumFactura.setText(String.valueOf(factura.getNumeroFactura()));
+		} catch (Exception e) {
+			if (session != null && session.getTransaction().isActive()) {
+				session.getTransaction().rollback();
+			}
+			e.printStackTrace();
+			showAlert("Error", "An error occurred while creating a new TicketProducto: " + e.getMessage());
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
 	}
+
 	private void showAlert(String title, String message) {
-	    Alert alert = new Alert(Alert.AlertType.ERROR);
-	    alert.setTitle(title);
-	    alert.setHeaderText(null);
-	    alert.setContentText(message);
-	    alert.showAndWait();
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle(title);
+		alert.setHeaderText(null);
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
+
 	private void loadFacturaProductos() {
 		session = sf.openSession();
-		
-		colCodBarras.setCellValueFactory(cellData -> {
-			if (cellData.getValue().getProducto() != null) {
-				return new javafx.beans.property.SimpleStringProperty(
-						cellData.getValue().getProducto().getCodigoBarras());
-			} else {
-				return new javafx.beans.property.SimpleStringProperty("");
-			}
-		});
-		colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-		colPrecio.setCellValueFactory(new PropertyValueFactory<>("precioTotal"));
-		colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
-		colDescuento.setCellValueFactory(new PropertyValueFactory<>("descuento"));
 
 		TypedQuery<TicketProductos> query = session.createQuery(
 				"SELECT tp FROM TicketProductos tp WHERE tp.numeroFactura = :factura", TicketProductos.class);
@@ -576,6 +554,21 @@ public class ControllerFactura implements Initializable {
 			ticketProducto.setId(1L);
 		}
 		session.close();
+	}
+
+	private void configurarTabla() {
+		colCodBarras.setCellValueFactory(cellData -> {
+			if (cellData.getValue().getProducto() != null) {
+				return new javafx.beans.property.SimpleStringProperty(
+						cellData.getValue().getProducto().getCodigoBarras());
+			} else {
+				return new javafx.beans.property.SimpleStringProperty("");
+			}
+		});
+		colDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+		colPrecio.setCellValueFactory(new PropertyValueFactory<>("precioTotal"));
+		colCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
+		colDescuento.setCellValueFactory(new PropertyValueFactory<>("descuento"));
 	}
 
 	// Método para cargar las imágenes en los botones
@@ -650,11 +643,8 @@ public class ControllerFactura implements Initializable {
 		stage.setScene(scene);
 		ct.setParentController(null, this);
 
-
 		stage.show();
 	}
-
-
 
 	// Método para abrir el diálogo de selección de ticket
 	private void abrirDialogoSeleccionTicket(ActionEvent event) throws IOException {
@@ -670,13 +660,10 @@ public class ControllerFactura implements Initializable {
 		stage.show();
 	}
 
-
 	public void addTofactura(ActionEvent event) {
 		session = sf.openSession();
 		session.beginTransaction();
 		StringBuilder missingFields = new StringBuilder();
-
-
 
 		if (txt_cantidad.getText().isEmpty()) {
 			missingFields.append("Cantidad\n");
@@ -688,8 +675,6 @@ public class ControllerFactura implements Initializable {
 			missingFields.append("Descripción Artículo\n");
 		}
 
-
-
 		// If there are missing fields, show an alert and return early
 		if (missingFields.length() > 0) {
 			Alert alert = new Alert(AlertType.ERROR);
@@ -700,30 +685,22 @@ public class ControllerFactura implements Initializable {
 			return;
 		}
 
-
-
 		try {
 			int cantidad = 0;
 			cantidad = Integer.valueOf(txt_cantidad.getText());
 			ticketProducto.setCantidad(cantidad);
 			double precio = 0.0;
 
-
-
 			if (!txt_codBarras.getText().isEmpty()) {
 				producto = getProductByCodigoProducto(txt_codBarras.getText());
 				ticketProducto.setProducto(producto);
 				ticketProducto.setDescripcion(producto.getDescripcion());
-
 
 				if (txt_descuento.getText().isEmpty()) {
 					ticketProducto.setDescuento(0);
 				} else {
 					ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
 				}
-
-
-
 
 				if (txt_precioDes.getText().isEmpty()) {
 					ticketProducto.setPrecioDescuento(0);
@@ -737,16 +714,11 @@ public class ControllerFactura implements Initializable {
 			} else {
 				ticketProducto.setDescripcion(txt_desArticulo.getText());
 
-
-
 				if (txt_descuento.getText().isEmpty()) {
 					ticketProducto.setDescuento(0);
 				} else {
 					ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
 				}
-
- 
-
 
 				if (txt_precioDes.getText().isEmpty()) {
 					ticketProducto.setPrecioDescuento(0);
@@ -759,12 +731,10 @@ public class ControllerFactura implements Initializable {
 				}
 			}
 
-
-
 			ticketProducto.setFactura(factura);
 			session.persist(ticketProducto);
 			session.getTransaction().commit();
-			session.close();
+
 			txt_codBarras.clear();
 			txt_desArticulo.clear();
 			txt_precio.clear();
@@ -787,79 +757,89 @@ public class ControllerFactura implements Initializable {
 			alert.setContentText("Se produjo un error al agregar el producto a la factura: " + e.getMessage());
 			alert.showAndWait();
 		}
+		session.close();
 	}
 
 	public void updateProductInFactura(ActionEvent event) {
-		session =sf.openSession();
-		session.beginTransaction();
-		TicketProductos selectedProduct = tableView.getSelectionModel().getSelectedItem();
-		try {
-			int cantidad = 0;
-			cantidad = Integer.valueOf(txt_cantidad.getText());
-			selectedProduct.setCantidad(cantidad);
-			double precio = 0.0;
-			if (!txt_codBarras.getText().isEmpty()) {
-				producto = getProductByCodigoProducto(txt_codBarras.getText());
-				selectedProduct.setProducto(producto);
-				selectedProduct.setDescripcion(producto.getDescripcion());
+		try (Session session = sf.openSession()) {
+			session.beginTransaction();
+			TicketProductos selectedProduct = tableView.getSelectionModel().getSelectedItem();
+			try {
+				int cantidad = 0;
+				cantidad = Integer.valueOf(txt_cantidad.getText());
+				selectedProduct.setCantidad(cantidad);
+				double precio = 0.0;
+				if (!txt_codBarras.getText().isEmpty()) {
+					producto = getProductByCodigoProducto(txt_codBarras.getText());
+					selectedProduct.setProducto(producto);
+					selectedProduct.setDescripcion(producto.getDescripcion());
 
-				if (txt_descuento.getText().isEmpty()) {
-					selectedProduct.setDescuento(0);
-				} else {
-					selectedProduct.setDescuento(Double.valueOf(txt_descuento.getText()));
-				}
+					if (txt_descuento.getText().isEmpty()) {
+						selectedProduct.setDescuento(0);
+					} else {
+						selectedProduct.setDescuento(Double.valueOf(txt_descuento.getText()));
+					}
 
-				if (txt_precioDes.getText().isEmpty() || Double.valueOf(txt_precioDes.getText()) == 0.0) {
-					selectedProduct.setPrecioDescuento(0);
-					precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
-					selectedProduct.setPrecioTotal(precio * cantidad);
+					if (txt_precioDes.getText().isEmpty() || Double.valueOf(txt_precioDes.getText()) == 0.0) {
+						selectedProduct.setPrecioDescuento(0);
+						precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
+						double finalPrecio = precio * cantidad;
+						String formattedPrice = String.format("%.2f", finalPrecio);
+						selectedProduct.setPrecioTotal(Double.parseDouble(formattedPrice));
+					} else {
+						selectedProduct.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
+						precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
+						double finalPrecio = precio * cantidad;
+						String formattedPrice = String.format("%.2f", finalPrecio);
+						selectedProduct.setPrecioTotal(Double.parseDouble(formattedPrice));
+					}
 				} else {
-					selectedProduct.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
-					precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
-					selectedProduct.setPrecioTotal(precio * cantidad);
-				}
-			} else {
-				selectedProduct.setDescripcion(txt_desArticulo.getText());
+					selectedProduct.setDescripcion(txt_desArticulo.getText());
 
-				if (txt_descuento.getText().isEmpty()) {
-					selectedProduct.setDescuento(0);
-				} else {
-					selectedProduct.setDescuento(Double.valueOf(txt_descuento.getText()));
-				}
+					if (txt_descuento.getText().isEmpty()) {
+						selectedProduct.setDescuento(0);
+					} else {
+						selectedProduct.setDescuento(Double.valueOf(txt_descuento.getText()));
+					}
 
-				if (txt_precioDes.getText().isEmpty() || Double.valueOf(txt_precioDes.getText()) == 0.0) {
-					selectedProduct.setPrecioDescuento(0);
-					precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
-					selectedProduct.setPrecioTotal(precio * cantidad);
-				} else {
-					selectedProduct.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
-					precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
-					selectedProduct.setPrecioTotal(precio * cantidad);
+					if (txt_precioDes.getText().isEmpty() || Double.valueOf(txt_precioDes.getText()) == 0.0) {
+						selectedProduct.setPrecioDescuento(0);
+						precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
+						double finalPrecio = precio * cantidad;
+						String formattedPrice = String.format("%.2f", finalPrecio);
+						selectedProduct.setPrecioTotal(Double.parseDouble(formattedPrice));
+					} else {
+						selectedProduct.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
+						precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
+						double finalPrecio = precio * cantidad;
+						String formattedPrice = String.format("%.2f", finalPrecio);
+						selectedProduct.setPrecioTotal(Double.parseDouble(formattedPrice));
+					}
 				}
+				System.out.println(selectedProduct.toString());
+				session.merge(selectedProduct);
+				session.getTransaction().commit();
+
+				txt_codBarras.clear();
+				txt_desArticulo.clear();
+				txt_precio.clear();
+				txt_cantidad.clear();
+				txt_descuento.clear();
+				txt_precioDes.clear();
+			} catch (NumberFormatException e) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error de Formato");
+				alert.setHeaderText(null);
+				alert.setContentText(
+						"Por favor, ingrese un valor numérico válido en los campos de cantidad, descuento y precio.");
+				alert.showAndWait();
+			} catch (Exception e) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText(null);
+				alert.setContentText("Se produjo un error al actualizar el producto en la factura: " + e.getMessage());
+				alert.showAndWait();
 			}
-			System.out.println(selectedProduct.toString());
-			session.merge(selectedProduct);
-			session.getTransaction().commit();
-			session.close();
-			txt_codBarras.clear();
-			txt_desArticulo.clear();
-			txt_precio.clear();
-			txt_cantidad.clear();
-			txt_descuento.clear();
-			txt_precioDes.clear();
-		} catch (NumberFormatException e) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error de Formato");
-			alert.setHeaderText(null);
-			alert.setContentText(
-					"Por favor, ingrese un valor numérico válido en los campos de cantidad, descuento y precio.");
-			alert.showAndWait();
-		} catch (Exception e) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText(null);
-			alert.setContentText("Se produjo un error al actualizar el producto en la factura: " + e.getMessage());
-			alert.showAndWait();
 		}
 	}
 

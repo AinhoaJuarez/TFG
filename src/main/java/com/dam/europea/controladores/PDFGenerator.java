@@ -34,7 +34,7 @@ public class PDFGenerator {
             document.add(new Paragraph("Número de Factura: " + factura.getNumeroFactura()));
             document.add(new Paragraph("\n"));
 
-            float[] columnWidths = {1, 5, 2, 2, 2};
+            float[] columnWidths = {5, 1, 2, 2};
             Table table = new Table(columnWidths);
 
             table.addHeaderCell(new Cell().add(new Paragraph("Cantidad")));
@@ -47,9 +47,9 @@ public class PDFGenerator {
 			query.setParameter("factura", factura);
 			List<TicketProductos> ticketProductosList = query.getResultList();
             for (TicketProductos tp : ticketProductosList) {
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(tp.getCantidad()))));
                 table.addCell(new Cell().add(new Paragraph(tp.getDescripcion())));
                 table.addCell(new Cell().add(new Paragraph(String.valueOf(tp.getPrecioTotal()))));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(tp.getCantidad()))));
                 table.addCell(new Cell().add(new Paragraph(String.valueOf(tp.getPrecioTotal()*tp.getCantidad()))));
             }
 

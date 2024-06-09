@@ -12,7 +12,6 @@ import org.hibernate.SessionFactory;
 
 import com.dam.europea.entidades.Cliente;
 import com.dam.europea.entidades.Factura;
-import com.dam.europea.entidades.Ticket;
 
 import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;

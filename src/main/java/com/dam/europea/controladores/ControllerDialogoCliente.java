@@ -50,8 +50,6 @@ public class ControllerDialogoCliente implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         session = sf.openSession();
         
-        // Obtener la ventana y establecer el título adecuado
-        Stage stage = (Stage) btnAceptar.getScene().getWindow();
         
         if (dni != null) {
             c = session.find(Cliente.class, dni);
@@ -62,10 +60,8 @@ public class ControllerDialogoCliente implements Initializable {
                 txtDNI.setEditable(false);
                 txtLocalidad.setText(c.getLocalidad());
                 txtNombre.setText(c.getNombre());
-                stage.setTitle("Modificar Cliente");
             }
         } else {
-            stage.setTitle("Crear Cliente");
         }
         session.close();
         // Configuramos el comportamiento del botón "Aceptar"
