@@ -73,8 +73,6 @@ public class ControllerDialogoProducto implements Initializable {
 		List<String> codProveedor = query2.getResultList();
 		comboBoxProv.getItems().addAll(codProveedor);
 
-        // Obtener la ventana y establecer el título adecuado
-        Stage stage = (Stage) btnAceptar.getScene().getWindow();
 
         // Si el código de barras no es nulo, cargamos los datos del producto
         if (codBarras != null) {
@@ -89,10 +87,8 @@ public class ControllerDialogoProducto implements Initializable {
                 txtMargen.setText(String.valueOf(p.getMargen()));
                 txtStock.setText(String.valueOf(p.getStock()));
                 comboBoxProv.setValue(p.getProveedorProducto().getCodigo());
-                stage.setTitle("Modificar Producto");
             }
         } else {
-            stage.setTitle("Crear Producto");
         }
 
         // Configuramos el botón aceptar para crear o modificar un producto
@@ -161,7 +157,7 @@ public class ControllerDialogoProducto implements Initializable {
 		p.setDescripcion(txtDescripcion.getText());
 		p.setPrecioCompra(Double.valueOf(txtPrecioCompra.getText()));
 		p.setPrecioVenta(Double.valueOf(txtPrecioVenta.getText()));
-		p.setMargen(Double.valueOf(txtMargen.getText()));
+		p.setMargen(Double.valueOf(txtMargen.getText().replace(',', '.')));
 		p.setStock(Integer.valueOf(txtStock.getText()));
 		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);

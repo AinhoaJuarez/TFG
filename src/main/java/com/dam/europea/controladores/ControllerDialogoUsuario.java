@@ -52,8 +52,6 @@ public class ControllerDialogoUsuario implements Initializable {
 		comboBoxRol.getItems().addAll("Administrador", "Supervisor", "Staff");
 		session = sf.openSession();
 
-		// Obtener la ventana y establecer el título adecuado
-		Stage stage = (Stage) btnAceptar.getScene().getWindow();
 		if (IDUsuario != null) {
 			u = session.find(Usuario.class, IDUsuario);
 			if (u != null) {
@@ -61,14 +59,9 @@ public class ControllerDialogoUsuario implements Initializable {
 				txtIDUsuario.setEditable(false);
 				txtNombreUsuario.setText(u.getUserName());
 				txtContrasena.setText(u.getPass());
-
-				
-
 				comboBoxRol.setValue(u.getRol());
-				stage.setTitle("Modificar Usuario");
 			}
 		} else {
-			stage.setTitle("Crear Usuario");
 		}
 
 		btnAceptar.setOnAction(event -> {

@@ -1,6 +1,7 @@
 package com.dam.europea.entidades;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +26,14 @@ public class Factura {
 
     // Definimos las columnas de la tabla Factura
     @Column
-    private Date fechaExpedicion;
-    private Date fechaOperacion;
+    private LocalDate fechaExpedicion;
+    private LocalDate fechaOperacion;
     private String NIF;
     private String direccion;
     private int telefono;
     private String nombreApellidos;
     
-    @OneToMany(mappedBy = "numeroFactura", cascade = {CascadeType.MERGE})
+    @OneToMany(mappedBy = "numeroFactura", cascade = {CascadeType.ALL})
 	private List<TicketProductos> ticketProductos = new ArrayList<>();
     
     private double IVA;
@@ -41,7 +42,7 @@ public class Factura {
     private double descuento;
 
     // Constructor con parámetros para inicializar todos los campos de la clase Factura
-    public Factura(int numeroFactura, Cliente cliente, Date fechaExpedicion, Date fechaOperacion, String nIF,
+    public Factura(int numeroFactura, Cliente cliente, LocalDate fechaExpedicion, LocalDate fechaOperacion, String nIF,
                    String direccion, int telefono, String nombreApellidos, List<TicketProductos> ticketProductos, int iVA,
                    double totalSinIVA, double totalConIVA, double descuento) {
         super();
@@ -81,19 +82,19 @@ public class Factura {
         this.cliente = cliente;
     }
 
-    public Date getFechaExpedicion() {
+    public LocalDate getFechaExpedicion() {
         return fechaExpedicion;
     }
 
-    public void setFechaExpedicion(Date fechaExpedicion) {
+    public void setFechaExpedicion(LocalDate fechaExpedicion) {
         this.fechaExpedicion = fechaExpedicion;
     }
 
-    public Date getFechaOperacion() {
+    public LocalDate getFechaOperacion() {
         return fechaOperacion;
     }
 
-    public void setFechaOperacion(Date fechaOperacion) {
+    public void setFechaOperacion(LocalDate fechaOperacion) {
         this.fechaOperacion = fechaOperacion;
     }
 

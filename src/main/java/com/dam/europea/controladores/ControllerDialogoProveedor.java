@@ -46,8 +46,6 @@ public class ControllerDialogoProveedor implements Initializable {
         session = sf.openSession();
         session.beginTransaction();
 
-        // Obtener la ventana y establecer el título adecuado
-        Stage stage = (Stage) btnAceptar.getScene().getWindow();
 
         if (codigoProveedor != null) {
             pv = session.find(Proveedor.class, codigoProveedor);
@@ -55,10 +53,8 @@ public class ControllerDialogoProveedor implements Initializable {
                 txtCodigoProveedor.setText(pv.getCodigo());
                 txtCodigoProveedor.setEditable(false);
                 txtNombreProveedor.setText(pv.getNombre());
-                stage.setTitle("Modificar Proveedor");
             }
         } else {
-            stage.setTitle("Crear Proveedor");
         }
 
         // Configuramos el botón aceptar para crear o modificar un proveedor

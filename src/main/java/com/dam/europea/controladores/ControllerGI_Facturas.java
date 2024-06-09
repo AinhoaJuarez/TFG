@@ -12,7 +12,6 @@ import org.hibernate.SessionFactory;
 
 import com.dam.europea.entidades.Cliente;
 import com.dam.europea.entidades.Factura;
-import com.dam.europea.entidades.Ticket;
 
 import jakarta.persistence.TypedQuery;
 import javafx.event.ActionEvent;
@@ -214,7 +213,7 @@ public class ControllerGI_Facturas implements Initializable {
                     session.getTransaction().commit();
                     session.close();
                     tableViewFacturas.getItems().remove(selectedFactura);
-                    showAlert(Alert.AlertType.INFORMATION, "Factura Eliminada", "La facturat ha sido eliminada.");
+                    showAlert(Alert.AlertType.INFORMATION, "Factura Eliminada", "La factura ha sido eliminada.");
                 }
             });
         } else {

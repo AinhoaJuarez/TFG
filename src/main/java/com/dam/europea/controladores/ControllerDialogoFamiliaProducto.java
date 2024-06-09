@@ -56,8 +56,6 @@ public class ControllerDialogoFamiliaProducto implements Initializable {
 
         session.beginTransaction();
 
-        // Obtener la ventana y establecer el título adecuado
-        Stage stage = (Stage) btnAceptar.getScene().getWindow();
 
         if (codigoFamilia != null) {
             fp = session.find(FamiliaProducto.class, codigoFamilia);
@@ -66,10 +64,8 @@ public class ControllerDialogoFamiliaProducto implements Initializable {
                 txtCodigoFamilia.setEditable(false);
                 txtNombreFamiliaProductos.setText(fp.getFamiliaProducto());
                 comboBoxIVA.setValue(fp.getIVA());
-                stage.setTitle("Modificar Familia de Producto");
             }
         } else {
-            stage.setTitle("Crear Familia de Producto");
         }
 
         session.close();
