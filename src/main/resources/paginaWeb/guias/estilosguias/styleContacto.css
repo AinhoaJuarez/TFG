@@ -9,10 +9,12 @@ body {
 header {
     background-color: #f0f0f0;
     padding: 20px;
+    
 }
 
 h1 {
     text-align: center;
+
 }
 
 nav ul {
@@ -61,7 +63,7 @@ textarea {
 }
 
 button[type="submit"] {
-    background-color: #4CAF50;
+    background-color: #6e8ce6;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -88,7 +90,11 @@ li {
 }
 
 footer {
-    background-color: #f0f0f0;
+    color: #f0f0f0;
     padding: 20px;
     text-align: center;
+    background-image: url(../../imagenes/iconoGrande.jpeg); 
+    background-attachment: fixed; 
+    background-position: center; 
+    text-shadow: 2px 2px 5px #888; 
 }
