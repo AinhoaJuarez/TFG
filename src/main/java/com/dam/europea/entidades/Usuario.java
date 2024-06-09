@@ -9,24 +9,33 @@ public class Usuario {
     
 
 	@Id
-    private int idUsuario;
+    private String idUsuario;
     @Column
     private String userName;
     private String pass;
+    private String rol;
     
     public Usuario(String userName, String pass) {
 		this.userName = userName;
 		this.pass = pass;
 	}
     
+	public String getRol() {
+		return rol;
+	}
+
+	public void setRol(String rol) {
+		this.rol = rol;
+	}
+
 	public Usuario() {
 
 	}
     
-	public int getIdUsr() {
+	public String getIdUsuario() {
 		return idUsuario;
 	}
-	public void setIdUsr(int idUsr) {
+	public void setIdUsuario(String idUsr) {
 		this.idUsuario = idUsr;
 	}
 	public String getUserName() {

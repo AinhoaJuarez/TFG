@@ -32,16 +32,11 @@ public class App extends Application {
         if (sf != null) {
             sf.close();
         }
+        
     }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        try (Session session = sf.openSession()) {
-            session.beginTransaction();
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/InicioSesion.fxml"));
         ControladorInicioSesion controller = new ControladorInicioSesion(sf);
         loader.setController(controller);

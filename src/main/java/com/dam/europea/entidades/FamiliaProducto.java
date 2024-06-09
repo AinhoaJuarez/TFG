@@ -20,63 +20,59 @@ public class FamiliaProducto {
 	private String familiaProducto;
 	@OneToMany(mappedBy="familiaProducto", cascade= CascadeType.PERSIST)
 	private List<Producto> productosAsociados= new ArrayList<>();
-//	private int IVA;
-//
-//	public int getIVA() {
-//		return IVA;
-//	}
-//
-//
-//
-//	public void setIVA(int iVA) {
-//		IVA = iVA;
-//	}
+	private int IVA;
 
-
-
-	public FamiliaProducto(String codFamilia, String familiaProducto) {
-		super();
-		this.codFamilia = codFamilia;
-		this.familiaProducto = familiaProducto;
-	}
-
-	
-
-	public FamiliaProducto() {
-		productosAsociados = new ArrayList<Producto>();
-	}
-	public String getFamiliaProducto() {
-		return familiaProducto;
-	}
-
-	public void setFamiliaProducto(String familiaProducto) {
-		this.familiaProducto = familiaProducto;
+	@Override
+	public String toString() {
+		return familiaProducto ;
 	}
 
 
 
-	public String getCodFamilia() {
-		return codFamilia;
+	public int getIVA() {
+		return IVA;
 	}
 
 
 
-	public void setCodFamilia(String codFamilia) {
-		this.codFamilia = codFamilia;
+	public void setIVA(int iVA) {
+		IVA = iVA;
 	}
 
+    // Constructor con parámetros para inicializar los campos codFamilia y familiaProducto
+    public FamiliaProducto(String codFamilia, String familiaProducto) {
+        super();
+        this.codFamilia = codFamilia;
+        this.familiaProducto = familiaProducto;
+    }
 
+    // Constructor vacío necesario para JPA
+    public FamiliaProducto() {
+        productosAsociados = new ArrayList<Producto>();
+    }
 
-	public List<Producto>getProductosAsociados() {
-		return productosAsociados;
-	}
+    // Métodos getters y setters para cada uno de los campos de la clase FamiliaProducto
+    public String getFamiliaProducto() {
+        return familiaProducto;
+    }
 
+    public void setFamiliaProducto(String familiaProducto) {
+        this.familiaProducto = familiaProducto;
+    }
 
+    public String getCodFamilia() {
+        return codFamilia;
+    }
 
-	public void setProductosAsociados(List<Producto> productosAsociados) {
-		this.productosAsociados = productosAsociados;
-	}
+    public void setCodFamilia(String codFamilia) {
+        this.codFamilia = codFamilia;
+    }
 
-	
+    public List<Producto> getProductosAsociados() {
+        return productosAsociados;
+    }
 
+    public void setProductosAsociados(List<Producto> productosAsociados) {
+        this.productosAsociados = productosAsociados;
+    }
 }

@@ -1,7 +1,6 @@
 package com.dam.europea.controladores;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -13,8 +12,6 @@ import com.dam.europea.entidades.Producto;
 import com.dam.europea.entidades.Proveedor;
 
 import jakarta.persistence.TypedQuery;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -24,14 +21,15 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+// Controlador para el diálogo de gestión de Producto
 public class ControllerDialogoProducto implements Initializable {
 
-	private SessionFactory sf;
-	private String codigoBarras;
+	private SessionFactory sf; // Fábrica de sesiones de Hibernate
+	private String codBarras; // Código de barras del producto
 	@FXML
-	private TextField txtCodigoBarras;
+	private TextField txtCodBarras;
 	@FXML
-	private ComboBox<String> comboBoxFamiliaProducto;
+	private ComboBox<String> comboBoxFam;
 	@FXML
 	private TextField txtDescripcion;
 	@FXML
@@ -41,53 +39,60 @@ public class ControllerDialogoProducto implements Initializable {
 	@FXML
 	private TextField txtMargen;
 	@FXML
-	private TextField txtCantidad;
-	@FXML
 	private TextField txtStock;
 	@FXML
-	private ComboBox<String> comboBoxProveedor;
-	private Session session;
+	private ComboBox<String> comboBoxProv;
+	private Session session; // Sesión de Hibernate
 	@FXML
 	private Button btnAceptar;
 	@FXML
 	private Button btnCancelar;
+	private Producto p;
+	private ControllerGI_Prods ct2; // Controlador para gestionar la tabla de productos
 
-	public ControllerDialogoProducto(SessionFactory sf, String codigoBarras) {
+	// Constructor que recibe la fábrica de sesiones, el código de barras y el
+	// controlador
+	public ControllerDialogoProducto(SessionFactory sf, String codBarras, ControllerGI_Prods ct2) {
 		this.sf = sf;
-		this.codigoBarras = codigoBarras;
+		this.codBarras = codBarras;
+		this.ct2 = ct2;
 	}
 
+	// Inicializamos el controlador y configuramos los elementos de la interfaz
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		session = sf.openSession();
+		session.beginTransaction();
+
+		// Cargamos las familias de productos en el ComboBox
 		TypedQuery<String> query = session.createQuery("SELECT fp.codFamilia FROM FamiliaProducto fp", String.class);
 		List<String> codFamilias = query.getResultList();
-		comboBoxFamiliaProducto.getItems().addAll(codFamilias);
+		comboBoxFam.getItems().addAll(codFamilias);
 
+		// Cargamos los proveedores en el ComboBox
 		TypedQuery<String> query2 = session.createQuery("SELECT p.codigo FROM Proveedor p", String.class);
 		List<String> codProveedor = query2.getResultList();
-		comboBoxProveedor.getItems().addAll(codProveedor);
+		comboBoxProv.getItems().addAll(codProveedor);
 
-		if (codigoBarras != null) {
-			session.beginTransaction();
-			Producto p = session.find(Producto.class, codigoBarras);
+		// Si el código de barras no es nulo, cargamos los datos del producto
+		if (codBarras != null) {
+			p = session.find(Producto.class, codBarras);
 			if (p != null) {
-				txtCodigoBarras.setText(p.getCodigoBarras());
-				comboBoxFamiliaProducto.setValue(p.getFamiliaArticulo().getCodFamilia());
+				txtCodBarras.setText(p.getCodigoBarras());
+				comboBoxFam.setValue(p.getFamiliaArticulo().getCodFamilia());
 				txtDescripcion.setText(p.getDescripcion());
 				txtPrecioCompra.setText(String.valueOf(p.getPrecioCompra()));
 				txtPrecioVenta.setText(String.valueOf(p.getPrecioVenta()));
 				txtMargen.setText(String.valueOf(p.getMargen()));
-				txtCantidad.setText(String.valueOf(p.getCantidad()));
 				txtStock.setText(String.valueOf(p.getStock()));
-				comboBoxProveedor.setValue(p.getProveedorProducto().getCodigo());
-				;
+				comboBoxProv.setValue(p.getProveedorProducto().getCodigo());
 			}
 		}
 
+		// Configuramos el botón aceptar para crear o modificar un producto
 		btnAceptar.setOnAction(event -> {
 			if (areFieldsValid()) {
-				if (codigoBarras == null) {
+				if (codBarras == null) {
 					crearProducto();
 				} else {
 					modFamiliaProducto();
@@ -99,14 +104,32 @@ public class ControllerDialogoProducto implements Initializable {
 		});
 
 		btnCancelar.setOnAction(event -> closeWindow());
+
+		// Listener para calcular el margen automáticamente cuando cambian los precios
+		txtPrecioCompra.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
+		txtPrecioVenta.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
 	}
 
+	// Método para calcular el margen
+	private void calculateMargen() {
+		try {
+			double precioCompra = Double.parseDouble(txtPrecioCompra.getText());
+			double precioVenta = Double.parseDouble(txtPrecioVenta.getText());
+			double margen = precioVenta - precioCompra;
+			txtMargen.setText(String.valueOf(margen));
+		} catch (NumberFormatException e) {
+			txtMargen.setText("");
+		}
+	}
+
+	// Validamos que los campos no estén vacíos
 	private boolean areFieldsValid() {
-		return !txtCodigoBarras.getText().isEmpty() && !txtDescripcion.getText().isEmpty()
+		return !txtCodBarras.getText().isEmpty() && !txtDescripcion.getText().isEmpty()
 				&& !txtPrecioCompra.getText().isEmpty() && !txtPrecioVenta.getText().isEmpty()
-				&& !txtMargen.getText().isEmpty() && !txtCantidad.getText().isEmpty() && !txtStock.getText().isEmpty();
+				&& !txtMargen.getText().isEmpty() && !txtStock.getText().isEmpty();
 	}
 
+	// Mostramos una alerta si los campos están vacíos
 	private void showWarning() {
 		Alert alert = new Alert(AlertType.WARNING);
 		alert.setTitle("Campos vacíos");
@@ -115,57 +138,53 @@ public class ControllerDialogoProducto implements Initializable {
 		alert.showAndWait();
 	}
 
+	// Método para crear un nuevo producto
 	public void crearProducto() {
-
 		Producto p = new Producto();
-		p.setCodigoBarras(txtCodigoBarras.getText());
-		String codFamilia = comboBoxFamiliaProducto.getValue();
+		p.setCodigoBarras(txtCodBarras.getText());
+		String codFamilia = comboBoxFam.getValue();
 		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
 		p.setFamiliaArticulo(fp);
 		p.setDescripcion(txtDescripcion.getText());
-		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText())); // MODIFICAR FXML PARA QUE EL TEXTFIELD SOLO
-																		// ADMITA NUMEROS
+		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText()));
 		p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
 		p.setMargen(Integer.valueOf(txtMargen.getText()));
-		p.setCantidad(Integer.valueOf(txtCantidad.getText()));
 		p.setStock(Integer.valueOf(txtStock.getText()));
-		String codProveedor = comboBoxProveedor.getValue();
+		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);
 		p.setProveedorProducto(pv);
 
-		session.beginTransaction();
 		session.persist(p);
 		session.getTransaction().commit();
 	}
 
+	// Método para modificar un producto existente
+
 	public void modFamiliaProducto() {
 		Producto p = new Producto();
-		p.setCodigoBarras(txtCodigoBarras.getText());
-		String codFamilia = comboBoxFamiliaProducto.getValue();
+		p.setCodigoBarras(txtCodBarras.getText());
+		String codFamilia = comboBoxFam.getValue();
 		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
 		p.setFamiliaArticulo(fp);
 		p.setDescripcion(txtDescripcion.getText());
-		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText())); // MODIFICAR FXML PARA QUE EL TEXTFIELD SOLO
-																		// ADMITA NUMEROS
-		p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
-		p.setMargen(Integer.valueOf(txtMargen.getText()));
-		p.setCantidad(Integer.valueOf(txtCantidad.getText()));
+		p.setPrecioCompra(Double.valueOf(txtPrecioCompra.getText()));
+		p.setPrecioVenta(Double.valueOf(txtPrecioVenta.getText()));
+		p.setMargen(Double.valueOf(txtMargen.getText()));
 		p.setStock(Integer.valueOf(txtStock.getText()));
-		String codProveedor = comboBoxProveedor.getValue();
+		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);
-		p.setProveedorProducto(pv);
 
-		session.beginTransaction();
 		session.merge(p);
 		session.getTransaction().commit();
 	}
 
+	// Método para cerrar la ventana
 	private void closeWindow() {
+		ct2.cargarTabla(); // Recargamos la tabla en el controlador principal
 		if (session != null && session.isOpen()) {
 			session.close();
 		}
 		Stage stage = (Stage) btnAceptar.getScene().getWindow();
 		stage.close();
 	}
-
 }

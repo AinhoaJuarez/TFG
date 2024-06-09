@@ -1,8 +1,5 @@
 package com.dam.europea.entidades;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,30 +13,58 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "TicketProductos")
 public class TicketProductos {
+	// Definimos el ID de la entidad TicketProductos
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToOne
-	@JoinColumn(name = "numTicket")
-	private Ticket numTicket;
-
-	@OneToOne
-	@JoinColumn(name = "numeroFactura")
-	private Factura numerofactura;
-
-	@ManyToOne
-	@JoinColumn(name = "codigoBarras")
-	private Producto producto;
 	@Column
 	private int cantidad;
 	private double descuento;
 	private double precioDescuento;
+	private double precioTotal;
+	@ManyToOne
+	@JoinColumn(name = "numTicket")
+	private Ticket numTicket;
+	@ManyToOne
+	@JoinColumn(name = "numeroFactura")
+	private Factura numeroFactura;
 
-	public TicketProductos() {
+	@ManyToOne
+	@JoinColumn(name = "codigoBarras")
+	private Producto producto;
 
+	public double getPrecioTotal() {
+		return precioTotal;
 	}
 
+	public void setPrecioTotal(double precioTotal) {
+		this.precioTotal = precioTotal;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+
+	@Override
+	public String toString() {
+		return "TicketProductos [id=" + id + ", cantidad=" + cantidad + ", descuento=" + descuento
+				+ ", precioDescuento=" + precioDescuento + ", precioTotal=" + precioTotal + ", numTicket=" + numTicket
+				+ ", numerofactura=" + numeroFactura + ", producto=" + producto + ", descripcion=" + descripcion + "]";
+	}
+
+	private String descripcion;
+
+	// Constructor vacío necesario para JPA
+	public TicketProductos() {
+	}
+
+	// Métodos getters y setters para cada uno de los campos de la clase
+	// TicketProductos
 	public Long getId() {
 		return id;
 	}
@@ -54,6 +79,14 @@ public class TicketProductos {
 
 	public void setTicket(Ticket ticket) {
 		this.numTicket = ticket;
+	}
+
+	public Factura getFactura() {
+		return numeroFactura;
+	}
+
+	public void setFactura(Factura numerofactura) {
+		this.numeroFactura = numerofactura;
 	}
 
 	public Producto getProducto() {
@@ -72,7 +105,7 @@ public class TicketProductos {
 		this.cantidad = cantidad;
 	}
 
-	public double getdescuento() {
+	public double getDescuento() {
 		return descuento;
 	}
 
@@ -87,5 +120,4 @@ public class TicketProductos {
 	public void setPrecioDescuento(double precioDescuento) {
 		this.precioDescuento = precioDescuento;
 	}
-
 }

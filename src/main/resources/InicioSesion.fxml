@@ -16,7 +16,7 @@
             <Region prefHeight="25.0" prefWidth="225.0" />
             <TextField maxHeight="25.0" maxWidth="225.0" promptText="Usuario" />
             <Region prefHeight="10.0" prefWidth="225.0" /> <!-- Espacio entre los TextField -->
-            <TextField maxHeight="25.0" maxWidth="225.0" promptText="Contraseña" />
+            <TextField fx:id="txtPass" maxHeight="25.0" maxWidth="225.0" promptText="Contraseña" />
             <Region prefHeight="10.0" prefWidth="225.0" /> <!-- Espacio entre TextField y Button -->
             <Button mnemonicParsing="false" onAction="#switchToMenu" prefHeight="32.0" prefWidth="120.0" text="Iniciar Sesión" />
          <Region prefHeight="200.0" prefWidth="200.0" />

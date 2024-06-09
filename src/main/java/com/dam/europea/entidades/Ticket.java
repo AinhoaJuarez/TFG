@@ -1,6 +1,8 @@
 package com.dam.europea.entidades;
 
-import java.util.Date;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,30 +12,34 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Tickets")
 public class Ticket {
+	// Definimos el ID de la entidad Ticket, con generación automática de valores
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int numTicket;
+
 	@Column
 	private Date fecha;
 	private double importeTotal;
 	private double descuentoTicket;
 	private double importeTicket;
 
+	@OneToMany(mappedBy = "numTicket", cascade = CascadeType.ALL)
+	private List<TicketProductos> ticketProductos = new ArrayList<>();
+
 	@ManyToOne
 	@JoinColumn(name = "ClienteAsociado_fk", referencedColumnName = "DNI")
 	private Cliente cliente;
 
-	@OneToOne(mappedBy = "numTicket", cascade = CascadeType.ALL, orphanRemoval = true)
-	private TicketProductos ticketProductos;
-
-
-	public Ticket(int numTicket, Date fecha, double importeTotal, Cliente cliente, TicketProductos ticketProductos, double descuentoTicket,double importeTicket ) {
+	// Constructor con parámetros para inicializar todos los campos de la clase
+	// Ticket
+	public Ticket(int numTicket, Date fecha, double importeTotal, Cliente cliente,
+			ArrayList<TicketProductos> ticketProductos, double descuentoTicket, double importeTicket) {
 		super();
 		this.numTicket = numTicket;
 		this.fecha = fecha;
@@ -42,12 +48,13 @@ public class Ticket {
 		this.ticketProductos = ticketProductos;
 		this.importeTicket = importeTicket;
 		this.descuentoTicket = descuentoTicket;
-		
 	}
 
+	// Constructor vacío necesario para JPA
 	public Ticket() {
 	}
 
+	// Métodos getters y setters para cada uno de los campos de la clase Ticket
 	public int getNumTicket() {
 		return numTicket;
 	}
@@ -80,10 +87,6 @@ public class Ticket {
 		this.cliente = cliente;
 	}
 
-	public void setDescuentoTicket(double descuentoTicket) {
-		this.descuentoTicket = descuentoTicket;
-	}
-
 	public double getImporteTicket() {
 		return importeTicket;
 	}
@@ -94,8 +97,9 @@ public class Ticket {
 
 	public double getDescuentoTicket() {
 		return descuentoTicket;
-
 	}
 
-
+	public void setDescuentoTicket(double descuentoTicket) {
+		this.descuentoTicket = descuentoTicket;
+	}
 }

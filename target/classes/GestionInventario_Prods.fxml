@@ -12,7 +12,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #90b1db" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<TableView fx:id="tableView" layoutX="186.0" layoutY="278.0" prefHeight="718.0" prefWidth="1698.0">
+		<TableView fx:id="tableView" layoutX="193.0" layoutY="252.0" prefHeight="700.0" prefWidth="1698.0">
 			<columns>
 				<TableColumn fx:id="codigoBarrasColumn" prefWidth="230.0" text="Código Barras" />
 				<TableColumn fx:id="descripcionColumn" minWidth="0.0" prefWidth="615.0" text="Descripción del Producto" />
@@ -22,87 +22,62 @@
 				<TableColumn fx:id="pvpColumn" prefWidth="229.0" text="PVP" />
 			</columns>
 		</TableView>
-		<Button fx:id="botonMenu" layoutX="24.0" layoutY="19.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="52.0" />
-		<Label layoutX="1666.0" layoutY="23.0" prefHeight="43.0" prefWidth="129.0" text="Usuario Activo">
+		<Button fx:id="botonMenu" layoutX="34.0" layoutY="29.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="52.0" />
+		<Label layoutX="1676.0" layoutY="33.0" prefHeight="43.0" prefWidth="129.0" text="Usuario Activo">
 			<font>
 				<Font size="18.0" />
 			</font>
 		</Label>
-		<Button fx:id="botonSalir" layoutX="1830.0" layoutY="19.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="61.0" />
-		<Button fx:id="btnProductos" layoutX="14.0" layoutY="288.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-		<Button fx:id="btnFamilia" layoutX="14.0" layoutY="389.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-		<Button fx:id="btnClientes" layoutX="14.0" layoutY="489.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-		<Button fx:id="btnProveedores" layoutX="14.0" layoutY="590.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-		<Button fx:id="btnUsers" layoutX="14.0" layoutY="694.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-		<TextField fx:id="txtFechaInicio" layoutX="79.0" layoutY="112.0" prefHeight="25.0" prefWidth="129.0" />
-		<Button fx:id="btnFechaInicioCal" layoutX="212.0" layoutY="112.0" mnemonicParsing="false" />
-		<Label layoutX="24.0" layoutY="112.0" prefHeight="25.0" prefWidth="52.0" text="Desde">
-			<font>
-				<Font size="15.0" />
-			</font>
-		</Label>
-		<Label layoutX="283.0" layoutY="112.0" prefHeight="25.0" prefWidth="52.0" text="Hasta">
-			<font>
-				<Font size="15.0" />
-			</font>
-		</Label>
-		<TextField fx:id="txtFechaFin" layoutX="335.0" layoutY="112.0" prefHeight="25.0" prefWidth="129.0" />
-		<Button fx:id="btnFechaFinCal" layoutX="468.0" layoutY="112.0" mnemonicParsing="false" />
-		<Button fx:id="btnTickets" layoutX="14.0" layoutY="795.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-		<Button fx:id="btnFacturas" layoutX="14.0" layoutY="896.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-		<Label layoutX="24.0" layoutY="78.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Fecha:">
+		<Button fx:id="botonSalir" layoutX="1840.0" layoutY="29.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="61.0" />
+		<Button fx:id="btnProductos" layoutX="24.0" layoutY="251.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+		<Button fx:id="btnFamilia" layoutX="24.0" layoutY="352.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+		<Button fx:id="btnClientes" layoutX="24.0" layoutY="452.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+		<Button fx:id="btnProveedores" layoutX="24.0" layoutY="553.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+		<Button fx:id="btnUsers" layoutX="24.0" layoutY="657.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+		<Button fx:id="btnTickets" layoutX="24.0" layoutY="758.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+		<Button fx:id="btnFacturas" layoutX="24.0" layoutY="859.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
+		<Label layoutX="149.0" layoutY="90.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Código:">
 			<font>
 				<Font size="16.0" />
 			</font>
 		</Label>
-		<Label layoutX="549.0" layoutY="78.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Código:">
+		<TextField fx:id="txtCod" layoutX="150.0" layoutY="126.0" />
+		<Label layoutX="498.0" layoutY="90.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Familia:">
 			<font>
 				<Font size="16.0" />
 			</font>
 		</Label>
-		<TextField fx:id="txtCod" layoutX="549.0" layoutY="112.0" />
-		<Label layoutX="813.0" layoutY="78.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Familia:">
+		<ComboBox fx:id="comboFam" layoutX="498.0" layoutY="126.0" prefWidth="150.0" />
+		<Label layoutX="809.0" layoutY="90.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Tipo de IVA:">
 			<font>
 				<Font size="16.0" />
 			</font>
 		</Label>
-		<ComboBox fx:id="comboFam" layoutX="813.0" layoutY="112.0" prefWidth="150.0" />
-		<Label layoutX="1070.0" layoutY="74.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Tipo de IVA:">
+		<ComboBox fx:id="comboIVA" layoutX="809.0" layoutY="126.0" prefWidth="150.0" />
+		<Label layoutX="1140.0" layoutY="90.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Proveedor:">
 			<font>
 				<Font size="16.0" />
 			</font>
 		</Label>
-		<ComboBox fx:id="comboIVA" layoutX="1070.0" layoutY="108.0" prefWidth="150.0" />
-		<Label layoutX="1321.0" layoutY="74.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Proveedor:">
+		<ComboBox fx:id="comboProv" layoutX="1140.0" layoutY="126.0" prefHeight="25.0" prefWidth="161.0" />
+		<Label layoutX="1448.0" layoutY="90.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Descripción:">
 			<font>
 				<Font size="16.0" />
 			</font>
 		</Label>
-		<ComboBox fx:id="comboProv" layoutX="1321.0" layoutY="108.0" prefWidth="150.0" />
-		<Label layoutX="1560.0" layoutY="74.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Descripción:">
-			<font>
-				<Font size="16.0" />
-			</font>
-		</Label>
-		<TextField fx:id="txtDescripcion" layoutX="1560.0" layoutY="108.0" prefHeight="25.0" prefWidth="239.0" />
-		<Separator layoutX="3.0" layoutY="153.0" prefHeight="8.0" prefWidth="1920.0" />
-		<Separator layoutX="785.0" layoutY="71.0" orientation="VERTICAL" prefHeight="83.0" prefWidth="11.0" />
-		<Separator layoutX="-8.0" layoutY="70.0" prefHeight="8.0" prefWidth="1920.0" />
-		<Separator layoutX="520.0" layoutY="71.0" orientation="VERTICAL" prefHeight="83.0" prefWidth="11.0" />
-		<Separator layoutX="1042.0" layoutY="71.0" orientation="VERTICAL" prefHeight="83.0" prefWidth="11.0" />
-		<Separator layoutX="1300.0" layoutY="74.0" orientation="VERTICAL" prefHeight="83.0" prefWidth="11.0" />
-		<Separator layoutX="1541.0" layoutY="71.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
-		<Button fx:id="btnNew" layoutX="1734.0" layoutY="223.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
-		<Button fx:id="btnDel" layoutX="1823.0" layoutY="223.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
-		<Label layoutX="999.0" layoutY="23.0" text="Productos">
+		<TextField fx:id="txtDescripcion" layoutX="1448.0" layoutY="126.0" prefHeight="25.0" prefWidth="347.0" />
+		<Separator layoutY="170.0" prefHeight="8.0" prefWidth="1920.0" />
+		<Separator layoutX="408.0" layoutY="83.0" orientation="VERTICAL" prefHeight="92.0" prefWidth="11.0" />
+		<Separator layoutY="80.0" prefHeight="8.0" prefWidth="1922.0" />
+		<Separator layoutX="732.0" layoutY="83.0" orientation="VERTICAL" prefHeight="91.0" prefWidth="11.0" />
+		<Separator layoutX="1066.0" layoutY="83.0" orientation="VERTICAL" prefHeight="91.0" prefWidth="11.0" />
+		<Separator layoutX="1374.0" layoutY="83.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
+		<Button fx:id="btnNew" layoutX="1741.0" layoutY="190.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
+		<Button fx:id="btnDel" layoutX="1830.0" layoutY="190.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
+		<Label layoutX="921.0" layoutY="36.0" text="Productos">
 			<font>
 				<Font size="24.0" />
 			</font>
 		</Label>
-      <Button fx:id="btnBuscar" layoutX="989.0" layoutY="192.0" mnemonicParsing="false" prefHeight="63.0" prefWidth="129.0" text="Buscar">
-         <font>
-            <Font size="22.0" />
-         </font>
-      </Button>
 	</children>
 </Pane>

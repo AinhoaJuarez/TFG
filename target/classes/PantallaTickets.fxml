@@ -46,13 +46,13 @@
          <font>
             <Font size="16.0" />
          </font></Button>
-      <TableView layoutX="14.0" layoutY="72.0" prefHeight="737.0" prefWidth="1615.0">
+      <TableView fx:id="tableView" layoutX="14.0" layoutY="72.0" prefHeight="737.0" prefWidth="1615.0">
         <columns>
-          <TableColumn prefWidth="150.0" text="Código de Barras" />
-          <TableColumn minWidth="0.0" prefWidth="935.0" text="Descripcion" />
-            <TableColumn prefWidth="178.0" text="Cantidad" />
-            <TableColumn prefWidth="178.0" text="Precio descuento" />
-            <TableColumn prefWidth="178.0" text="Precio Total" />
+          <TableColumn fx:id="colCodBarras" prefWidth="150.0" text="Código de Barras" />
+          <TableColumn fx:id="colDescripcion" minWidth="0.0" prefWidth="935.0" text="Descripcion" />
+            <TableColumn fx:id="colCantidad" prefWidth="178.0" text="Cantidad" />
+            <TableColumn fx:id="colDescuento" prefWidth="178.0" text="Precio descuento" />
+            <TableColumn fx:id="colPrecio" prefWidth="178.0" text="Precio Total" />
         </columns>
       </TableView>
       <Button fx:id="botonMenu" layoutX="14.0" layoutY="9.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="52.0" />
@@ -61,10 +61,10 @@
       <Button fx:id="botonDesasociar" layoutX="1767.0" layoutY="75.0" mnemonicParsing="false" prefHeight="173.0" prefWidth="135.0" />
       <Button fx:id="botonDelLinea" layoutX="1632.0" layoutY="251.0" mnemonicParsing="false" prefHeight="173.0" prefWidth="135.0" />
       <Button fx:id="botonDelTicket" layoutX="1767.0" layoutY="251.0" mnemonicParsing="false" prefHeight="173.0" prefWidth="135.0" />
-      <TextField layoutX="1632.0" layoutY="593.0" prefHeight="43.0" prefWidth="271.0" />
-      <Label layoutX="1634.0" layoutY="553.0" prefHeight="27.0" prefWidth="129.0" text="Precio Total">
+      <TextField fx:id="txt_totalTicket" layoutX="1632.0" layoutY="593.0" prefHeight="43.0" prefWidth="271.0" />
+      <Label fx:id="lbl_NumTicket" layoutX="127.0" layoutY="21.0" prefHeight="27.0" prefWidth="271.0" text="Nº de Ticket: ">
          <font>
-            <Font size="18.0" />
+            <Font size="16.0" />
          </font>
       </Label>
       <Button fx:id="botonTotal" layoutX="1632.0" layoutY="636.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="271.0" text="Finalizar Ticket">
@@ -78,5 +78,15 @@
          </font>
       </Label>
       <Button fx:id="botonSalir" layoutX="1820.0" layoutY="9.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="61.0" />
+      <Label layoutX="1644.0" layoutY="563.0" prefHeight="27.0" prefWidth="129.0" text="Precio Total">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="lbl_Cliente" layoutX="1331.0" layoutY="21.0" prefHeight="27.0" prefWidth="271.0" text="Cliente: No asignado">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
    </children>
 </Pane>
