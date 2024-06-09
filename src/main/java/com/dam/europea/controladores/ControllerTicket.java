@@ -248,7 +248,12 @@ public class ControllerTicket implements Initializable {
 		TicketProductos selectedProduct = tableView.getSelectionModel().getSelectedItem();
 		if (selectedProduct != null) {
 			tableView.getItems().remove(selectedProduct);
-			session.remove(selectedProduct);
+			if(selectedProduct.getFactura()!=null) {
+			selectedProduct.setTicket(null);
+			session.merge(selectedProduct);
+			}else {
+				session.remove(selectedProduct);
+			}
 			session.getTransaction().commit();
 			session.close();
 			updateTotalTicketPrice();

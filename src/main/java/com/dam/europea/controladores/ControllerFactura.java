@@ -248,7 +248,6 @@ public class ControllerFactura implements Initializable {
 					session.merge(ticketProducto);
 				}
 				session.getTransaction().commit();
-				session.beginTransaction();
 				tableView.getItems().clear();
 				cargarTabla();
 				Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -828,7 +827,13 @@ public class ControllerFactura implements Initializable {
 		TicketProductos selectedFactura = tableView.getSelectionModel().getSelectedItem();
 		if (selectedFactura != null) {
 			tableView.getItems().remove(selectedFactura);
-			session.remove(selectedFactura);
+			if (selectedFactura.getTicket() != null) {
+				selectedFactura.setFactura(null);
+				session.merge(selectedFactura);
+			} else {
+				session.remove(selectedFactura);
+			}
+
 			session.getTransaction().commit();
 			session.close();
 			updateTotalFacturaPrice();
