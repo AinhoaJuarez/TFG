@@ -76,6 +76,8 @@ public class ControllerFactura implements Initializable {
 	@FXML
 	private Button botonTotal;
 	@FXML
+	private Button btnDelFactura;
+	@FXML
 	private Label lbl_Cliente;
 	@FXML
 	private TableView<TicketProductos> tableView;
@@ -204,6 +206,13 @@ public class ControllerFactura implements Initializable {
 		botonBuscar.setOnAction(arg0 -> {
 			try {
 				abrirDialogoSeleccionProducto(arg0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		btnDelFactura.setOnAction(arg0 -> {
+			try {
+				borrarFactura(arg0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -601,6 +610,9 @@ public class ControllerFactura implements Initializable {
 		InputStream archivoBuscar = getClass().getResourceAsStream("/lupa.png");
 		Image imagenBuscar = new Image(archivoBuscar, 15, 15, true, true);
 		botonBuscar.setGraphic(new ImageView(imagenBuscar));
+		InputStream archivoMenos = getClass().getResourceAsStream("/menos.png");
+		Image imagenMenos = new Image(archivoMenos, 50, 50, true, true);
+		btnDelFactura.setGraphic(new ImageView(imagenMenos));
 	}
 
 	// Método para cambiar a la vista del menú principal
@@ -620,6 +632,39 @@ public class ControllerFactura implements Initializable {
 		stage.show();
 	}
 
+	public void borrarFactura(ActionEvent event) throws IOException {
+        session = sf.openSession();
+        session.beginTransaction();
+        TicketProductos selectedFactura = tableView.getSelectionModel().getSelectedItem();
+        if (selectedFactura != null) {
+            tableView.getItems().remove(selectedFactura);
+            session.remove(selectedFactura);
+            session.getTransaction().commit();
+            session.close();
+            updateProductInFactura(event);
+
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Factura Eliminada");
+            alert.setHeaderText(null);
+            alert.setContentText("La Factura ha sido eliminada.");
+            alert.showAndWait();
+            txt_codBarras.clear();
+            txt_desArticulo.clear();
+            txt_precio.clear();
+            txt_cantidad.clear();
+            txt_descuento.clear();
+            txt_precioDes.clear();
+            txt_TotalFactura.clear();
+            txt_NumFactura.clear();
+        } else {
+            Alert alert = new Alert(AlertType.WARNING);
+            alert.setTitle("Factura No Seleccionada");
+            alert.setHeaderText(null);
+            alert.setContentText("Por favor, seleccione una factura para eliminar.");
+            alert.showAndWait();
+        }
+	}
+	
 	// Método para cambiar a la vista de inicio de sesión
 	public void switchToInicioSesion(ActionEvent event) throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/InicioSesion.fxml"));

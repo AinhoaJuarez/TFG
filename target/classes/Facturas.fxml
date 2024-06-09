@@ -99,5 +99,6 @@
       </Label>
       <DatePicker fx:id="botonFecha" layoutX="1507.0" layoutY="81.0" prefHeight="35.0" prefWidth="135.0" />
       <TextField fx:id="txt_NumFactura" layoutX="131.0" layoutY="86.0" prefHeight="25.0" prefWidth="105.0" />
+      <Button fx:id="btnDelFactura" layoutX="1645.0" layoutY="469.0" mnemonicParsing="false" prefHeight="81.0" prefWidth="271.0" />
    </children>
 </Pane>
