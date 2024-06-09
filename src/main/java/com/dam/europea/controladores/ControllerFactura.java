@@ -78,6 +78,8 @@ public class ControllerFactura implements Initializable {
 	@FXML
 	private Label lbl_Cliente;
 	@FXML
+	private Button btnDelFactura;
+	@FXML
 	private TableView<TicketProductos> tableView;
 	@FXML
 	private TableColumn<TicketProductos, String> colCodBarras;
@@ -175,13 +177,10 @@ public class ControllerFactura implements Initializable {
 
 				Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
 				Long lastId = query.getSingleResult();
-
-				// Increment the last ID by one and set it for the new TicketProducto
 				if (lastId != null) {
 					ticketProducto.setId(lastId + 1);
 
 				} else {
-					// If there are no existing TicketProductos, start with ID 1
 					ticketProducto.setId(1L);
 				}
 			} catch (Exception e) {
@@ -196,7 +195,6 @@ public class ControllerFactura implements Initializable {
 					double discountedPrice = originalPrice * (1 - (discount / 100));
 					txt_precioDes.setText(String.format("%.2f", discountedPrice));
 				} catch (NumberFormatException e) {
-					// Handle non-numeric input
 					txt_precioDes.setText("");
 				}
 			} else {
@@ -220,43 +218,39 @@ public class ControllerFactura implements Initializable {
 		botonDesasociar.setOnAction(this::handleDesasociar);
 		botonDelTicket.setOnAction(this::desasociarTicket);
 
+		btnDelFactura.setOnAction(event -> {
+			try {
+				borrarFactura(event);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 	}
 
 	private void desasociarTicket(ActionEvent event) {
 		session = sf.openSession();
 		session.beginTransaction();
-		// Prompt user to confirm the action
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Confirmar Desasociación de Ticket");
 		alert.setHeaderText(null);
 		alert.setContentText(
 				"¿Está seguro de que desea desasociar el ticket? Esto eliminará todos los productos asociados a la factura.");
-
-		// Wait for user response
 		alert.showAndWait().ifPresent(response -> {
 			if (response == ButtonType.OK) {
-				// If user confirms, proceed with desasociación
-
-				// Get all the TicketProducto entries associated with the factura
 				TypedQuery<TicketProductos> query = session.createQuery(
 						"SELECT tp FROM TicketProductos tp WHERE tp.numeroFactura=:factura", TicketProductos.class);
 				query.setParameter("factura", factura);
 				List<TicketProductos> ticketProductosList = query.getResultList();
 
-				// Update each TicketProducto to set numeroFactura to null
 				for (TicketProductos ticketProducto : ticketProductosList) {
 					ticketProducto.setFactura(null);
 					session.merge(ticketProducto);
 				}
-
-				// Commit transaction
 				session.getTransaction().commit();
 				session.beginTransaction();
-				// Refresh the table view
 				tableView.getItems().clear();
 				cargarTabla();
-
-				// Show success message
 				Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
 				successAlert.setTitle("Desasociación Exitosa");
 				successAlert.setHeaderText(null);
@@ -323,16 +317,12 @@ public class ControllerFactura implements Initializable {
 		session.beginTransaction();
 		try {
 			double totalFactura = Double.parseDouble(txt_TotalFactura.getText().replace(',', '.'));
-
-			// Ensure that the factura object is not null
-
 			if (factura != null) {
 				LocalDate fechaExpedicion = botonFecha.getValue();
 				if (fechaExpedicion != null) {
 					factura.setFechaExpedicion(LocalDate.now());
 					factura.setFechaOperacion(fechaExpedicion);
 				} else {
-					// Handle the case where the date is not selected
 					Alert alert = new Alert(AlertType.ERROR);
 					alert.setTitle("Error");
 					alert.setHeaderText(null);
@@ -353,15 +343,12 @@ public class ControllerFactura implements Initializable {
 
 				}
 				totalSinIva = totalFactura - IVA;
-				// Update the total factura value
 				factura.setTotalConIVA(totalFactura);
 				factura.setIVA(IVA);
 				factura.setTotalSinIVA(totalSinIva);
 
 				factura.setCliente(clienteFactura);
 				session.merge(factura);
-
-				// Commit transaction
 				session.getTransaction().commit();
 
 				txt_codBarras.clear();
@@ -370,7 +357,6 @@ public class ControllerFactura implements Initializable {
 				txt_cantidad.clear();
 				txt_descuento.clear();
 				txt_precioDes.clear();
-				// Show a confirmation message to the user
 				Alert alert = new Alert(AlertType.INFORMATION);
 				alert.setTitle("Factura Actualizada");
 				alert.setHeaderText(null);
@@ -379,7 +365,6 @@ public class ControllerFactura implements Initializable {
 				saveFacturaToPDF();
 
 			} else {
-				// If factura object is null, show an error message
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText(null);
@@ -387,14 +372,12 @@ public class ControllerFactura implements Initializable {
 				alert.showAndWait();
 			}
 		} catch (NumberFormatException e) {
-			// Handle the case where the total factura value cannot be parsed as a double
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error");
 			alert.setHeaderText(null);
 			alert.setContentText("El valor total de la factura no es válido.");
 			alert.showAndWait();
 		} catch (Exception e) {
-			// Handle any other exceptions
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("Error");
 			alert.setHeaderText(null);
@@ -480,7 +463,6 @@ public class ControllerFactura implements Initializable {
 		txt_precio.setText(String.valueOf(product.getPrecioVenta()));
 	}
 
-
 	public void nuevoTicketProducto() {
 		try {
 			session = sf.openSession();
@@ -488,8 +470,6 @@ public class ControllerFactura implements Initializable {
 
 			factura = new Factura();
 			ticketProducto = new TicketProductos();
-
-			// Get the last ID of TicketProductos
 			Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
 			Long lastTicketProductoId = query.uniqueResult();
 
@@ -498,8 +478,6 @@ public class ControllerFactura implements Initializable {
 			} else {
 				ticketProducto.setId(1L);
 			}
-
-			// Get the last ID of Factura
 			Query<Integer> query2 = session.createQuery("select max(tp.numeroFactura) from Factura tp", Integer.class);
 			Integer lastFacturaId = query2.uniqueResult();
 
@@ -508,12 +486,8 @@ public class ControllerFactura implements Initializable {
 			} else {
 				factura.setNumeroFactura(1);
 			}
-
-			// Persist the new Factura
 			session.persist(factura);
 			session.getTransaction().commit();
-
-			// Set the text field to the new Factura number
 			txt_NumFactura.setText(String.valueOf(factura.getNumeroFactura()));
 		} catch (Exception e) {
 			if (session != null && session.getTransaction().isActive()) {
@@ -572,7 +546,6 @@ public class ControllerFactura implements Initializable {
 		colDescuento.setCellValueFactory(new PropertyValueFactory<>("descuento"));
 	}
 
-	// Método para cargar las imágenes en los botones
 	public void cargarImagenes() {
 		InputStream archivoCerrar = getClass().getResourceAsStream("/cerrar-sesion.png");
 		Image imagenCerrar = new Image(archivoCerrar, 25, 25, true, true);
@@ -595,6 +568,9 @@ public class ControllerFactura implements Initializable {
 		InputStream archivoBuscar = getClass().getResourceAsStream("/lupa.png");
 		Image imagenBuscar = new Image(archivoBuscar, 15, 15, true, true);
 		botonBuscar.setGraphic(new ImageView(imagenBuscar));
+		InputStream archivoMenos = getClass().getResourceAsStream("/eliminar-linea.png");
+		Image imagenMenos = new Image(archivoMenos, 50, 50, true, true);
+		btnDelFactura.setGraphic(new ImageView(imagenMenos));
 	}
 
 	// Método para cambiar a la vista del menú principal
@@ -675,8 +651,6 @@ public class ControllerFactura implements Initializable {
 			if (txt_desArticulo.getText().isEmpty() && txt_codBarras.getText().isEmpty()) {
 				missingFields.append("Descripción Artículo\n");
 			}
-
-			// If there are missing fields, show an alert and return early
 			if (missingFields.length() > 0) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Campos Faltantes");
@@ -743,7 +717,6 @@ public class ControllerFactura implements Initializable {
 				txt_descuento.clear();
 				txt_precioDes.clear();
 			} catch (NumberFormatException e) {
-				// Handle number format exceptions
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error de Formato");
 				alert.setHeaderText(null);
@@ -751,7 +724,6 @@ public class ControllerFactura implements Initializable {
 						"Por favor, ingrese un valor numérico válido en los campos de cantidad, descuento y precio.");
 				alert.showAndWait();
 			} catch (Exception e) {
-				// Handle any other exceptions
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText(null);
@@ -849,7 +821,7 @@ public class ControllerFactura implements Initializable {
 		lbl_Cliente.setText("Cliente: " + clienteFactura.getNombre());
 
 	}
-	
+
 	public void borrarFactura(ActionEvent event) throws IOException {
 		session = sf.openSession();
 		session.beginTransaction();
@@ -859,12 +831,12 @@ public class ControllerFactura implements Initializable {
 			session.remove(selectedFactura);
 			session.getTransaction().commit();
 			session.close();
-			updateProductInFactura(event);
+			updateTotalFacturaPrice();
 
 			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Factura Eliminada");
+			alert.setTitle("Registro Eliminado");
 			alert.setHeaderText(null);
-			alert.setContentText("La Factura ha sido eliminada.");
+			alert.setContentText("El registro ha sido eliminado.");
 			alert.showAndWait();
 			txt_codBarras.clear();
 			txt_desArticulo.clear();

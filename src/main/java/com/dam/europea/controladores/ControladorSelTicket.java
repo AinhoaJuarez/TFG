@@ -88,7 +88,7 @@ public class ControladorSelTicket implements Initializable {
 	}
 
 	private void filterTickets() {
-	    session = sf.openSession();  // Open session here
+	    session = sf.openSession();
 	    try {
 	        String num = txtNum.getText().trim();
 	        String total = txtTotal.getText().trim();
@@ -124,7 +124,7 @@ public class ControladorSelTicket implements Initializable {
 	        tableViewTickets.getItems().addAll(results);
 	    } catch (Exception e) {
 	        System.out.println(e);
-	        showAlert("Error", "An error occurred while filtering tickets: " + e.getMessage());
+	        showAlert("Error", "Ha ocurrido un error filtrando los Tickets " + e.getMessage());
 	    } finally {
 	        if (session != null) {
 	            session.close();
@@ -136,9 +136,6 @@ public class ControladorSelTicket implements Initializable {
 	    session = sf.openSession();
 	    try {
 	        session.beginTransaction();
-
-
-	        // Create the update query using createMutationQuery
 	        MutationQuery updateQuery = session.createMutationQuery(
 	                "UPDATE TicketProductos tp SET tp.numeroFactura = :numeroFactura WHERE tp.numTicket = :numTicket");
 	        updateQuery.setParameter("numeroFactura", factura);
@@ -154,12 +151,12 @@ public class ControladorSelTicket implements Initializable {
 	            stage.close();
 	        } else {
 	            session.getTransaction().rollback();
-	            showAlert("Error", "Failed to associate products with factura.");
+	            showAlert("Error", "Error al asociar la factura al producto.");
 	        }
 	    } catch (Exception e) {
 	        session.getTransaction().rollback();
 	        System.out.println(e);
-	        showAlert("Error", "An error occurred: " + e.getMessage());
+	        showAlert("Error", "Ha ocurrido un error: " + e.getMessage());
 	    } finally {
 	        if (session != null) {
 	            session.close();
