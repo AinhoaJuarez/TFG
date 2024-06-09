@@ -29,7 +29,7 @@ public class Ticket {
 	private double descuentoTicket;
 	private double importeTicket;
 
-	@OneToMany(mappedBy = "numTicket", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "numTicket", cascade = {CascadeType.MERGE})
 	private List<TicketProductos> ticketProductos = new ArrayList<>();
 
 	@ManyToOne

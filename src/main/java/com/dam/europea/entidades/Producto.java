@@ -34,7 +34,7 @@ public class Producto {
     @ManyToOne
 	@JoinColumn(name = "proveedor_fk", referencedColumnName = "codigo")
     private Proveedor proveedorProducto;
-    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "producto", cascade = {CascadeType.MERGE}, orphanRemoval = true)
 	private List<TicketProductos> ticketProductos;
     
     public Producto() {

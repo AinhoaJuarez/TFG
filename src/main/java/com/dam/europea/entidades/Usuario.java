@@ -8,6 +8,10 @@ import jakarta.persistence.Id;
 public class Usuario {
     
 
+	@Override
+	public String toString() {
+		return "Usuario [idUsuario=" + idUsuario + ", userName=" + userName + ", pass=" + pass + ", rol=" + rol + "]";
+	}
 	@Id
     private String idUsuario;
     @Column

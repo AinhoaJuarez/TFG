@@ -54,6 +54,7 @@ public class ControladorInicioSesion implements Initializable {
 		imgView.setImage(imagen);
 		btnEntrar.setOnAction(arg0 -> {
 			try {
+				checkAndCreateUsuario0();
 				switchToMenu(arg0);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -77,6 +78,7 @@ public class ControladorInicioSesion implements Initializable {
 		session = sf.openSession();
 		String username = txtUser.getText();
 		String password = txtPass.getText();
+		System.out.println(username + password);
 
 		// Check if the user exists and the password is correct
 		Usuario user = checkUserCredentials(username, password);
@@ -121,13 +123,43 @@ public class ControladorInicioSesion implements Initializable {
 		Query<Usuario> query = session.createQuery("FROM Usuario WHERE userName = :userName", Usuario.class);
 		query.setParameter("userName", username);
 		Usuario user = query.uniqueResult();
-
+		
 		if (user != null ) {
+			System.out.println(user.toString());
 			return user;
 		} else {
 			return null;
 		}
 	}
+	
+	private void checkAndCreateUsuario0() throws NoSuchAlgorithmException {
+        Session session = sf.openSession();
+        session.beginTransaction();
+
+        // Check if usuario with idUsuario 0 exists
+        Query<Usuario> query = session.createQuery("FROM Usuario WHERE idUsuario = :idUsuario", Usuario.class);
+        query.setParameter("idUsuario", "0");
+        Usuario existingUsuario = query.uniqueResult();
+
+        if (existingUsuario == null) {
+            // Create new Usuario with idUsuario 0
+            Usuario u = new Usuario();
+            u.setIdUsuario("0");
+            u.setUserName("admin");
+            byte[] password = "0".getBytes();
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(password);
+            byte[] passHash = md.digest();
+            String mensajeHashBase64 = Base64.getEncoder().encodeToString(passHash);
+            u.setPass(mensajeHashBase64);
+            u.setRol("Administrador");
+            session.persist(u);
+            session.getTransaction().commit();
+        } else {
+        }
+
+        session.close();
+    }
 
 	private void showAlert(String title, String message) {
 		Alert alert = new Alert(Alert.AlertType.ERROR);

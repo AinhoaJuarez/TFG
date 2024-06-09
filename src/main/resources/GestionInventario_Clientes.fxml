@@ -12,7 +12,7 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #90b1db" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button fx:id="botonMenu" layoutX="34.0" layoutY="29.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="52.0" />
-      <Label layoutX="1676.0" layoutY="33.0" prefHeight="43.0" prefWidth="129.0" text="Usuario Activo">
+      <Label  layoutX="1676.0" layoutY="33.0" prefHeight="43.0" prefWidth="129.0" text="Usuario Activo">
          <font>
             <Font size="18.0" />
          </font>

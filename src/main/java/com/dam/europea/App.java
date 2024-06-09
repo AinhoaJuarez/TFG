@@ -7,14 +7,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import com.dam.europea.controladores.ControladorInicioSesion;
-import com.dam.europea.entidades.Cliente;
-import com.dam.europea.entidades.Factura;
-import com.dam.europea.entidades.FamiliaProducto;
-import com.dam.europea.entidades.Producto;
-import com.dam.europea.entidades.Proveedor;
-import com.dam.europea.entidades.Ticket;
-import com.dam.europea.entidades.TicketProductos;
-import com.dam.europea.entidades.Usuario;
+
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

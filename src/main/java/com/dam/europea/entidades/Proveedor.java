@@ -24,7 +24,7 @@ public class Proveedor {
 	private String codigo;
 	@Column
 	private String nombre;
-	@OneToMany(mappedBy = "proveedorProducto", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "proveedorProducto", cascade = {CascadeType.MERGE})
 	private List<Producto> productosAsociados = new ArrayList<>();
 
 	public Proveedor() {

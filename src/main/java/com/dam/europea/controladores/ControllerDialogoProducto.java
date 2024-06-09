@@ -116,7 +116,8 @@ public class ControllerDialogoProducto implements Initializable {
 			double precioCompra = Double.parseDouble(txtPrecioCompra.getText());
 			double precioVenta = Double.parseDouble(txtPrecioVenta.getText());
 			double margen = precioVenta - precioCompra;
-			txtMargen.setText(String.valueOf(margen));
+			String formattedMargen = String.format("%.2f", margen);
+			txtMargen.setText(formattedMargen);
 		} catch (NumberFormatException e) {
 			txtMargen.setText("");
 		}
@@ -146,9 +147,9 @@ public class ControllerDialogoProducto implements Initializable {
 		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
 		p.setFamiliaArticulo(fp);
 		p.setDescripcion(txtDescripcion.getText());
-		p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText()));
-		p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
-		p.setMargen(Integer.valueOf(txtMargen.getText()));
+		p.setPrecioCompra(Double.valueOf(txtPrecioCompra.getText()));
+		p.setPrecioVenta(Double.valueOf(txtPrecioVenta.getText()));
+		p.setMargen(Double.valueOf(txtMargen.getText()));
 		p.setStock(Integer.valueOf(txtStock.getText()));
 		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);
@@ -161,6 +162,8 @@ public class ControllerDialogoProducto implements Initializable {
 	// Método para modificar un producto existente
 
 	public void modFamiliaProducto() {
+		session = sf.openSession();
+		session.beginTransaction();
 		Producto p = new Producto();
 		p.setCodigoBarras(txtCodBarras.getText());
 		String codFamilia = comboBoxFam.getValue();
@@ -173,6 +176,7 @@ public class ControllerDialogoProducto implements Initializable {
 		p.setStock(Integer.valueOf(txtStock.getText()));
 		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);
+		p.setProveedorProducto(pv);
 
 		session.merge(p);
 		session.getTransaction().commit();

@@ -82,6 +82,6 @@
       </Label>
       <DatePicker fx:id="datePickerInicio" layoutX="138.0" layoutY="120.0" />
       <DatePicker fx:id="datePickerFinal" layoutX="398.0" layoutY="120.0" />
-      <Button fx:id="btnBorrarFechas" layoutX="594.0" layoutY="120.0" mnemonicParsing="false" text="Borrar" />
+      <Button fx:id="btnBorrarFecha" layoutX="594.0" layoutY="120.0" mnemonicParsing="false" text="Borrar" />
    </children>
 </Pane>

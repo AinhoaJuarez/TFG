@@ -18,7 +18,7 @@ public class FamiliaProducto {
 	private String codFamilia;
 	@Column(name = "Familia Producto", unique = true, nullable = false)
 	private String familiaProducto;
-	@OneToMany(mappedBy="familiaProducto", cascade= CascadeType.PERSIST)
+	@OneToMany(mappedBy="familiaProducto", cascade = {CascadeType.MERGE})
 	private List<Producto> productosAsociados= new ArrayList<>();
 	private int IVA;
 

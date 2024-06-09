@@ -491,33 +491,59 @@ public class ControllerFactura implements Initializable {
 	}
 
 	public void nuevoTicketProducto() {
-		session = sf.openSession();
-		session.beginTransaction();
-		factura = new Factura();
-		ticketProducto = new TicketProductos();
-		Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
-		Long lastId = query.getSingleResult();
+	    Session session = null;
+	    try {
+	        session = sf.openSession();
+	        session.beginTransaction();
 
-		if (lastId != null) {
-			ticketProducto.setId(lastId + 1);
-		} else {
-			ticketProducto.setId(1L);
-		}
-		Query<Integer> query2 = session.createQuery("select max(tp.id) from Factura tp", Integer.class);
-		int lastId2 = query2.getSingleResult();
+	        factura = new Factura();
+	        ticketProducto = new TicketProductos();
 
-		if (lastId != null) {
-			factura.setNumeroFactura(lastId2+1);
-		} else {
-			factura.setNumeroFactura(1);
-		}
-		session.persist(factura);
-		session.getTransaction().commit();
-		txt_NumFactura.setText(String.valueOf(factura.getNumeroFactura()));
-		session.beginTransaction();
-		session.close();
+	        // Get the last ID of TicketProductos
+	        Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
+	        Long lastTicketProductoId = query.uniqueResult();
+
+	        if (lastTicketProductoId != null) {
+	            ticketProducto.setId(lastTicketProductoId + 1);
+	        } else {
+	            ticketProducto.setId(1L);
+	        }
+
+	        // Get the last ID of Factura
+	        Query<Integer> query2 = session.createQuery("select max(tp.numeroFactura) from Factura tp", Integer.class);
+	        Integer lastFacturaId = query2.uniqueResult();
+
+	        if (lastFacturaId != null) {
+	            factura.setNumeroFactura(lastFacturaId + 1);
+	        } else {
+	            factura.setNumeroFactura(1);
+	        }
+
+	        // Persist the new Factura
+	        session.persist(factura);
+	        session.getTransaction().commit();
+
+	        // Set the text field to the new Factura number
+	        txt_NumFactura.setText(String.valueOf(factura.getNumeroFactura()));
+	    } catch (Exception e) {
+	        if (session != null && session.getTransaction().isActive()) {
+	            session.getTransaction().rollback();
+	        }
+	        e.printStackTrace();
+	        showAlert("Error", "An error occurred while creating a new TicketProducto: " + e.getMessage());
+	    } finally {
+	        if (session != null) {
+	            session.close();
+	        }
+	    }
 	}
-
+	private void showAlert(String title, String message) {
+	    Alert alert = new Alert(Alert.AlertType.ERROR);
+	    alert.setTitle(title);
+	    alert.setHeaderText(null);
+	    alert.setContentText(message);
+	    alert.showAndWait();
+	}
 	private void loadFacturaProductos() {
 		session = sf.openSession();
 		

@@ -26,9 +26,9 @@ public class Cliente {
 	private String codPos;
 	private String localidad;
 	private String nombre;
-	@OneToMany(mappedBy = "numeroFactura", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "numeroFactura", cascade = {CascadeType.MERGE})
 	private List<Factura> facturas = new ArrayList<Factura>();
-	@OneToMany(mappedBy = "numTicket", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "numTicket", cascade = { CascadeType.MERGE})
 	private List<Ticket> tickets = new ArrayList<Ticket>();
 
 	public Cliente(String dni, String direccion, String codPos, String localidad, String nombre, List<Factura> facturas,

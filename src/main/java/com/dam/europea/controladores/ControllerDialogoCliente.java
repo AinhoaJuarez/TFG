@@ -109,18 +109,21 @@ public class ControllerDialogoCliente implements Initializable {
         c.setNombre(txtNombre.getText());
         session.persist(c);
         session.getTransaction().commit();
-        session.close();
         
     }
     public void modCliente(Cliente c) {
-    	session=sf.openSession();
-    	session.beginTransaction();
-        c = new Cliente();
-        c.setCodPos(txtCodPost.getText());
-        c.setDireccion(txtDireccion.getText());
-        c.setLocalidad(txtLocalidad.getText());
-        c.setNombre(txtNombre.getText());
-        session.merge(c);
+        session = sf.openSession();
+        session.beginTransaction();
+        
+        Cliente existingCliente = session.find(Cliente.class, c.getDni());
+        
+        existingCliente.setCodPos(txtCodPost.getText());
+        existingCliente.setDireccion(txtDireccion.getText());
+        existingCliente.setLocalidad(txtLocalidad.getText());
+        existingCliente.setNombre(txtNombre.getText());
+        
+        session.merge(existingCliente);
+        
         session.getTransaction().commit();
         session.close();
     }
