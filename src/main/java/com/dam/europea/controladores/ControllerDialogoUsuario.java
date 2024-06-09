@@ -51,17 +51,24 @@ public class ControllerDialogoUsuario implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		comboBoxRol.getItems().addAll("Administrador", "Supervisor", "Staff");
 		session = sf.openSession();
+
+		// Obtener la ventana y establecer el título adecuado
+		Stage stage = (Stage) btnAceptar.getScene().getWindow();
 		if (IDUsuario != null) {
 			u = session.find(Usuario.class, IDUsuario);
 			if (u != null) {
 				txtIDUsuario.setText(u.getIdUsuario());
+				txtIDUsuario.setEditable(false);
 				txtNombreUsuario.setText(u.getUserName());
 				txtContrasena.setText(u.getPass());
 
-				comboBoxRol.setValue(u.getRol());
-				;
+				
 
+				comboBoxRol.setValue(u.getRol());
+				stage.setTitle("Modificar Usuario");
 			}
+		} else {
+			stage.setTitle("Crear Usuario");
 		}
 
 		btnAceptar.setOnAction(event -> {
@@ -70,11 +77,9 @@ public class ControllerDialogoUsuario implements Initializable {
 					try {
 						crearUsuario();
 					} catch (NoSuchAlgorithmException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				} else {
-
 					try {
 						modUsuario(u);
 					} catch (NoSuchAlgorithmException e) {
@@ -82,6 +87,11 @@ public class ControllerDialogoUsuario implements Initializable {
 						e.printStackTrace();
 					}
 
+					try {
+						modUsuario(u);
+					} catch (NoSuchAlgorithmException e) {
+						e.printStackTrace();
+					}
 				}
 				closeWindow();
 			} else {
@@ -136,7 +146,6 @@ public class ControllerDialogoUsuario implements Initializable {
 			u.setPass(mensajeHashBase64);
 		}
 		u.setRol(comboBoxRol.getValue());
-
 		session.merge(u);
 		session.getTransaction().commit();
 		session.close();
@@ -149,7 +158,5 @@ public class ControllerDialogoUsuario implements Initializable {
 		}
 		Stage stage = (Stage) btnAceptar.getScene().getWindow();
 		stage.close();
-
 	}
-
 }

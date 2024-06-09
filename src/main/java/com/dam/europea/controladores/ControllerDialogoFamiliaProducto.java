@@ -55,22 +55,36 @@ public class ControllerDialogoFamiliaProducto implements Initializable {
         comboBoxIVA.getItems().addAll(ivas);
 
         session.beginTransaction();
+
+        // Obtener la ventana y establecer el título adecuado
+        Stage stage = (Stage) btnAceptar.getScene().getWindow();
+
         if (codigoFamilia != null) {
             fp = session.find(FamiliaProducto.class, codigoFamilia);
             if (fp != null) {
                 txtCodigoFamilia.setText(fp.getCodFamilia());
+                txtCodigoFamilia.setEditable(false);
                 txtNombreFamiliaProductos.setText(fp.getFamiliaProducto());
                 comboBoxIVA.setValue(fp.getIVA());
+                stage.setTitle("Modificar Familia de Producto");
             }
+        } else {
+            stage.setTitle("Crear Familia de Producto");
         }
+
+        session.close();
 
         // Configuramos el botón aceptar para crear o modificar una familia de productos
         btnAceptar.setOnAction(event -> {
             if (areFieldsValid()) {
+                session = sf.openSession();
+                session.beginTransaction();
                 if (codigoFamilia == null) {
                     crearFamiliaProducto();
+                    showInformation("Familia de producto creada con éxito.");
                 } else {
                     modFamiliaProducto(fp);
+                    showInformation("Familia de producto modificada con éxito.");
                 }
                 closeWindow();
             } else {
@@ -95,6 +109,15 @@ public class ControllerDialogoFamiliaProducto implements Initializable {
         alert.showAndWait();
     }
 
+    // Mostramos una información si la operación fue exitosa
+    private void showInformation(String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Información");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     // Método para crear una nueva familia de productos
     public void crearFamiliaProducto() {
         FamiliaProducto fp = new FamiliaProducto();
@@ -107,11 +130,15 @@ public class ControllerDialogoFamiliaProducto implements Initializable {
 
     // Método para modificar una familia de productos existente
     public void modFamiliaProducto(FamiliaProducto fp) {
-        fp.setCodFamilia(txtCodigoFamilia.getText());
-        fp.setFamiliaProducto(txtNombreFamiliaProductos.getText());
-        fp.setIVA(comboBoxIVA.getValue());
-        session.merge(fp);
+    	session = sf.openSession();
+    	session.beginTransaction();
+    	FamiliaProducto fpExistin = session.find(FamiliaProducto.class, fp.getCodFamilia());
+    	fpExistin.setCodFamilia(txtCodigoFamilia.getText());
+    	fpExistin.setFamiliaProducto(txtNombreFamiliaProductos.getText());
+    	fpExistin.setIVA(comboBoxIVA.getValue());
+        session.merge(fpExistin);
         session.getTransaction().commit();
+        session.close();
     }
 
     // Método para cerrar la ventana

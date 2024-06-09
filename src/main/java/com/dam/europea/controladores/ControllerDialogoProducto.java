@@ -49,7 +49,6 @@ public class ControllerDialogoProducto implements Initializable {
 	private Button btnCancelar;
 	private Producto p;
 	private ControllerGI_Prods ct2; // Controlador para gestionar la tabla de productos
-
 	// Constructor que recibe la fábrica de sesiones, el código de barras y el
 	// controlador
 	public ControllerDialogoProducto(SessionFactory sf, String codBarras, ControllerGI_Prods ct2) {
@@ -74,41 +73,54 @@ public class ControllerDialogoProducto implements Initializable {
 		List<String> codProveedor = query2.getResultList();
 		comboBoxProv.getItems().addAll(codProveedor);
 
-		// Si el código de barras no es nulo, cargamos los datos del producto
-		if (codBarras != null) {
-			p = session.find(Producto.class, codBarras);
-			if (p != null) {
-				txtCodBarras.setText(p.getCodigoBarras());
-				comboBoxFam.setValue(p.getFamiliaArticulo().getCodFamilia());
-				txtDescripcion.setText(p.getDescripcion());
-				txtPrecioCompra.setText(String.valueOf(p.getPrecioCompra()));
-				txtPrecioVenta.setText(String.valueOf(p.getPrecioVenta()));
-				txtMargen.setText(String.valueOf(p.getMargen()));
-				txtStock.setText(String.valueOf(p.getStock()));
-				comboBoxProv.setValue(p.getProveedorProducto().getCodigo());
-			}
-		}
+        // Obtener la ventana y establecer el título adecuado
+        Stage stage = (Stage) btnAceptar.getScene().getWindow();
 
-		// Configuramos el botón aceptar para crear o modificar un producto
-		btnAceptar.setOnAction(event -> {
-			if (areFieldsValid()) {
-				if (codBarras == null) {
-					crearProducto();
-				} else {
-					modFamiliaProducto();
-				}
-				closeWindow();
-			} else {
-				showWarning();
-			}
-		});
+        // Si el código de barras no es nulo, cargamos los datos del producto
+        if (codBarras != null) {
+            p = session.find(Producto.class, codBarras);
+            if (p != null) {
+                txtCodBarras.setText(p.getCodigoBarras());
+                txtCodBarras.setEditable(false);
+                comboBoxFam.setValue(p.getFamiliaArticulo().getCodFamilia());
+                txtDescripcion.setText(p.getDescripcion());
+                txtPrecioCompra.setText(String.valueOf(p.getPrecioCompra()));
+                txtPrecioVenta.setText(String.valueOf(p.getPrecioVenta()));
+                txtMargen.setText(String.valueOf(p.getMargen()));
+                txtStock.setText(String.valueOf(p.getStock()));
+                comboBoxProv.setValue(p.getProveedorProducto().getCodigo());
+                stage.setTitle("Modificar Producto");
+            }
+        } else {
+            stage.setTitle("Crear Producto");
+        }
+
+        // Configuramos el botón aceptar para crear o modificar un producto
+        btnAceptar.setOnAction(event -> {
+            if (areFieldsValid()) {
+                session = sf.openSession();
+                session.beginTransaction();
+                if (codBarras == null) {
+                    crearProducto();
+                    showInformation("Producto creado con éxito.");
+                } else {
+                    modProducto(p);
+                    showInformation("Producto modificado con éxito.");
+                }
+                closeWindow();
+            } else {
+                showWarning();
+            }
+        });
 
 		btnCancelar.setOnAction(event -> closeWindow());
 
-		// Listener para calcular el margen automáticamente cuando cambian los precios
-		txtPrecioCompra.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
-		txtPrecioVenta.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
-	}
+        // Listener para calcular el margen automáticamente cuando cambian los precios
+        txtPrecioCompra.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
+        txtPrecioVenta.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
+
+        session.close();
+    }
 
 	// Método para calcular el margen
 	private void calculateMargen() {
@@ -154,31 +166,38 @@ public class ControllerDialogoProducto implements Initializable {
 		String codProveedor = comboBoxProv.getValue();
 		Proveedor pv = session.find(Proveedor.class, codProveedor);
 		p.setProveedorProducto(pv);
-
 		session.persist(p);
 		session.getTransaction().commit();
 	}
+    // Mostramos una información si la operación fue exitosa
+    private void showInformation(String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Información");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
-	// Método para modificar un producto existente
 
-	public void modFamiliaProducto() {
-		session = sf.openSession();
-		session.beginTransaction();
-		Producto p = new Producto();
-		p.setCodigoBarras(txtCodBarras.getText());
-		String codFamilia = comboBoxFam.getValue();
-		FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
-		p.setFamiliaArticulo(fp);
-		p.setDescripcion(txtDescripcion.getText());
-		p.setPrecioCompra(Double.valueOf(txtPrecioCompra.getText()));
-		p.setPrecioVenta(Double.valueOf(txtPrecioVenta.getText()));
-		p.setMargen(Double.valueOf(txtMargen.getText()));
-		p.setStock(Integer.valueOf(txtStock.getText()));
-		String codProveedor = comboBoxProv.getValue();
-		Proveedor pv = session.find(Proveedor.class, codProveedor);
-		p.setProveedorProducto(pv);
+    // Método para modificar un producto existente
+    public void modProducto(Producto p) {
+    	session = sf.openSession();
+    	session.beginTransaction();
+    
+        Producto pFind = session.find(Producto.class, p.getCodigoBarras());
+        String codFamilia = comboBoxFam.getValue();
+        FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
+        pFind.setFamiliaArticulo(fp);
+        pFind.setDescripcion(txtDescripcion.getText());
+        pFind.setPrecioCompra(Double.valueOf(txtPrecioCompra.getText()));
+        pFind.setPrecioVenta(Double.valueOf(txtPrecioVenta.getText()));
+        pFind.setMargen(Double.valueOf(txtMargen.getText()));
+        pFind.setStock(Integer.valueOf(txtStock.getText()));
+        String codProveedor = comboBoxProv.getValue();
+        Proveedor pv = session.find(Proveedor.class, codProveedor);
+        pFind.setProveedorProducto(pv);
 
-		session.merge(p);
+		session.merge(pFind);
 		session.getTransaction().commit();
 	}
 
