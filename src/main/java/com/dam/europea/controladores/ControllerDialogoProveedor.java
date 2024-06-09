@@ -53,11 +53,12 @@ public class ControllerDialogoProveedor implements Initializable {
             pv = session.find(Proveedor.class, codigoProveedor);
             if (pv != null) {
                 txtCodigoProveedor.setText(pv.getCodigo());
+                txtCodigoProveedor.setEditable(false);
                 txtNombreProveedor.setText(pv.getNombre());
-                stage.setTitle("Modificar Proveedor");  // Cambiar título a "Modificar"
+                stage.setTitle("Modificar Proveedor");
             }
         } else {
-            stage.setTitle("Crear Proveedor");  // Cambiar título a "Crear"
+            stage.setTitle("Crear Proveedor");
         }
 
         // Configuramos el botón aceptar para crear o modificar un proveedor

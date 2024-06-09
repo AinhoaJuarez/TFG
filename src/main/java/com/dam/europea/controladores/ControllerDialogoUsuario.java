@@ -58,13 +58,14 @@ public class ControllerDialogoUsuario implements Initializable {
 			u = session.find(Usuario.class, IDUsuario);
 			if (u != null) {
 				txtIDUsuario.setText(u.getIdUsuario());
+				txtIDUsuario.setEditable(false);
 				txtNombreUsuario.setText(u.getUserName());
 				txtContrasena.setText(u.getPass());
 				comboBoxRol.setValue(u.getRol());
-				stage.setTitle("Modificar Usuario");  // Cambiar título a "Modificar"
+				stage.setTitle("Modificar Usuario");
 			}
 		} else {
-			stage.setTitle("Crear Usuario");  // Cambiar título a "Crear"
+			stage.setTitle("Crear Usuario");
 		}
 
 		btnAceptar.setOnAction(event -> {

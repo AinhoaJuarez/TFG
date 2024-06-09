@@ -59,12 +59,13 @@ public class ControllerDialogoCliente implements Initializable {
                 txtCodPost.setText(c.getCodPos());
                 txtDireccion.setText(c.getDireccion());
                 txtDNI.setText(c.getDni());
+                txtDNI.setEditable(false);
                 txtLocalidad.setText(c.getLocalidad());
                 txtNombre.setText(c.getNombre());
-                stage.setTitle("Modificar Cliente");  // Cambiar título a "Modificar"
+                stage.setTitle("Modificar Cliente");
             }
         } else {
-            stage.setTitle("Crear Cliente");  // Cambiar título a "Crear"
+            stage.setTitle("Crear Cliente");
         }
         
         session.close();

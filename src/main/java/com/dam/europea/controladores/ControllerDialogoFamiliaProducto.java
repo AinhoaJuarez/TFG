@@ -63,12 +63,13 @@ public class ControllerDialogoFamiliaProducto implements Initializable {
             fp = session.find(FamiliaProducto.class, codigoFamilia);
             if (fp != null) {
                 txtCodigoFamilia.setText(fp.getCodFamilia());
+                txtCodigoFamilia.setEditable(false);
                 txtNombreFamiliaProductos.setText(fp.getFamiliaProducto());
                 comboBoxIVA.setValue(fp.getIVA());
-                stage.setTitle("Modificar Familia de Producto");  // Cambiar título a "Modificar"
+                stage.setTitle("Modificar Familia de Producto");
             }
         } else {
-            stage.setTitle("Crear Familia de Producto");  // Cambiar título a "Crear"
+            stage.setTitle("Crear Familia de Producto");
         }
 
         session.close();

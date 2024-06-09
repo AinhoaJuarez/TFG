@@ -82,6 +82,7 @@ public class ControllerDialogoProducto implements Initializable {
             p = session.find(Producto.class, codBarras);
             if (p != null) {
                 txtCodBarras.setText(p.getCodigoBarras());
+                txtCodBarras.setEditable(false);
                 comboBoxFam.setValue(p.getFamiliaArticulo().getCodFamilia());
                 txtDescripcion.setText(p.getDescripcion());
                 txtPrecioCompra.setText(String.valueOf(p.getPrecioCompra()));
@@ -89,10 +90,10 @@ public class ControllerDialogoProducto implements Initializable {
                 txtMargen.setText(String.valueOf(p.getMargen()));
                 txtStock.setText(String.valueOf(p.getStock()));
                 comboBoxProv.setValue(p.getProveedorProducto().getCodigo());
-                stage.setTitle("Modificar Producto");  // Cambiar título a "Modificar"
+                stage.setTitle("Modificar Producto");
             }
         } else {
-            stage.setTitle("Crear Producto");  // Cambiar título a "Crear"
+            stage.setTitle("Crear Producto");
         }
 
         // Configuramos el botón aceptar para crear o modificar un producto
