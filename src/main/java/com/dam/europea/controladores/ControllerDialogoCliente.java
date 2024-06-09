@@ -35,7 +35,7 @@ public class ControllerDialogoCliente implements Initializable {
     @FXML
     private Button btnCancelar;
     
-    //Atributo para usar como relleno
+    // Atributo para usar como relleno
     private Cliente c;
     private ControllerGI_Clientes ct2;
 
@@ -49,11 +49,11 @@ public class ControllerDialogoCliente implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         session = sf.openSession();
-        session.beginTransaction();
         
-        // Si el DNI no es nulo, cargamos los datos del cliente en los campos
+        // Obtener la ventana y establecer el título adecuado
+        Stage stage = (Stage) btnAceptar.getScene().getWindow();
+        
         if (dni != null) {
-            
             c = session.find(Cliente.class, dni);
             if (c != null) {
                 txtCodPost.setText(c.getCodPos());
@@ -61,20 +61,31 @@ public class ControllerDialogoCliente implements Initializable {
                 txtDNI.setText(c.getDni());
                 txtLocalidad.setText(c.getLocalidad());
                 txtNombre.setText(c.getNombre());
+                stage.setTitle("Modificar Cliente");  // Cambiar título a "Modificar"
             }
+        } else {
+            stage.setTitle("Crear Cliente");  // Cambiar título a "Crear"
         }
+        
+        session.close();
         
         // Configuramos el comportamiento del botón "Aceptar"
         btnAceptar.setOnAction(event -> {
             if (areFieldsValid()) {
-                if (dni == null) {
-                    crearCliente();
+                if (txtDNI.getText().isEmpty()) {
+                    showWarning("El campo DNI no puede estar vacío.");
                 } else {
-                    modCliente(c);
+                    if (dni == null) {
+                        crearCliente();
+                        showInformation("Cliente creado con éxito.");
+                    } else {
+                        modCliente(c);
+                        showInformation("Cliente modificado con éxito.");
+                    }
+                    closeWindow();
                 }
-                closeWindow();
             } else {
-                showWarning();
+                showWarning("Por favor, complete todos los campos.");
             }
         });
 
@@ -89,17 +100,28 @@ public class ControllerDialogoCliente implements Initializable {
                !txtLocalidad.getText().isEmpty();
     }
 
-    // Mostramos una alerta si hay campos vacíos
-    private void showWarning() {
+    // Mostramos una alerta si hay campos vacíos o si hay otro tipo de advertencia
+    private void showWarning(String message) {
         Alert alert = new Alert(AlertType.WARNING);
-        alert.setTitle("Campos vacíos");
+        alert.setTitle("Advertencia");
         alert.setHeaderText(null);
-        alert.setContentText("Por favor, complete todos los campos.");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    // Mostramos una información si la operación fue exitosa
+    private void showInformation(String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Información");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 
     // Creamos un nuevo cliente con los datos ingresados
     public void crearCliente() {
+        session = sf.openSession();
+        session.beginTransaction();
         Cliente c = new Cliente();
         c.setCodPos(txtCodPost.getText());
         c.setDireccion(txtDireccion.getText());
@@ -108,27 +130,29 @@ public class ControllerDialogoCliente implements Initializable {
         c.setNombre(txtNombre.getText());
         session.persist(c);
         session.getTransaction().commit();
-        
+        session.close();
     }
+
+    // Modificamos un cliente existente con los datos ingresados
     public void modCliente(Cliente c) {
-        c = new Cliente();
+        session = sf.openSession();
+        session.beginTransaction();
         c.setCodPos(txtCodPost.getText());
         c.setDireccion(txtDireccion.getText());
         c.setLocalidad(txtLocalidad.getText());
         c.setNombre(txtNombre.getText());
         session.merge(c);
         session.getTransaction().commit();
-        
+        session.close();
     }
 
     // Cerramos la ventana y la sesión
     private void closeWindow() {
-    	ct2.cargarTabla();
+        ct2.cargarTabla();
         if (session != null && session.isOpen()) {
             session.close();
         }
         Stage stage = (Stage) btnAceptar.getScene().getWindow();
         stage.close();
-        
     }
 }

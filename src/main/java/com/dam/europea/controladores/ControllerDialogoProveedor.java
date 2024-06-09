@@ -45,21 +45,32 @@ public class ControllerDialogoProveedor implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         session = sf.openSession();
         session.beginTransaction();
+
+        // Obtener la ventana y establecer el título adecuado
+        Stage stage = (Stage) btnAceptar.getScene().getWindow();
+
         if (codigoProveedor != null) {
             pv = session.find(Proveedor.class, codigoProveedor);
             if (pv != null) {
                 txtCodigoProveedor.setText(pv.getCodigo());
                 txtNombreProveedor.setText(pv.getNombre());
+                stage.setTitle("Modificar Proveedor");  // Cambiar título a "Modificar"
             }
+        } else {
+            stage.setTitle("Crear Proveedor");  // Cambiar título a "Crear"
         }
 
         // Configuramos el botón aceptar para crear o modificar un proveedor
         btnAceptar.setOnAction(event -> {
             if (areFieldsValid()) {
+                session = sf.openSession();
+                session.beginTransaction();
                 if (codigoProveedor == null) {
                     crearProveedor();
+                    showInformation("Proveedor creado con éxito.");
                 } else {
-                    modFamiliaProducto(pv);
+                    modProveedor(pv);
+                    showInformation("Proveedor modificado con éxito.");
                 }
                 closeWindow();
             } else {
@@ -84,6 +95,15 @@ public class ControllerDialogoProveedor implements Initializable {
         alert.showAndWait();
     }
 
+    // Mostramos una información si la operación fue exitosa
+    private void showInformation(String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Información");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     // Método para crear un nuevo proveedor
     public void crearProveedor() {
         Proveedor pv = new Proveedor();
@@ -94,8 +114,7 @@ public class ControllerDialogoProveedor implements Initializable {
     }
 
     // Método para modificar un proveedor existente
-    public void modFamiliaProducto(Proveedor pv) {
-        pv = new Proveedor();
+    public void modProveedor(Proveedor pv) {
         pv.setCodigo(txtCodigoProveedor.getText());
         pv.setNombre(txtNombreProveedor.getText());
         session.merge(pv);

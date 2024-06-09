@@ -50,7 +50,8 @@ public class ControllerDialogoProducto implements Initializable {
     private Producto p;
     private ControllerGI_Prods ct2; // Controlador para gestionar la tabla de productos
 
-    // Constructor que recibe la fábrica de sesiones, el código de barras y el controlador
+    // Constructor que recibe la fábrica de sesiones, el código de barras y el
+    // controlador
     public ControllerDialogoProducto(SessionFactory sf, String codBarras, ControllerGI_Prods ct2) {
         this.sf = sf;
         this.codBarras = codBarras;
@@ -73,6 +74,9 @@ public class ControllerDialogoProducto implements Initializable {
         List<String> codProveedor = query2.getResultList();
         comboBoxProv.getItems().addAll(codProveedor);
 
+        // Obtener la ventana y establecer el título adecuado
+        Stage stage = (Stage) btnAceptar.getScene().getWindow();
+
         // Si el código de barras no es nulo, cargamos los datos del producto
         if (codBarras != null) {
             p = session.find(Producto.class, codBarras);
@@ -85,16 +89,23 @@ public class ControllerDialogoProducto implements Initializable {
                 txtMargen.setText(String.valueOf(p.getMargen()));
                 txtStock.setText(String.valueOf(p.getStock()));
                 comboBoxProv.setValue(p.getProveedorProducto().getCodigo());
+                stage.setTitle("Modificar Producto");  // Cambiar título a "Modificar"
             }
+        } else {
+            stage.setTitle("Crear Producto");  // Cambiar título a "Crear"
         }
 
         // Configuramos el botón aceptar para crear o modificar un producto
         btnAceptar.setOnAction(event -> {
             if (areFieldsValid()) {
+                session = sf.openSession();
+                session.beginTransaction();
                 if (codBarras == null) {
                     crearProducto();
+                    showInformation("Producto creado con éxito.");
                 } else {
-                    modFamiliaProducto();
+                    modProducto(p);
+                    showInformation("Producto modificado con éxito.");
                 }
                 closeWindow();
             } else {
@@ -107,6 +118,8 @@ public class ControllerDialogoProducto implements Initializable {
         // Listener para calcular el margen automáticamente cuando cambian los precios
         txtPrecioCompra.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
         txtPrecioVenta.textProperty().addListener((observable, oldValue, newValue) -> calculateMargen());
+
+        session.close();
     }
 
     // Método para calcular el margen
@@ -137,6 +150,15 @@ public class ControllerDialogoProducto implements Initializable {
         alert.showAndWait();
     }
 
+    // Mostramos una información si la operación fue exitosa
+    private void showInformation(String message) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Información");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     // Método para crear un nuevo producto
     public void crearProducto() {
         Producto p = new Producto();
@@ -145,9 +167,9 @@ public class ControllerDialogoProducto implements Initializable {
         FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
         p.setFamiliaArticulo(fp);
         p.setDescripcion(txtDescripcion.getText());
-        p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText()));
-        p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
-        p.setMargen(Integer.valueOf(txtMargen.getText()));
+        p.setPrecioCompra(Double.valueOf(txtPrecioCompra.getText()));
+        p.setPrecioVenta(Double.valueOf(txtPrecioVenta.getText()));
+        p.setMargen(Double.valueOf(txtMargen.getText()));
         p.setStock(Integer.valueOf(txtStock.getText()));
         String codProveedor = comboBoxProv.getValue();
         Proveedor pv = session.find(Proveedor.class, codProveedor);
@@ -158,15 +180,15 @@ public class ControllerDialogoProducto implements Initializable {
     }
 
     // Método para modificar un producto existente
-    public void modFamiliaProducto() {
+    public void modProducto(Producto p) {
         p.setCodigoBarras(txtCodBarras.getText());
         String codFamilia = comboBoxFam.getValue();
         FamiliaProducto fp = session.find(FamiliaProducto.class, codFamilia);
         p.setFamiliaArticulo(fp);
         p.setDescripcion(txtDescripcion.getText());
-        p.setPrecioCompra(Integer.valueOf(txtPrecioCompra.getText()));
-        p.setPrecioVenta(Integer.valueOf(txtPrecioVenta.getText()));
-        p.setMargen(Integer.valueOf(txtMargen.getText()));
+        p.setPrecioCompra(Double.valueOf(txtPrecioCompra.getText()));
+        p.setPrecioVenta(Double.valueOf(txtPrecioVenta.getText()));
+        p.setMargen(Double.valueOf(txtMargen.getText()));
         p.setStock(Integer.valueOf(txtStock.getText()));
         String codProveedor = comboBoxProv.getValue();
         Proveedor pv = session.find(Proveedor.class, codProveedor);
