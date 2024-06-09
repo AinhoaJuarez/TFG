@@ -5,16 +5,12 @@ package com.dam.europea.entidades;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @Entity
 public class DatosEmpresa {
 
 	@Id
 	private int id;
-	
-
-
 	@Column
 	private String nif;
 	private String nombreEmpresa;

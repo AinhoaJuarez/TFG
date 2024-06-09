@@ -112,7 +112,7 @@ public class ControladorInicioSesion implements Initializable {
 	
 	public void abrirGuiaPaginaWeb(ActionEvent event) throws IOException, URISyntaxException {
         // Recoge el directorio a la web y lo asigna
-        String htmlDirectorio = "/paginaWeb/index.html";
+        String htmlDirectorio = "/paginaWeb/paginaWeb/index.html";
         URI uri = ControladorInicioSesion.class.getResource(htmlDirectorio).toURI();
 
         // Utiliza el navegador por defecto en el equipo
@@ -137,16 +137,6 @@ public class ControladorInicioSesion implements Initializable {
         Session session = sf.openSession();
         session.beginTransaction();
         
-        DatosEmpresa dt = new DatosEmpresa();
-        dt.setId(1);
-        dt.setNombreDueno("Nuria Vázquez Martín");
-        dt.setCodigoPostal("28600");
-        dt.setDireccion("Avenida de la Dehesa, Local 4");
-        dt.setNif("503658412");
-        dt.setNombreEmpresa("El lapiz Magico");
-        session.persist(dt);
-        session.getTransaction().commit();
-        session.beginTransaction();
         // Check if usuario with idUsuario 0 exists
         Query<Usuario> query = session.createQuery("FROM Usuario WHERE idUsuario = :idUsuario", Usuario.class);
         query.setParameter("idUsuario", "0");
