@@ -59,3 +59,8 @@ footer {
     background-position: center; 
     text-shadow: 2px 2px 5px #888; 
 }
+
+img {
+    max-width: 100%;
+    height: auto;
+  }
