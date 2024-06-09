@@ -818,6 +818,7 @@ public class ControllerTicket implements Initializable {
 					selectedProduct.setPrecioTotal(precio * newCantidad);
 				}
 			}
+			session.beginTransaction();
 			System.out.println(selectedProduct.toString());
 			session.merge(selectedProduct);
 			session.getTransaction().commit();
