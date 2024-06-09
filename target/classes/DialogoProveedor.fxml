@@ -14,7 +14,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <Label layoutX="31.0" layoutY="120.0" prefHeight="27.0" prefWidth="192.0" text="Codigo Proveedor: ">
+      <Label layoutX="31.0" layoutY="120.0" prefHeight="27.0" prefWidth="192.0" text="Código Proveedor: ">
          <font>
             <Font size="16.0" />
          </font>

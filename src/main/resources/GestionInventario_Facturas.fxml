@@ -27,13 +27,13 @@
       <Button fx:id="btnUsers" layoutX="24.0" layoutY="657.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
       <Button fx:id="btnTickets" layoutX="24.0" layoutY="758.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
       <Button fx:id="btnFacturas" layoutX="24.0" layoutY="859.0" mnemonicParsing="false" prefHeight="90.0" prefWidth="161.0" />
-      <Label layoutX="768.0" layoutY="92.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Código:">
+      <Label layoutX="757.0" layoutY="91.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Código:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtCod" layoutX="767.0" layoutY="120.0" />
-      <Label layoutX="1089.0" layoutY="92.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Cliente:">
+      <TextField fx:id="txtCod" layoutX="767.0" layoutY="126.0" />
+      <Label layoutX="1089.0" layoutY="91.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Cliente:">
          <font>
             <Font size="16.0" />
          </font>
@@ -43,11 +43,11 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <TextField fx:id="txtTotal" layoutX="1592.0" layoutY="120.0" prefHeight="25.0" prefWidth="161.0" />
-      <Separator layoutX="-1.0" layoutY="166.0" prefHeight="8.0" prefWidth="1922.0" />
+      <TextField fx:id="txtTotal" layoutX="1592.0" layoutY="126.0" prefHeight="25.0" prefWidth="161.0" />
+      <Separator layoutY="170.0" prefHeight="8.0" prefWidth="1922.0" />
       <Separator layoutY="80.0" prefHeight="8.0" prefWidth="1921.0" />
-      <Separator layoutX="1002.0" layoutY="84.0" orientation="VERTICAL" prefHeight="86.0" prefWidth="11.0" />
-      <Separator layoutX="1404.0" layoutY="83.0" orientation="VERTICAL" prefHeight="86.0" prefWidth="11.0" />
+      <Separator layoutX="1002.0" layoutY="84.0" orientation="VERTICAL" prefHeight="90.0" prefWidth="11.0" />
+      <Separator layoutX="1404.0" layoutY="83.0" orientation="VERTICAL" prefHeight="91.0" prefWidth="11.0" />
       <Button fx:id="btnNew" layoutX="1741.0" layoutY="183.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
       <Button fx:id="btnDel" layoutX="1830.0" layoutY="183.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="61.0" />
       <TableView fx:id="tableViewFacturas" layoutX="193.0" layoutY="252.0" prefHeight="699.0" prefWidth="1698.0">
@@ -58,19 +58,19 @@
             <TableColumn fx:id="totalColumn" minWidth="0.0" prefWidth="340.0" text="Total Factura" />
          </columns>
       </TableView>
-      <ComboBox fx:id="comboCliente" layoutX="1087.0" layoutY="120.0" prefWidth="150.0" />
-      <Separator layoutX="703.0" layoutY="85.0" orientation="VERTICAL" prefHeight="86.0" prefWidth="11.0" />
-      <Label layoutX="79.0" layoutY="120.0" prefHeight="25.0" prefWidth="52.0" text="Desde:">
+      <ComboBox fx:id="comboCliente" layoutX="1087.0" layoutY="126.0" prefWidth="150.0" />
+      <Separator layoutX="703.0" layoutY="85.0" orientation="VERTICAL" prefHeight="89.0" prefWidth="11.0" />
+      <Label layoutX="32.0" layoutY="127.0" prefHeight="25.0" prefWidth="52.0" text="Desde:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="339.0" layoutY="120.0" prefHeight="25.0" prefWidth="44.0" text="Hasta:">
+      <Label layoutX="304.0" layoutY="127.0" prefHeight="25.0" prefWidth="44.0" text="Hasta:">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="270.0" layoutY="92.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Fecha">
+      <Label layoutX="79.0" layoutY="89.0" prefHeight="25.0" prefWidth="181.0" text="Filtrado por Fecha">
          <font>
             <Font size="16.0" />
          </font>
@@ -80,8 +80,8 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <DatePicker fx:id="datePickerInicio" layoutX="138.0" layoutY="120.0" />
-      <DatePicker fx:id="datePickerFinal" layoutX="398.0" layoutY="120.0" />
-      <Button fx:id="btnBorrarFecha" layoutX="594.0" layoutY="120.0" mnemonicParsing="false" text="Borrar" />
+      <DatePicker fx:id="datePickerInicio" layoutX="99.0" layoutY="126.0" />
+      <DatePicker fx:id="datePickerFinal" layoutX="357.0" layoutY="126.0" />
+      <Button fx:id="btnBorrarFecha" layoutX="548.0" layoutY="126.0" mnemonicParsing="false" text="Borrar" />
    </children>
 </Pane>

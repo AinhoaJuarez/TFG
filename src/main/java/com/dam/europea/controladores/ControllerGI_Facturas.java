@@ -3,6 +3,7 @@ package com.dam.europea.controladores;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -91,7 +92,7 @@ public class ControllerGI_Facturas implements Initializable {
 	private TableColumn<Factura, Integer> codFacturaColumn;
 
 	@FXML
-	private TableColumn<Factura, String> fechaFacturaColumn;
+	private TableColumn<Factura, LocalDate> fechaFacturaColumn;
 
 	@FXML
 	private TableColumn<Factura, String> clienteAsocColumn;
@@ -310,8 +311,8 @@ public class ControllerGI_Facturas implements Initializable {
 		session = sf.openSession();
 		tableViewFacturas.getItems().clear();
 		codFacturaColumn.setCellValueFactory(new PropertyValueFactory<>("numeroFactura"));
-		fechaFacturaColumn.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-		clienteAsocColumn.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+		fechaFacturaColumn.setCellValueFactory(new PropertyValueFactory<>("fechaExpedicion"));
+		clienteAsocColumn.setCellValueFactory(new PropertyValueFactory<>("cliente"));
 		clienteAsocColumn.setCellValueFactory(cellData -> {
 			if (cellData.getValue().getCliente() != null) {
 				return new javafx.beans.property.SimpleStringProperty(cellData.getValue().getCliente().getNombre());

@@ -480,6 +480,7 @@ public class ControllerFactura implements Initializable {
 		txt_precio.setText(String.valueOf(product.getPrecioVenta()));
 	}
 
+
 	public void nuevoTicketProducto() {
 		try {
 			session = sf.openSession();
@@ -661,103 +662,103 @@ public class ControllerFactura implements Initializable {
 	}
 
 	public void addTofactura(ActionEvent event) {
-		session = sf.openSession();
-		session.beginTransaction();
-		StringBuilder missingFields = new StringBuilder();
+		try (Session session = sf.openSession()) {
+			session.beginTransaction();
+			StringBuilder missingFields = new StringBuilder();
 
-		if (txt_cantidad.getText().isEmpty()) {
-			missingFields.append("Cantidad\n");
-		}
-		if (txt_precioDes.getText().isEmpty() && txt_precio.getText().isEmpty()) {
-			missingFields.append("Precio Descuento o Precio\n");
-		}
-		if (txt_desArticulo.getText().isEmpty() && txt_codBarras.getText().isEmpty()) {
-			missingFields.append("Descripción Artículo\n");
-		}
-
-		// If there are missing fields, show an alert and return early
-		if (missingFields.length() > 0) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Campos Faltantes");
-			alert.setHeaderText("Faltan los siguientes campos:");
-			alert.setContentText(missingFields.toString());
-			alert.showAndWait();
-			return;
-		}
-
-		try {
-			int cantidad = 0;
-			cantidad = Integer.valueOf(txt_cantidad.getText());
-			ticketProducto.setCantidad(cantidad);
-			double precio = 0.0;
-
-			if (!txt_codBarras.getText().isEmpty()) {
-				producto = getProductByCodigoProducto(txt_codBarras.getText());
-				ticketProducto.setProducto(producto);
-				ticketProducto.setDescripcion(producto.getDescripcion());
-
-				if (txt_descuento.getText().isEmpty()) {
-					ticketProducto.setDescuento(0);
-				} else {
-					ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
-				}
-
-				if (txt_precioDes.getText().isEmpty()) {
-					ticketProducto.setPrecioDescuento(0);
-					precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
-					ticketProducto.setPrecioTotal(precio * cantidad);
-				} else {
-					ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
-					precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
-					ticketProducto.setPrecioTotal(precio * cantidad);
-				}
-			} else {
-				ticketProducto.setDescripcion(txt_desArticulo.getText());
-
-				if (txt_descuento.getText().isEmpty()) {
-					ticketProducto.setDescuento(0);
-				} else {
-					ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
-				}
-
-				if (txt_precioDes.getText().isEmpty()) {
-					ticketProducto.setPrecioDescuento(0);
-					precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
-					ticketProducto.setPrecioTotal(precio * cantidad);
-				} else {
-					ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
-					precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
-					ticketProducto.setPrecioTotal(precio * cantidad);
-				}
+			if (txt_cantidad.getText().isEmpty()) {
+				missingFields.append("Cantidad\n");
+			}
+			if (txt_precioDes.getText().isEmpty() && txt_precio.getText().isEmpty()) {
+				missingFields.append("Precio Descuento o Precio\n");
+			}
+			if (txt_desArticulo.getText().isEmpty() && txt_codBarras.getText().isEmpty()) {
+				missingFields.append("Descripción Artículo\n");
 			}
 
-			ticketProducto.setFactura(factura);
-			session.persist(ticketProducto);
-			session.getTransaction().commit();
+			// If there are missing fields, show an alert and return early
+			if (missingFields.length() > 0) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Campos Faltantes");
+				alert.setHeaderText("Faltan los siguientes campos:");
+				alert.setContentText(missingFields.toString());
+				alert.showAndWait();
+				return;
+			}
 
-			txt_codBarras.clear();
-			txt_desArticulo.clear();
-			txt_precio.clear();
-			txt_cantidad.clear();
-			txt_descuento.clear();
-			txt_precioDes.clear();
-		} catch (NumberFormatException e) {
-			// Handle number format exceptions
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error de Formato");
-			alert.setHeaderText(null);
-			alert.setContentText(
-					"Por favor, ingrese un valor numérico válido en los campos de cantidad, descuento y precio.");
-			alert.showAndWait();
-		} catch (Exception e) {
-			// Handle any other exceptions
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Error");
-			alert.setHeaderText(null);
-			alert.setContentText("Se produjo un error al agregar el producto a la factura: " + e.getMessage());
-			alert.showAndWait();
+			try {
+				int cantidad = 0;
+				cantidad = Integer.valueOf(txt_cantidad.getText());
+				ticketProducto.setCantidad(cantidad);
+				double precio = 0.0;
+
+				if (!txt_codBarras.getText().isEmpty()) {
+					producto = getProductByCodigoProducto(txt_codBarras.getText());
+					ticketProducto.setProducto(producto);
+					ticketProducto.setDescripcion(producto.getDescripcion());
+
+					if (txt_descuento.getText().isEmpty()) {
+						ticketProducto.setDescuento(0);
+					} else {
+						ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
+					}
+
+					if (txt_precioDes.getText().isEmpty()) {
+						ticketProducto.setPrecioDescuento(0);
+						precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
+						ticketProducto.setPrecioTotal(precio * cantidad);
+					} else {
+						ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
+						precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
+						ticketProducto.setPrecioTotal(precio * cantidad);
+					}
+				} else {
+					ticketProducto.setDescripcion(txt_desArticulo.getText());
+
+					if (txt_descuento.getText().isEmpty()) {
+						ticketProducto.setDescuento(0);
+					} else {
+						ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
+					}
+
+					if (txt_precioDes.getText().isEmpty()) {
+						ticketProducto.setPrecioDescuento(0);
+						precio = Double.valueOf(txt_precio.getText().replace(',', '.'));
+						ticketProducto.setPrecioTotal(precio * cantidad);
+					} else {
+						ticketProducto.setPrecioDescuento(Double.valueOf(txt_precioDes.getText().replace(',', '.')));
+						precio = Double.valueOf(txt_precioDes.getText().replace(',', '.'));
+						ticketProducto.setPrecioTotal(precio * cantidad);
+					}
+				}
+
+				ticketProducto.setFactura(factura);
+				session.persist(ticketProducto);
+				session.getTransaction().commit();
+
+				txt_codBarras.clear();
+				txt_desArticulo.clear();
+				txt_precio.clear();
+				txt_cantidad.clear();
+				txt_descuento.clear();
+				txt_precioDes.clear();
+			} catch (NumberFormatException e) {
+				// Handle number format exceptions
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error de Formato");
+				alert.setHeaderText(null);
+				alert.setContentText(
+						"Por favor, ingrese un valor numérico válido en los campos de cantidad, descuento y precio.");
+				alert.showAndWait();
+			} catch (Exception e) {
+				// Handle any other exceptions
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("Error");
+				alert.setHeaderText(null);
+				alert.setContentText("Se produjo un error al agregar el producto a la factura: " + e.getMessage());
+				alert.showAndWait();
+			}
 		}
-		session.close();
 	}
 
 	public void updateProductInFactura(ActionEvent event) {
@@ -847,5 +848,38 @@ public class ControllerFactura implements Initializable {
 		clienteFactura = selectedCli;
 		lbl_Cliente.setText("Cliente: " + clienteFactura.getNombre());
 
+	}
+	
+	public void borrarFactura(ActionEvent event) throws IOException {
+		session = sf.openSession();
+		session.beginTransaction();
+		TicketProductos selectedFactura = tableView.getSelectionModel().getSelectedItem();
+		if (selectedFactura != null) {
+			tableView.getItems().remove(selectedFactura);
+			session.remove(selectedFactura);
+			session.getTransaction().commit();
+			session.close();
+			updateProductInFactura(event);
+
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Factura Eliminada");
+			alert.setHeaderText(null);
+			alert.setContentText("La Factura ha sido eliminada.");
+			alert.showAndWait();
+			txt_codBarras.clear();
+			txt_desArticulo.clear();
+			txt_precio.clear();
+			txt_cantidad.clear();
+			txt_descuento.clear();
+			txt_precioDes.clear();
+			txt_TotalFactura.clear();
+			txt_NumFactura.clear();
+		} else {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("Factura No Seleccionada");
+			alert.setHeaderText(null);
+			alert.setContentText("Por favor, seleccione una factura para eliminar.");
+			alert.showAndWait();
+		}
 	}
 }

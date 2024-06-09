@@ -18,9 +18,9 @@
             <Region prefHeight="10.0" prefWidth="225.0" /> <!-- Espacio entre los TextField -->
             <TextField fx:id="txtPass" maxHeight="25.0" maxWidth="225.0" promptText="Contraseña" />
             <Region prefHeight="10.0" prefWidth="225.0" /> <!-- Espacio entre TextField y Button -->
-            <Button fx:id="btnEntrar" mnemonicParsing="false"  prefHeight="32.0" prefWidth="120.0" text="Iniciar Sesión" />
+            <Button fx:id="btnEntrar" mnemonicParsing="false" prefHeight="32.0" prefWidth="120.0" text="Iniciar Sesión" />
          <Region prefHeight="200.0" prefWidth="200.0" />
-         <Button fx:id="btnGuiaPaginaWeb" mnemonicParsing="false" prefHeight="68.0" prefWidth="81.0" />
+         <Button fx:id="btnGuiaPaginaWeb" mnemonicParsing="false" prefHeight="43.0" prefWidth="50.0" />
          <Region prefHeight="17.0" prefWidth="1250.0" />
          <Label text="¿Tienes alguna duda? ¡Consulta nuestra guía web pulsando en el botón!">
             <font>

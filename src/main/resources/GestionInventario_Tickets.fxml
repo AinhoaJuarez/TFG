@@ -65,7 +65,7 @@
             <Font size="15.0" />
          </font>
       </Label>
-      <Label layoutX="304.0" layoutY="129.0" prefHeight="25.0" prefWidth="52.0" text="Hasta">
+      <Label layoutX="304.0" layoutY="127.0" prefHeight="25.0" prefWidth="52.0" text="Hasta">
          <font>
             <Font size="15.0" />
          </font>
