@@ -8,19 +8,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "datos empresa")
 public class DatosEmpresa {
 
 	@Id
 	private int id;
-	public int getId() {
-		return id;
-	}
-
-
-	public void setId(int id) {
-		this.id = id;
-	}
+	
 
 
 	@Column
@@ -107,6 +99,16 @@ public class DatosEmpresa {
 	public DatosEmpresa() {
 		super();
 	}
+
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	
 	
 	

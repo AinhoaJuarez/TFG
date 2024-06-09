@@ -24,7 +24,7 @@
             <Font size="16.0" />
          </font>
       </Label>
-      <Label fx:id="txtDireccion" layoutX="51.0" layoutY="190.0" prefHeight="27.0" prefWidth="113.0" text="Direccion:">
+      <Label layoutX="51.0" layoutY="190.0" prefHeight="27.0" prefWidth="113.0" text="Direccion:">
          <font>
             <Font size="16.0" />
          </font>

@@ -39,34 +39,19 @@ public class ControladorDialogoDatosEmpresa implements Initializable {
 	@FXML
 	private Button btnCancelar;
 
-	public ControladorDialogoDatosEmpresa(SessionFactory sf, String nif) {
+	public ControladorDialogoDatosEmpresa(SessionFactory sf) {
 		this.sf = sf;
-		this.nif = nif;
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		session = sf.openSession();
-		if (nif != null) {
-			session.beginTransaction();
-			DatosEmpresa de = session.find(DatosEmpresa.class, nif);
-			if (de != null) {
-				txtNombreEmpresa.setText(de.getNombreEmpresa());
-				txtNombreDueno.setText(de.getNombreDueno());
-				txtDireccion.setText(de.getDireccion());
-				txtLocalidad.setText(de.getLocalidad());
-				txtCodPost.setText(de.getCodigoPostal());
-				txtNIF.setText(de.getNif());
-			}
-		}
 
 		btnAceptar.setOnAction(event -> {
 			if (areFieldsValid()) {
-				if (nif == null) {
-					crearDatosEmpresa();
-				} else {
+
 					modDatosEmpresa();
-				}
+
 				closeWindow();
 			} else {
 				showWarning();
@@ -89,28 +74,17 @@ public class ControladorDialogoDatosEmpresa implements Initializable {
 		alert.showAndWait();
 	}
 
-	public void crearDatosEmpresa() {
-		DatosEmpresa de = new DatosEmpresa();
-		de.setNif(txtNIF.getText());
-		de.setNombreEmpresa(txtNombreEmpresa.getText());
-		de.setNombreDueno(txtNombreDueno.getText());
-		de.setDireccion(txtDireccion.getText());
-		de.setLocalidad(txtLocalidad.getText());
-		de.setCodigoPostal(txtCodPost.getText());
-		
-		session.beginTransaction();
-		session.persist(de);
-		session.getTransaction().commit();
-	}
 
 	public void modDatosEmpresa() {
 		DatosEmpresa de = new DatosEmpresa();
-		de.setNif(txtNIF.getText());
-		de.setNombreEmpresa(txtNombreEmpresa.getText());
-		de.setNombreDueno(txtNombreDueno.getText());
-		de.setDireccion(txtDireccion.getText());
-		de.setLocalidad(txtLocalidad.getText());
-		de.setCodigoPostal(txtCodPost.getText());
+		de.setId(1);
+		DatosEmpresa sel = session.find(DatosEmpresa.class, de);
+		sel.setNif(txtNIF.getText());
+		sel.setNombreEmpresa(txtNombreEmpresa.getText());
+		sel.setNombreDueno(txtNombreDueno.getText());
+		sel.setDireccion(txtDireccion.getText());
+		sel.setLocalidad(txtLocalidad.getText());
+		sel.setCodigoPostal(txtCodPost.getText());
 		session.beginTransaction();
 		session.merge(de);
 		session.getTransaction().commit();

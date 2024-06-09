@@ -38,6 +38,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.*;
 
 public class ControllerFactura implements Initializable {
@@ -78,6 +79,8 @@ public class ControllerFactura implements Initializable {
 	@FXML
 	private Label lbl_Cliente;
 	@FXML
+	private Label lblFacturas;
+	@FXML
 	private Button btnDelFactura;
 	@FXML
 	private TableView<TicketProductos> tableView;
@@ -117,7 +120,15 @@ public class ControllerFactura implements Initializable {
 		} else {
 			nuevoTicketProducto();
 		}
-
+		lblFacturas.setOnMouseClicked(event -> {
+			// Simulate ActionEvent
+			try {
+				modDatosEmpresa(event);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
 		botonSalir.setOnAction(arg0 -> {
 			try {
 				switchToInicioSesion(arg0);
@@ -226,6 +237,20 @@ public class ControllerFactura implements Initializable {
 				e.printStackTrace();
 			}
 		});
+	}
+
+	public void modDatosEmpresa(MouseEvent event) throws IOException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/DialogoDatosEmpresa.fxml"));
+		ControladorDialogoDatosEmpresa ct = new ControladorDialogoDatosEmpresa(sf);
+		loader.setController(ct);
+		Parent root = loader.load();
+		Scene scene = new Scene(root);
+		Stage stage = new Stage();
+		stage.initModality(Modality.WINDOW_MODAL);
+		stage.initOwner(((Node) event.getSource()).getScene().getWindow());
+		stage.setScene(scene);
+		stage.show();
+		
 	}
 
 	private void desasociarTicket(ActionEvent event) {

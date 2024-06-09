@@ -100,5 +100,10 @@
       <DatePicker fx:id="botonFecha" layoutX="1507.0" layoutY="81.0" prefHeight="35.0" prefWidth="135.0" />
       <TextField fx:id="txt_NumFactura" layoutX="131.0" layoutY="86.0" prefHeight="25.0" prefWidth="105.0" />
       <Button fx:id="btnDelFactura" layoutX="1643.0" layoutY="469.0" mnemonicParsing="false" prefHeight="81.0" prefWidth="271.0" />
+      <Label fx:id="lblFacturas" layoutX="1645.0" layoutY="705.0" prefHeight="20.0" prefWidth="214.0" text="Cambiar datos de Factuación" textFill="WHITE" underline="true">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
    </children>
 </Pane>
