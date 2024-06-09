@@ -467,7 +467,7 @@ public class ControllerFactura implements Initializable {
 	private void loadFacturaDetails() {
 		txt_TotalFactura.setText(String.valueOf(factura.getTotalConIVA()).replace('.', ','));
 		if (factura.getCliente() != null) {
-			lbl_Cliente.setText(factura.getCliente().getNombre());
+			lbl_Cliente.setText("Cliente: " + factura.getCliente().getNombre());
 		}
 
 		botonFecha.setValue(factura.getFechaOperacion());

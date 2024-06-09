@@ -213,7 +213,7 @@ public class ControllerGI_Facturas implements Initializable {
                     session.getTransaction().commit();
                     session.close();
                     tableViewFacturas.getItems().remove(selectedFactura);
-                    showAlert(Alert.AlertType.INFORMATION, "Factura Eliminada", "La facturat ha sido eliminada.");
+                    showAlert(Alert.AlertType.INFORMATION, "Factura Eliminada", "La factura ha sido eliminada.");
                 }
             });
         } else {
