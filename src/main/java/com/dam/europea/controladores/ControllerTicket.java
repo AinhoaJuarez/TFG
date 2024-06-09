@@ -663,16 +663,22 @@ public class ControllerTicket implements Initializable {
 
 	    try {
 	        int cantidad = Integer.parseInt(txt_cantidad.getText());
+
 	        ticketProducto.setCantidad(cantidad);
 	        double precio;
 
+
 	        if (!txt_codBarras.getText().isEmpty()) {
 	            producto = getProductByCodigoProducto(txt_codBarras.getText());
+
 	            ticketProducto.setProducto(producto);
 	            ticketProducto.setDescripcion(producto.getDescripcion());
 
+
+
 	            double descuento = txt_descuento.getText().isEmpty() ? 0 : Double.parseDouble(txt_descuento.getText());
 	            ticketProducto.setDescuento(descuento);
+
 
 	            if (txt_precioDes.getText().isEmpty()) {
 	                ticketProducto.setPrecioDescuento(0);
@@ -685,11 +691,13 @@ public class ControllerTicket implements Initializable {
 	        } else {
 	            ticketProducto.setDescripcion(txt_desArticulo.getText());
 
+
 	            double descuento = txt_descuento.getText().isEmpty() ? 0 : Double.parseDouble(txt_descuento.getText());
 	            ticketProducto.setDescuento(descuento);
 
 	            if (txt_precioDes.getText().isEmpty()) {
 	                ticketProducto.setPrecioDescuento(0);
+
 	                precio = Double.parseDouble(txt_precio.getText().replace(',', '.'));
 	            } else {
 	                ticketProducto.setPrecioDescuento(Double.parseDouble(txt_precioDes.getText().replace(',', '.')));
@@ -697,6 +705,9 @@ public class ControllerTicket implements Initializable {
 	            }
 	            ticketProducto.setPrecioTotal(precio * cantidad);
 	        }
+
+
+
 
 	        ticketProducto.setTicket(ticket);
 	        session.persist(ticketProducto);
@@ -796,6 +807,7 @@ public class ControllerTicket implements Initializable {
 			System.out.println(selectedProduct.toString());
 			session.merge(selectedProduct);
 			session.getTransaction().commit();
+
 			session.close();
 			
 			if (producto != null) {
@@ -814,6 +826,8 @@ public class ControllerTicket implements Initializable {
 					alert.showAndWait();
 				}
 			}
+
+
 			
 			txt_codBarras.clear();
 			txt_desArticulo.clear();

@@ -624,8 +624,11 @@ public class ControllerFactura implements Initializable {
 		stage.setScene(scene);
 		ct.setParentController(null, this);
 
+
 		stage.show();
 	}
+
+
 
 	// Método para abrir el diálogo de selección de ticket
 	private void abrirDialogoSeleccionTicket(ActionEvent event) throws IOException {
@@ -641,10 +644,13 @@ public class ControllerFactura implements Initializable {
 		stage.show();
 	}
 
+
 	public void addTofactura(ActionEvent event) {
 		session = sf.openSession();
 		session.beginTransaction();
 		StringBuilder missingFields = new StringBuilder();
+
+
 
 		if (txt_cantidad.getText().isEmpty()) {
 			missingFields.append("Cantidad\n");
@@ -656,6 +662,8 @@ public class ControllerFactura implements Initializable {
 			missingFields.append("Descripción Artículo\n");
 		}
 
+
+
 		// If there are missing fields, show an alert and return early
 		if (missingFields.length() > 0) {
 			Alert alert = new Alert(AlertType.ERROR);
@@ -666,22 +674,30 @@ public class ControllerFactura implements Initializable {
 			return;
 		}
 
+
+
 		try {
 			int cantidad = 0;
 			cantidad = Integer.valueOf(txt_cantidad.getText());
 			ticketProducto.setCantidad(cantidad);
 			double precio = 0.0;
 
+
+
 			if (!txt_codBarras.getText().isEmpty()) {
 				producto = getProductByCodigoProducto(txt_codBarras.getText());
 				ticketProducto.setProducto(producto);
 				ticketProducto.setDescripcion(producto.getDescripcion());
+
 
 				if (txt_descuento.getText().isEmpty()) {
 					ticketProducto.setDescuento(0);
 				} else {
 					ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
 				}
+
+
+
 
 				if (txt_precioDes.getText().isEmpty()) {
 					ticketProducto.setPrecioDescuento(0);
@@ -695,11 +711,16 @@ public class ControllerFactura implements Initializable {
 			} else {
 				ticketProducto.setDescripcion(txt_desArticulo.getText());
 
+
+
 				if (txt_descuento.getText().isEmpty()) {
 					ticketProducto.setDescuento(0);
 				} else {
 					ticketProducto.setDescuento(Double.valueOf(txt_descuento.getText()));
 				}
+
+ 
+
 
 				if (txt_precioDes.getText().isEmpty()) {
 					ticketProducto.setPrecioDescuento(0);
@@ -711,6 +732,8 @@ public class ControllerFactura implements Initializable {
 					ticketProducto.setPrecioTotal(precio * cantidad);
 				}
 			}
+
+
 
 			ticketProducto.setFactura(factura);
 			session.persist(ticketProducto);
