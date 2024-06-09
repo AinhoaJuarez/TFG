@@ -229,6 +229,7 @@ public class ControllerFactura implements Initializable {
 	
 	
 	private void desasociarTicket(ActionEvent event) {
+		session = sf.openSession();
 		// Prompt user to confirm the action
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Confirmar Desasociación de Ticket");
@@ -268,9 +269,11 @@ public class ControllerFactura implements Initializable {
 				successAlert.showAndWait();
 			}
 		});
+		session.close();
 	}
 
 	private void handleDesasociar(ActionEvent event) {
+		session = sf.openSession();
 		if (factura != null) {
 			factura.setCliente(null);
 			lbl_Cliente.setText("Cliente: No asignado");
@@ -289,6 +292,7 @@ public class ControllerFactura implements Initializable {
 			alert.setContentText("No hay un ticket activo para desasociar un cliente.");
 			alert.showAndWait();
 		}
+		session.close();
 	}
 
 	private void populateFieldsFromSelectedProduct(TicketProductos selectedProduct) {
@@ -319,6 +323,7 @@ public class ControllerFactura implements Initializable {
 	}
 
 	private void mergeTotalFactura(ActionEvent event) {
+		session = sf.openSession();
 		try {
 			double totalFactura = Double.parseDouble(txt_TotalFactura.getText().replace(',', '.'));
 
@@ -360,6 +365,7 @@ public class ControllerFactura implements Initializable {
 
 				// Commit transaction
 				session.getTransaction().commit();
+				
 				txt_codBarras.clear();
 				txt_desArticulo.clear();
 				txt_precio.clear();
@@ -397,12 +403,12 @@ public class ControllerFactura implements Initializable {
 			alert.setContentText("Se produjo un error al actualizar la factura: " + e.getMessage());
 			alert.showAndWait();
 		}
+		session.close();
 	}
 
 	public void saveFacturaToPDF() {
-		// Assuming you have a Factura object named factura
 		String dest = "factura_" + factura.getNumeroFactura() + ".pdf";
-//		PDFGenerator.createFacturaPDF(factura, dest);
+		PDFGenerator.createFacturaPDF(factura, dest, sf);
 
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle("PDF Generado");
@@ -412,6 +418,7 @@ public class ControllerFactura implements Initializable {
 	}
 
 	private void updateTotalFacturaPrice() {
+		session = sf.openSession();
 		TypedQuery<Double> query = session.createQuery(
 				"SELECT SUM(tp.precioTotal) FROM TicketProductos tp WHERE tp.numeroFactura = :factura", Double.class);
 		query.setParameter("factura", factura);
@@ -421,6 +428,7 @@ public class ControllerFactura implements Initializable {
 		} else {
 			txt_TotalFactura.setText("0.00");
 		}
+		session.close();
 	}
 
 	private void showProductoNotFoundError() {
@@ -432,6 +440,7 @@ public class ControllerFactura implements Initializable {
 	}
 
 	public void cargarTabla() {
+		session = sf.openSession();
 		tableView.getItems().clear();
 		colCodBarras.setCellValueFactory(cellData -> {
 			if (cellData.getValue().getProducto() != null) {
@@ -454,16 +463,19 @@ public class ControllerFactura implements Initializable {
 		if (entityData != null) {
 			tableView.getItems().addAll(entityData);
 		}
+		session.close();
 	}
 
 	public Producto getProductByCodigoProducto(String codigoProducto) {
-
+		session = sf.openSession();
 		Query<Producto> query = session.createQuery("FROM Producto p WHERE p.codigoBarras = :codigoBarras",
 				Producto.class);
 		query.setParameter("codigoBarras", codigoProducto);
 		Producto return2 = query.uniqueResult();
 		setProductDetails(return2);
+		session.close();
 		return return2;
+		
 
 	}
 
@@ -479,6 +491,8 @@ public class ControllerFactura implements Initializable {
 	}
 
 	public void nuevoTicketProducto() {
+		session = sf.openSession();
+		session.beginTransaction();
 		factura = new Factura();
 		ticketProducto = new TicketProductos();
 		Query<Long> query = session.createQuery("select max(tp.id) from TicketProductos tp", Long.class);
@@ -501,6 +515,7 @@ public class ControllerFactura implements Initializable {
 		session.getTransaction().commit();
 		txt_NumFactura.setText(String.valueOf(factura.getNumeroFactura()));
 		session.beginTransaction();
+		session.close();
 	}
 
 	private void loadFacturaProductos() {

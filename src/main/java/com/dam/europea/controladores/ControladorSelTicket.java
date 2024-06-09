@@ -9,12 +9,11 @@ import java.util.ResourceBundle;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.MutationQuery;
 
 import com.dam.europea.entidades.Factura;
 import com.dam.europea.entidades.Ticket;
-import com.dam.europea.entidades.TicketProductos;
 
-import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,6 +24,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 public class ControladorSelTicket implements Initializable {
 	@FXML
@@ -67,9 +67,6 @@ public class ControladorSelTicket implements Initializable {
 		colCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
 		TypedQuery<Ticket> query = session.createQuery("SELECT e FROM Ticket e", Ticket.class);
 		ArrayList<Ticket> entityData = (ArrayList<Ticket>) query.getResultList();
-		for (Ticket ticket : entityData) {
-			System.out.println(ticket.toString());
-		}
 		if (entityData != null) {
 			tableViewTickets.getItems().addAll(entityData);
 		}
@@ -91,72 +88,82 @@ public class ControladorSelTicket implements Initializable {
 	}
 
 	private void filterTickets() {
-		String num = txtNum.getText().trim();
-		String total = txtTotal.getText().trim();
-		LocalDate fecha = datePicker.getValue();
+	    session = sf.openSession();  // Open session here
+	    try {
+	        String num = txtNum.getText().trim();
+	        String total = txtTotal.getText().trim();
+	        LocalDate fecha = datePicker.getValue();
 
-		StringBuilder hql = new StringBuilder("SELECT tp FROM Ticket tp WHERE 1=1");
+	        StringBuilder hql = new StringBuilder("SELECT tp FROM Ticket tp WHERE 1=1");
 
-		if (!num.isEmpty()) {
-			hql.append(" AND tp.numTicket = :num");
-		}
-		if (!total.isEmpty()) {
-			hql.append(" AND tp.total = :total");
-		}
-		if (fecha != null) {
-			hql.append(" AND tp.fecha = :fecha");
-		}
+	        if (!num.isEmpty()) {
+	            hql.append(" AND tp.numTicket = :num");
+	        }
+	        if (!total.isEmpty()) {
+	            hql.append(" AND tp.total = :total");
+	        }
+	        if (fecha != null) {
+	            hql.append(" AND tp.fecha = :fecha");
+	        }
 
-		TypedQuery<Ticket> query = session.createQuery(hql.toString(), Ticket.class);
+	        TypedQuery<Ticket> query = session.createQuery(hql.toString(), Ticket.class);
 
-		if (!num.isEmpty()) {
-			query.setParameter("num", Integer.parseInt(num));
-		}
-		if (!total.isEmpty()) {
-			query.setParameter("total", Double.parseDouble(total));
-		}
-		if (fecha != null) {
-			query.setParameter("fecha", fecha);
-		}
+	        if (!num.isEmpty()) {
+	            query.setParameter("num", Integer.parseInt(num));
+	        }
+	        if (!total.isEmpty()) {
+	            query.setParameter("total", Double.parseDouble(total));
+	        }
+	        if (fecha != null) {
+	            query.setParameter("fecha", fecha);
+	        }
 
-		List<Ticket> results = query.getResultList();
+	        List<Ticket> results = query.getResultList();
 
-		tableViewTickets.getItems().clear();
-
-		tableViewTickets.getItems().addAll(results);
-
-		session.close();
-		session.beginTransaction();
+	        tableViewTickets.getItems().clear();
+	        tableViewTickets.getItems().addAll(results);
+	    } catch (Exception e) {
+	        System.out.println(e);
+	        showAlert("Error", "An error occurred while filtering tickets: " + e.getMessage());
+	    } finally {
+	        if (session != null) {
+	            session.close();
+	        }
+	    }
 	}
 
-	private void associateProducts(Ticket selectedTicket) {
-		session = sf.openSession();
-		session.beginTransaction();
-		if (selectedTicket != null) {
-			try {
+	private void associateProducts(Ticket selTicket) {
+	    session = sf.openSession();
+	    try {
+	        session.beginTransaction();
 
-				String hql = "UPDATE TicketProductos SET numeroFactura = :numeroFactura WHERE numTicket = :numTicket";
-				Query updateQuery = session.createQuery(hql, TicketProductos.class);
-				updateQuery.setParameter("numeroFactura", factura);
-				updateQuery.setParameter("numTicket", selectedTicket);
 
-				int updatedRows = updateQuery.executeUpdate();
+	        // Create the update query using createMutationQuery
+	        MutationQuery updateQuery = session.createMutationQuery(
+	                "UPDATE TicketProductos tp SET tp.numeroFactura = :numeroFactura WHERE tp.numTicket = :numTicket");
+	        updateQuery.setParameter("numeroFactura", factura);
+	        updateQuery.setParameter("numTicket", selTicket);
 
-				if (updatedRows > 0) {
-					session.getTransaction().commit();
-					controllerFactura.cargarTabla();
-				} else {
-					session.getTransaction().rollback();
-					showAlert("Error", "Failed to associate products with factura.");
-				}
-			} catch (Exception e) {
-				session.getTransaction().rollback();
-				showAlert("Exception", "An exception occurred: " + e.getMessage());
-			}
-		} else {
-			showAlert("Error", "No ticket selected.");
-		}
-		session.close();
+	        int updatedRows = updateQuery.executeUpdate();
+
+	        if (updatedRows > 0) {
+	            session.getTransaction().commit();
+	            controllerFactura.cargarTabla();
+	            Stage stage = (Stage) tableViewTickets.getScene().getWindow();
+	            stage.close();
+	        } else {
+	            session.getTransaction().rollback();
+	            showAlert("Error", "Failed to associate products with factura.");
+	        }
+	    } catch (Exception e) {
+	        session.getTransaction().rollback();
+	        System.out.println(e);
+	        showAlert("Error", "An error occurred: " + e.getMessage());
+	    } finally {
+	        if (session != null) {
+	            session.close();
+	        }
+	    }
 	}
 
 	private void showAlert(String title, String message) {

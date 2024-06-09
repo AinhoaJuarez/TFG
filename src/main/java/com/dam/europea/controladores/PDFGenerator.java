@@ -1,5 +1,9 @@
 package com.dam.europea.controladores;
 import java.io.IOException;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import com.dam.europea.entidades.Factura;
 import com.dam.europea.entidades.TicketProductos;
@@ -10,9 +14,11 @@ import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 
+import jakarta.persistence.TypedQuery;
+
 public class PDFGenerator {
 
-    public static void createFacturaPDF(Factura factura, String dest) {
+    public static void createFacturaPDF(Factura factura, String dest, SessionFactory sf) {
         try {
             PdfWriter writer = new PdfWriter(dest);
             PdfDocument pdf = new PdfDocument(writer);
@@ -34,13 +40,17 @@ public class PDFGenerator {
             table.addHeaderCell(new Cell().add(new Paragraph("Cantidad")));
             table.addHeaderCell(new Cell().add(new Paragraph("Descripción")));
             table.addHeaderCell(new Cell().add(new Paragraph("Precio Unitario")));
-            table.addHeaderCell(new Cell().add(new Paragraph("Descuento")));
             table.addHeaderCell(new Cell().add(new Paragraph("Total")));
-
-            for (TicketProductos tp : factura.getListadoProductos()) {
+            Session session = sf.openSession();
+            TypedQuery<TicketProductos> query = session.createQuery(
+					"SELECT tp FROM TicketProductos tp WHERE tp.numeroFactura=:factura", TicketProductos.class);
+			query.setParameter("factura", factura);
+			List<TicketProductos> ticketProductosList = query.getResultList();
+            for (TicketProductos tp : ticketProductosList) {
                 table.addCell(new Cell().add(new Paragraph(String.valueOf(tp.getCantidad()))));
                 table.addCell(new Cell().add(new Paragraph(tp.getDescripcion())));
                 table.addCell(new Cell().add(new Paragraph(String.valueOf(tp.getPrecioTotal()))));
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(tp.getPrecioTotal()*tp.getCantidad()))));
             }
 
             document.add(table);
