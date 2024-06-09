@@ -1,7 +1,10 @@
 package com.dam.europea.controladores;
 
+import java.awt.Desktop;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -39,6 +42,8 @@ public class ControladorInicioSesion implements Initializable {
 	private TextField txtPass;
 	@FXML
 	private Button btnEntrar;
+	@FXML
+	private Button btnGuiaPaginaWeb;
 	private Session session;
 
 	// Inicializamos el controlador cargando una imagen
@@ -54,6 +59,17 @@ public class ControladorInicioSesion implements Initializable {
 				e.printStackTrace();
 			}
 		});
+		InputStream archivoPregunta= getClass().getResourceAsStream("/pregunta.png");
+		Image imagenPregunta= new Image(archivoPregunta, 35, 35, true, true);
+		btnGuiaPaginaWeb.setGraphic(new ImageView(imagenPregunta));
+		btnGuiaPaginaWeb.setOnAction(arg0 -> {
+			try {
+				abrirGuiaPaginaWeb(arg0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+			
 	}
 
 	// Cambiamos a la escena del menú principal
@@ -89,7 +105,17 @@ public class ControladorInicioSesion implements Initializable {
 			showAlert("Inicio de Sesión Fallido", "El usuario no existe.");
 		}
 		session.close();
-	}
+}
+	
+	public void abrirGuiaPaginaWeb(ActionEvent event) throws IOException, URISyntaxException {
+        // Recoge el directorio a la web y lo asigna
+        String htmlDirectorio = "/paginaWeb/index.html";
+        URI uri = ControladorInicioSesion.class.getResource(htmlDirectorio).toURI();
+
+        // Utiliza el navegador por defecto en el equipo
+        Desktop.getDesktop().browse(uri);
+    }
+	
 
 	private Usuario checkUserCredentials(String username, String password) {
 		Query<Usuario> query = session.createQuery("FROM Usuario WHERE userName = :userName", Usuario.class);

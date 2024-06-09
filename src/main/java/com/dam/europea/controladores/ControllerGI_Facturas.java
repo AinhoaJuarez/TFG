@@ -27,6 +27,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -40,6 +41,12 @@ import javafx.stage.StageStyle;
 
 public class ControllerGI_Facturas implements Initializable {
 	// Botones fotos
+	@FXML
+    private Button btnBorrarFecha;
+    @FXML
+    private DatePicker datePickerInicio;
+    @FXML
+    private DatePicker datePickerFinal;
 	@FXML
 	private Button btnProductos;
 	@FXML
@@ -105,6 +112,10 @@ public class ControllerGI_Facturas implements Initializable {
 		
 		cargarImagenes();
 		cargarClientesComboBox();
+		 btnBorrarFecha.setOnAction(arg0 -> {
+	            datePickerInicio.setValue(null);
+	            datePickerFinal.setValue(null);
+	        });
 		botonSalir.setOnAction(arg0 -> {
 			try {
 				switchToInicioSesion(arg0);
@@ -472,4 +483,8 @@ public class ControllerGI_Facturas implements Initializable {
 
 		stage.show();
 	}
+	
+
+
+	
 }

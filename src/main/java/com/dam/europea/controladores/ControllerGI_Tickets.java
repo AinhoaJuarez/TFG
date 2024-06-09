@@ -42,6 +42,8 @@ import javafx.stage.StageStyle;
 public class ControllerGI_Tickets implements Initializable {
 	// Botones fotos
 	@FXML
+    private Button btnBorrarFecha;
+	@FXML
 	private Button btnProductos;
 	@FXML
 	private Button btnFamilia;
@@ -122,6 +124,10 @@ public class ControllerGI_Tickets implements Initializable {
 				e.printStackTrace();
 			}
 		});
+		 btnBorrarFecha.setOnAction(arg0 -> {
+	            datePickerInicio.setValue(null);
+	            datePickerFinal.setValue(null);
+	        });
 		botonMenu.setOnAction(arg0 -> {
 			try {
 				switchToMenu(arg0);
