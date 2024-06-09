@@ -12,8 +12,19 @@ import jakarta.persistence.Table;
 public class DatosEmpresa {
 
 	@Id
-	private String nif;
+	private int id;
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
 	@Column
+	private String nif;
 	private String nombreEmpresa;
 	private String nombreDueno;
 	private String direccion;

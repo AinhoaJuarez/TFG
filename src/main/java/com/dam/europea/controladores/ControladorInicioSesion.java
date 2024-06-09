@@ -15,6 +15,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 
+import com.dam.europea.entidades.DatosEmpresa;
 import com.dam.europea.entidades.Usuario;
 
 import javafx.event.ActionEvent;
@@ -135,7 +136,7 @@ public class ControladorInicioSesion implements Initializable {
 	private void checkAndCreateUsuario0() throws NoSuchAlgorithmException {
         Session session = sf.openSession();
         session.beginTransaction();
-
+       
         // Check if usuario with idUsuario 0 exists
         Query<Usuario> query = session.createQuery("FROM Usuario WHERE idUsuario = :idUsuario", Usuario.class);
         query.setParameter("idUsuario", "0");
@@ -155,6 +156,7 @@ public class ControladorInicioSesion implements Initializable {
             u.setRol("Administrador");
             session.persist(u);
             session.getTransaction().commit();
+            
         } else {
         }
 

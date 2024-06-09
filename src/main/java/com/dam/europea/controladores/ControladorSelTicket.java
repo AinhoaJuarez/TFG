@@ -147,6 +147,7 @@ public class ControladorSelTicket implements Initializable {
 	            session.getTransaction().commit();
 	            controllerFactura.cargarTabla();
 	            controllerFactura.updateTotalFacturaPrice();
+	            controllerFactura.setClienteDetails(selTicket.getCliente());
 	            Stage stage = (Stage) tableViewTickets.getScene().getWindow();
 	            stage.close();
 	        } else {
